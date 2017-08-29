@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>CloudCherrySDK</title>
+  </head>
+  <body>
+    <div class="cc-survey">
+    </div>
+    <script>
+        window.CCSDK = window.CCSDK || function () {
+            (window.CCSDK.q = window.CCSDK.q || []).push(arguments);
+        };
+        window.CCSDK("init", "WW-02872");
+    </script>
+    <!-- <script>
+      (function () {
+          // add a queue event here
+          console.log('hooking');
+          window.CCSDK = window.CCSDK || function () {
+              (window.CCSDK.q = window.CCSDK.q || []).push(arguments);
+          };
+          var s = document.createElement('script');
+          s.type = 'text/javascript';
+          s.async = true;
+          s.src = '//localhost:8082/ccsdk.en.bundle.js';
+          var x = document.getElementsByTagName('script')[0];
+          x.parentNode.insertBefore(s, x);
+      })();
+
+      // execute your script immediately here
+      window.CCSDK("init", "WW-02872");
+  </script> -->
+</body>
+</html>
