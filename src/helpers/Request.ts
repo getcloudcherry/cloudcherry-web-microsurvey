@@ -4,9 +4,9 @@ class RequestHelper {
 
   static async get(url : String) {
     let request : Request = new Request( (url as any) , new Object());
-    return await fetch(request).then( (response : Response) => {
+    return fetch(request).then( (response : Response) => {
       if (response.status >= 200 && response.status < 300) {
-        return response;
+        return Promise.resolve(response);
       } else {
         var error = new Error(response.statusText);
         // error.response = response;
@@ -30,19 +30,20 @@ class RequestHelper {
    * @param {any} data  
    * @memberof Request
    */
-  static async post(url : String, data : Object) {
+  static post(url : String, data : Object) {
     //consider, file upload?
     // console.log("[" + JSON.stringify(data) + "]");
+    console.log("Sending : " + data);
     let request : Request = new Request( (url as any), { 
       method : "POST", 
       headers : { 
-        "Cotent-Type" : "application/text" 
+        "Content-Type" : "application/json; charset=utf-8" 
       },
-      body : "[" + JSON.stringify(data) + "]"
+      body : JSON.stringify(data)
     });
-    return await fetch(request).then( (response : Response) => {
+    return fetch(request).then( (response : Response) => {
       if (response.status >= 200 && response.status < 300) {
-        return response;
+        return Promise.resolve(response);
       } else {
         let error : Error = new Error(response.statusText);
         // error.response = response;

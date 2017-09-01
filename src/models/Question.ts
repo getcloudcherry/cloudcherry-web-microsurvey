@@ -1,4 +1,4 @@
-class Question {
+interface Question {
   id : String;
   user : String;
   setName : String;

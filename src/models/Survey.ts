@@ -1,6 +1,6 @@
 import Question from './Question';
 
-class Survey {
+interface Survey {
   logoURL : String;
   backgroundURL : String;
   businessName : String;
