@@ -1,26 +1,17 @@
-// import '../css/survey.css';
-import '../css/questions.css';
-// import '../css/utilities.css';
-
-let templates = {
-  question_start : "",
-  question_text : "",
-  question_scale : "",
-  question_multi_line_text : "",
-  question_multi_select : "",
-  question_select : "",
-  question_smile_5 : ""
+"use strict";
+require("../css/survey.css");
+require("../css/questions.css");
+require("../css/utilities.css");
+var templates = {
+    question_start: "",
+    question_text: "",
+    question_scale: "",
+    question_multi_line_text: "",
+    question_multi_select: "",
+    question_select: "",
+    question_smile_5: ""
 };
-
-
-
-// templates.question_text : String;
-// templates.question_scale : String;
-// templates.question_multi_line_text : String;
-// templates.question_multi_select : String;
-// templates.question_select : String;
-// templates.question_smile_5 : String;
-
+exports.templates = templates;
 templates.question_start = '<div class="pop-box right-bottom">\
   <div class="overlay"></div>\
   <img src="../Navigation_Iconset/Close_Icon.svg" class="is-pop-box-close pop-box__close">\
@@ -30,7 +21,6 @@ templates.question_start = '<div class="pop-box right-bottom">\
   </div>\
 </div>\
 ';
-
 templates.question_text = '<div class="main-box">\
   <div class="main-box__text">\
     <p>{{question}}</p>\
@@ -46,8 +36,6 @@ templates.question_text = '<div class="main-box">\
     </ul>\
   </div>\
 </div>';
-
-
 templates.question_scale = '<div class="main-box">\
   <div class="main-box__text">\
     <p>{{question}}</p>\
@@ -71,8 +59,6 @@ templates.question_scale = '<div class="main-box">\
     </div>\
   </div>\
 </div>';
-
-
 templates.question_multi_line_text = '<div class="main-box radio-toggle" style="display: ;">\
   <div class="main-box__text">\
     <p>{{question}}</p>\
@@ -81,8 +67,6 @@ templates.question_multi_line_text = '<div class="main-box radio-toggle" style="
     <textarea class="multiline-box" placeholder="Share your thoughts..."></textarea>\
   </div>\
 </div>';
-
-
 templates.question_multi_select = '<div class="main-box">\
   <div class="main-box__text">\
     <p>{{question}}</p>\
@@ -98,8 +82,6 @@ templates.question_multi_select = '<div class="main-box">\
     </ul>\
   </div>\
 </div>';
-
-
 templates.question_select = '<div class="main-box">\
   <div class="main-box__text">\
     <p>{{question}}</p>\
@@ -115,8 +97,6 @@ templates.question_select = '<div class="main-box">\
     </ul>\
   </div>\
 </div>';
-
-
 templates.question_smile_5 = '<div class="main-box"">\
   <div class="main-box__text">\
     <p>{{question}}</p>\
@@ -131,5 +111,3 @@ templates.question_smile_5 = '<div class="main-box"">\
     </div>\
   </div>\
 </div>';
-
-export {templates};

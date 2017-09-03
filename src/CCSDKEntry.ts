@@ -1,8 +1,9 @@
-import './css/survey.css';
+// import './css/survey.css';
 import './css/questions.css';
-import './css/utilities.css';
+// import './css/utilities.css';
 import { SurveyHandler } from "./SurveyHandler";
 import { dom } from "./helpers/Dom";
+import { DomSurvey } from "./helpers/Dom/DomSurvey";
 
 /**
  * functions that are exposed to SDK User are written here.
@@ -11,20 +12,24 @@ import { dom } from "./helpers/Dom";
 
 class CCSDKEntry {
   survey : SurveyHandler;
-  init = function(surveyToken : String) {
+  dom : DomSurvey;
+  constructor(surveyToken : String) {
     this.survey = new SurveyHandler(surveyToken);
     let data = this.survey.fetchQuestions();
     let self : CCSDKEntry = this;
     data.then(function(surveyData) {
         self.survey.surveyData = surveyData;
         self.survey.displayQuestions();
-        dom(self);
+        this.dom = new DomSurvey('#db3c39');
+
+        // dom(self);
+
     });
 
-    //on fetch questions show 
+    //on fetch questions show
   }
 
-  trigger = function(type : String, target : String) {
+  trigger(type : String, target : String) {
     let self : CCSDKEntry = this;
     document.getElementById("anywhere").addEventListener('click',function(){
       console.log('click trigger');
@@ -32,11 +37,11 @@ class CCSDKEntry {
     });
   }
 
-  prefill = function(id : String, value : String, valueType : String) {
+  prefill(id : String, value : String, valueType : String) {
     this.survey.fillPrefillQuestion(id, value , valueType);
   }
 
-  prefillPost = function() {
+  prefillPost() {
     this.survey.postPrefillPartialAnswer();
   }
 }
@@ -44,8 +49,7 @@ class CCSDKEntry {
 let instances: any = {};
 
 export function init(surveyToken : any) {
-  instances[surveyToken] = new CCSDKEntry();
-  instances[surveyToken].init(surveyToken);
+  instances[surveyToken] = new CCSDKEntry(surveyToken);
 }
 
 export function trigger(surveyToken : any, type : String, target : String) {
