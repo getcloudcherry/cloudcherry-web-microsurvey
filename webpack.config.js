@@ -16,7 +16,7 @@ let config = Object.keys(languages).map(function(language) {
       CCSDK : './src/CCSDKEntry.ts',
       // test : './test/ccsdk.test.ts'
     },
-    // devtool: 'inline-source-map',
+    devtool: 'inline-source-map',
     devServer: {
       contentBase: './dist'
     },
@@ -42,8 +42,28 @@ let config = Object.keys(languages).map(function(language) {
         //   test: require.resolve('cash-dom'),
         //   loader: 'imports-loader?this=>window'
         // },
-        { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+        // { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
         { test: /\.css$/, use: [ 'style-loader', 'css-loader'] , exclude: /node_modules/ },
+				// {
+				// 	test: /\.svg$/,
+        // 	loader: 'svg-inline-loader'
+				// },
+				{
+	        test: /\.(jpe?g|png|gif|svg)$/i,
+	        loaders: [
+	            'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
+	            'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
+	        ]
+				},
+				{
+				  test: /\.(html)$/,
+				  use: {
+				    loader: 'html-loader?exportAsEs6Default',
+				    options: {
+				      attrs: [':data-src']
+				    }
+				  }
+				},
         {
           test: /\.scss$/,
           exclude: /node_modules/,
@@ -59,6 +79,7 @@ let config = Object.keys(languages).map(function(language) {
         { test: /\.tsx?$/, use: 'awesome-typescript-loader', exclude: /node_modules/ },
       ]
     },
+
     output: {
       filename: '[name].' + language  + '.bundle.js',
       path: path.resolve(__dirname, 'dist'),
