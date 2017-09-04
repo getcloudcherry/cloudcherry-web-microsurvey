@@ -1,0 +1,43 @@
+.chart {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	display: inline-block;
+	height: 21px;
+	padding-top: 22px;
+	position: relative;
+	vertical-align: top;
+	width: 21px;
+}
+.chart span {
+	display: block;
+	font-size: 2em;
+	font-weight: normal;
+}
+.chart canvas {
+	left: 0;
+	position: absolute;
+	top: 0;
+}
+.loader{
+	height: 21px;
+	left: 28px;
+	position: absolute;
+	top: 8px;
+	width: 21px;
+}
+
+@media (min-width: 768px){
+	.chart canvas{
+		margin-left: 10px;
+	}
+}
+
+@media (max-width: 768px){
+	.loader{
+		position: relative;
+		left: auto;
+		top: 0;
+		right: auto;
+	}
+}

@@ -2,6 +2,7 @@
 import { Config } from "./Config";
 import { RequestHelper } from './helpers/Request';
 import { templates } from "./helpers/Templates";
+import { DomUtilities } from "./helpers/dom/DomUtilities";
 
 // console.log($);
 // console.log($);
@@ -17,6 +18,7 @@ class SurveyHandler {
   prefillResponses : any;
   questionResponses : any;
   answers : any;
+  util : DomUtilities;
   // isPartialAvailable : Boolean;
 
   constructor(surveyToken : String) {
@@ -26,6 +28,7 @@ class SurveyHandler {
     this.questionsToDisplay = [];
     this.prefillQuestions = [];
     this.answers = [];
+    this.util = new DomUtilities();
   }
 
   fetchQuestions() {
@@ -39,8 +42,18 @@ class SurveyHandler {
     // console.log(this.surveyData);
   }
 
+  setupSurveyContainer(){
+    document.querySelectorAll("body")[0].insertAdjacentHTML(
+      'afterbegin', templates.question_survey
+    );
+  }
+
   displayWelcomeQuestion() {
-    $("#cc-welcome-question-box").addClass('show');
+     document.querySelectorAll("body")[0].insertAdjacentHTML(
+       'afterbegin', templates.question_start
+     );
+     let startContainer = <HTMLElement>document.querySelectorAll(".act-cc-welcome-question-box")[0];
+      this.util.addClass(startContainer, "show");
   }
 
   displayQuestions() {
@@ -51,7 +64,7 @@ class SurveyHandler {
     //sort questions and display them?
     this.questionsToDisplay = this.questionsToDisplay.sort(this.questionCompare);
     let ccSurvey : any;
-    ccSurvey = document.getElementsByClassName("cc-survey-content");
+    ccSurvey = document.getElementsByClassName("cc-questions-container");
     // ccSurvey = ccSurvey[0];
     let surveyObject = ccSurvey[0];
 
@@ -98,7 +111,7 @@ class SurveyHandler {
     } else {
       this.prefillResponses.push(response)
     }
-    
+
   }
 
   postPrefillPartialAnswer() {

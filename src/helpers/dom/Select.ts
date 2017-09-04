@@ -4,6 +4,7 @@ class Select{
   constructor(){
     this.util = new DomUtilities();
 		var select = document.querySelectorAll(".cc-select");
+    let parent = this;
 		Array.prototype.forEach.call(select, function(el, i){
 		  var self = el;
 			var $selectOptions = document.querySelectorAll(".cc-select-options");
@@ -18,7 +19,7 @@ class Select{
 		        template += '<span class="cc-select-option ' + self.getAttribute("class") + '" data-value="' + self.getAttribute("value") + '">' + self.innerHTML+ '</span>';
 		      });
 		  template += '</div></div></div>';
-		  this.util.addClass(self, 'hide');
+		  parent.util.addClass(self, 'hide');
 		  self.insertAdjacentHTML('afterend',template);
 		});
 	}

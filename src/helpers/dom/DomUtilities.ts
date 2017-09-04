@@ -25,18 +25,19 @@ class DomUtilities{
 	}
 
 	removeClassAll(elements : any, className : string) : void {
-		Array.prototype.forEach.call(elements, function(el, i){
+		Array.prototype.forEach.call(elements, (el, i) => {
 			this.removeClass(el,className);
 		});
 	}
 
 	addClassAll(elements : any, className : string) : void {
-		Array.prototype.forEach.call(elements, function(el, i){
+		Array.prototype.forEach.call(elements, (el, i) => {
 			this.addClass(el,className);
 		});
 	}
 
 	removeClass(el : any, className : string) : void{
+    // console.log(el);
 		if (el.classList)
 		  el.classList.remove(className);
 		else

@@ -17,35 +17,40 @@ class DomSurvey{
 
 
   constructor( brandColor : string ){
-    let self:DomSurvey = this;
-    self.$questionContainer = document.querySelectorAll(".cc-questions-container .cc-question-container");
-  	self.$popupContainer = document.querySelectorAll(".cc-popup-container");
-  	self.$popupContainer2 = document.querySelectorAll(".cc-popup-container-2");
-  	self.$body = document.querySelectorAll("body")[0];
+    let self : DomSurvey = this;
+
   	let ccSDK = {
   		qIndex : 0,
   		totalQuestions : 0
   	}
-  	self.qIndex = 0;
-    self.util = new DomUtilities()
+  	this.qIndex = 0;
+    this.util = new DomUtilities()
     // self.scrollbar = new ScrollBar("data-cc-scrollbar");
-    self.util.ready(function(){
-  	self.util.addClassAll(self.$popupContainer,'show');
-    self.select = new Select();
-  	self.theme = new Theme(brandColor);
-
-  		self.util.listner(self.$body, "click", "#act-cc-survey-start", function(e) {
-  			self.util.addClassAll(self.$popupContainer2, 'show');
-  			self.util.removeClassAll(self.$popupContainer, 'show');
-  			self.loadFirstQuestion();
-  		});
-  		self.util.listner(self.$body, "click", ".act-cc-button-next", function(event) {
-  			self.nextQuestion();
-  		});
-  		self.util.listner(self.$body, "click", ".act-cc-button-prev", function(event) {
-  			self.prevQuestion();
-  		});
+    this.util.ready(function(){
+  	   // self.util.addClassAll(self.$popupContainer,'show');
+       self.select = new Select();
+  	   self.theme = new Theme(brandColor);
   	});
+  }
+
+  setupListners(){
+    let self = this;
+    this.$questionContainer = document.querySelectorAll(".cc-questions-container .cc-question-container");
+  	this.$popupContainer = document.querySelectorAll(".cc-popup-container");
+  	this.$popupContainer2 = document.querySelectorAll(".cc-popup-container-2");
+  	this.$body = document.querySelectorAll("body")[0];
+    this.util.listner(this.$body, "click", ".act-cc-survey-start", function(e) {
+      console.log("click in setup listner survey start");
+      self.util.addClassAll(self.$popupContainer2, 'show');
+      self.util.removeClassAll(self.$popupContainer, 'show');
+      // this.loadFirstQuestion();
+    });
+    this.util.listner(self.$body, "click", ".act-cc-button-next", function(event) {
+      self.nextQuestion();
+    });
+    this.util.listner(self.$body, "click", ".act-cc-button-prev", function(event) {
+      self.prevQuestion();
+    });
   }
 
   updateProgress(){

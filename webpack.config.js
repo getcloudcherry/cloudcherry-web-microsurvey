@@ -16,7 +16,7 @@ let config = Object.keys(languages).map(function(language) {
       CCSDK : './src/CCSDKEntry.ts',
       // test : './test/ccsdk.test.ts'
     },
-    // devtool: 'inline-source-map',
+    devtool: 'inline-source-map',
     devServer: {
       contentBase: './dist'
     },
@@ -55,6 +55,15 @@ let config = Object.keys(languages).map(function(language) {
 	            'image-webpack-loader?bypassOnDebug&optimizationLevel=7&interlaced=false'
 	        ]
 				},
+				{
+				  test: /\.(html)$/,
+				  use: {
+				    loader: 'html-loader?exportAsEs6Default',
+				    options: {
+				      attrs: [':data-src']
+				    }
+				  }
+				},
         {
           test: /\.scss$/,
           exclude: /node_modules/,
@@ -70,6 +79,7 @@ let config = Object.keys(languages).map(function(language) {
         { test: /\.tsx?$/, use: 'awesome-typescript-loader', exclude: /node_modules/ },
       ]
     },
+
     output: {
       filename: '[name].' + language  + '.bundle.js',
       path: path.resolve(__dirname, 'dist'),

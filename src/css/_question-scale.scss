@@ -1,0 +1,132 @@
+/*cc-question-container color scale css*/
+.option-number-item{
+	color: #fff;
+	float: left;
+	font-size: 13px;
+	height: 32px;
+	margin-left: 1px;
+	padding-top: 7px;
+	text-align: center;
+	width: 32px;
+}
+.option-number-item.option-zero{
+	background: #853838;
+}
+.option-number-item.option-zero.selected{
+	background: #572526;
+}
+
+.option-number-item.option-one{
+	background: #9e4343;
+}
+.option-number-item.option-one.selected{
+	background: #642728;
+}
+
+.option-number-item.option-two{
+	background: #c14d4d;
+}
+.option-number-item.option-two.selected{
+	background: #712827;
+}
+
+.option-number-item.option-three{
+	background: #d94d4d;
+}
+.option-number-item.option-three.selected{
+	background: #7c2828;
+}
+
+.option-number-item.option-four{
+	background: #ee4d4d;
+}
+.option-number-item.option-four.selected{
+	background: #852828;
+}
+
+.option-number-item.option-five{
+	background: #ff4d4d;
+}
+.option-number-item.option-five.selected{
+	background: #844828;
+}
+
+.option-number-item.option-six{
+	background: #ff8c4d;
+}
+.option-number-item.option-six.selected{
+	background: #844828;
+}
+
+.option-number-item.option-seven{
+	background: #ffc74d;
+}
+.option-number-item.option-seven.selected{
+	background: #856728;
+}
+
+.option-number-item.option-eight{
+	background: #f5eb4d;
+}
+.option-number-item.option-eight.selected{
+	background: #7f7a28;
+}
+
+.option-number-item.option-nine{
+	background: #73ca81;
+}
+.option-number-item.option-nine.selected{
+	background: #3b6942;
+}
+
+.option-number-item.option-ten{
+	background: #4db47c;
+}
+.option-number-item.option-ten.selected{
+	background: #285e40;
+}
+
+.cc-question-container__content.rating-color{
+	margin-left: 74px;
+}
+
+.option-left-rating-text,.option-right-rating-text{
+	bottom: -25px;
+	color: #424242;
+	font-size: 13px;
+	left: 0;
+	position: absolute;
+}
+.option-right-rating-text{
+	left: auto;
+	right: 0;
+}
+.rating-color{
+	position: relative;
+}
+.option-smile-box img,.option-star-box img{
+	height: 54px;
+	margin-right: 29px;
+	width: 54px;
+}
+.option-star-box img{
+	margin-right: 19px;
+}
+
+@media (min-width: 768px) and (max-width: 992px){
+	.option-smile-box img, .option-star-box img {
+	    width: 50px;
+	    height: 50px;
+	    margin-right: 10px;
+    }
+}
+@media (max-width: 768px){
+	.option-smile-box,.option-star-box{
+		display: inline-block;
+		width: 18%;
+	}
+	.option-smile-box img, .option-star-box img{
+		padding-right: 5px;
+		margin-right: 0;
+	}
+}
