@@ -37,6 +37,7 @@ class SurveyHandler {
     surveyUrl = surveyUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyUrl = Config.API_URL + surveyUrl;
     let data = RequestHelper.get(surveyUrl);
+    console.log(data);
     return data;
     // this.surveyData = data.then(function();
     // console.log(this.surveyData);

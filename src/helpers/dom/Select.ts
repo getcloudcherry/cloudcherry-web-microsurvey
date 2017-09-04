@@ -1,8 +1,12 @@
 import { DomUtilities } from "./DomUtilities";
 class Select{
   util : DomUtilities;
+  $body : any ;
+  $html : any ;
   constructor(){
     this.util = new DomUtilities();
+    this.$body = document.querySelectorAll("body");
+    this.$html = document.querySelectorAll("html")[0];
 		var select = document.querySelectorAll(".cc-select");
     let parent = this;
 		Array.prototype.forEach.call(select, function(el, i){
@@ -22,6 +26,22 @@ class Select{
 		  parent.util.addClass(self, 'hide');
 		  self.insertAdjacentHTML('afterend',template);
 		});
+    // this.setupListners();
 	}
+  // setupListners(){
+  //   var self = this;
+  //   this.util.listner(this.$body, "click", ".cc-select-trigger", function(e) {
+  //     self.$html.addEventListner('click',function(){
+  //       self.util.removeClassAll(document.querySelectorAll(".cc-select"), "opened");
+  //       self.$html.removeEventListner('click', function(){
+  //       });
+  //     })
+  //     var ccSelect = this.parentNode;
+  //     // console.log(ccSelect);
+  //     self.util.toggleClass(ccSelect, "opened");
+  //     e.stopPropagation();
+  //   });
+  // }
+
 }
 export { Select }

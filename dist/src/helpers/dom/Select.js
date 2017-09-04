@@ -3,6 +3,8 @@ var DomUtilities_1 = require("./DomUtilities");
 var Select = (function () {
     function Select() {
         this.util = new DomUtilities_1.DomUtilities();
+        this.$body = document.querySelectorAll("body");
+        this.$html = document.querySelectorAll("html")[0];
         var select = document.querySelectorAll(".cc-select");
         var parent = this;
         Array.prototype.forEach.call(select, function (el, i) {

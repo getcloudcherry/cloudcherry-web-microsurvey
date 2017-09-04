@@ -42,7 +42,7 @@ let config = Object.keys(languages).map(function(language) {
         //   test: require.resolve('cash-dom'),
         //   loader: 'imports-loader?this=>window'
         // },
-        { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
+        // { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
         { test: /\.css$/, use: [ 'style-loader', 'css-loader'] , exclude: /node_modules/ },
 				// {
 				// 	test: /\.svg$/,

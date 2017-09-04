@@ -14,6 +14,7 @@ var CCSDKEntry = (function () {
         var data = this.survey.fetchQuestions();
         var self = this;
         data.then(function (surveyData) {
+            console.log(surveyData);
             self.survey.surveyData = surveyData;
             self.survey.setupSurveyContainer();
             self.survey.displayQuestions();

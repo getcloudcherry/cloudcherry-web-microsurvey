@@ -19,6 +19,7 @@ var SurveyHandler = (function () {
         surveyUrl = surveyUrl.replace("{tabletId}", "" + this.randomNumber);
         surveyUrl = Config_1.Config.API_URL + surveyUrl;
         var data = Request_1.RequestHelper.get(surveyUrl);
+        console.log(data);
         return data;
     };
     SurveyHandler.prototype.setupSurveyContainer = function () {

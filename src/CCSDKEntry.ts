@@ -23,6 +23,7 @@ class CCSDKEntry {
     let data = this.survey.fetchQuestions();
     let self : CCSDKEntry = this;
     data.then(function(surveyData) {
+        console.log(surveyData);
         self.survey.surveyData = surveyData;
         self.survey.setupSurveyContainer();
         self.survey.displayQuestions();

@@ -43,7 +43,7 @@ class DomSurvey{
       console.log("click in setup listner survey start");
       self.util.addClassAll(self.$popupContainer2, 'show');
       self.util.removeClassAll(self.$popupContainer, 'show');
-      // this.loadFirstQuestion();
+      self.loadFirstQuestion();
     });
     this.util.listner(self.$body, "click", ".act-cc-button-next", function(event) {
       self.nextQuestion();
