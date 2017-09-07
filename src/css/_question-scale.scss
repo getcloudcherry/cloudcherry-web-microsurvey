@@ -8,81 +8,93 @@
 	padding-top: 7px;
 	text-align: center;
 	width: 32px;
+	cursor:pointer;
 }
 .option-number-item.option-zero{
 	background: #853838;
 }
-.option-number-item.option-zero.selected{
+.option-number-item.option-zero.selected,
+.option-number-item.option-zero:hover{
 	background: #572526;
 }
 
 .option-number-item.option-one{
 	background: #9e4343;
 }
-.option-number-item.option-one.selected{
+.option-number-item.option-one.selected,
+.option-number-item.option-one:hover{
 	background: #642728;
 }
 
 .option-number-item.option-two{
 	background: #c14d4d;
 }
-.option-number-item.option-two.selected{
+.option-number-item.option-two.selected,
+.option-number-item.option-two:hover{
 	background: #712827;
 }
 
 .option-number-item.option-three{
 	background: #d94d4d;
 }
-.option-number-item.option-three.selected{
+.option-number-item.option-three.selected,
+.option-number-item.option-three:hover{
 	background: #7c2828;
 }
 
 .option-number-item.option-four{
 	background: #ee4d4d;
 }
-.option-number-item.option-four.selected{
+.option-number-item.option-four.selected,
+.option-number-item.option-four:hover{
 	background: #852828;
 }
 
 .option-number-item.option-five{
 	background: #ff4d4d;
 }
-.option-number-item.option-five.selected{
+.option-number-item.option-five.selected,
+.option-number-item.option-five:hover{
 	background: #844828;
 }
 
 .option-number-item.option-six{
 	background: #ff8c4d;
 }
-.option-number-item.option-six.selected{
+.option-number-item.option-six.selected,
+.option-number-item.option-six:hover{
 	background: #844828;
 }
 
 .option-number-item.option-seven{
 	background: #ffc74d;
 }
-.option-number-item.option-seven.selected{
+.option-number-item.option-seven.selected,
+.option-number-item.option-seven:hover{
 	background: #856728;
 }
 
 .option-number-item.option-eight{
 	background: #f5eb4d;
 }
-.option-number-item.option-eight.selected{
+.option-number-item.option-eight.selected,
+.option-number-item.option-eight:hover{
 	background: #7f7a28;
 }
 
 .option-number-item.option-nine{
 	background: #73ca81;
 }
-.option-number-item.option-nine.selected{
+.option-number-item.option-nine.selected,
+.option-number-item.option-nine:hover{
 	background: #3b6942;
 }
 
 .option-number-item.option-ten{
 	background: #4db47c;
 }
-.option-number-item.option-ten.selected{
+.option-number-item.option-ten.selected,
+.option-number-item.option-ten:hover{
 	background: #285e40;
 }
 
@@ -105,9 +117,18 @@
 	position: relative;
 }
 .option-smile-box img,.option-star-box img{
-	height: 54px;
+	height: 60px;
 	margin-right: 29px;
-	width: 54px;
+	width: 60px;
+	cursor : pointer;
+	border:solid 4px transparent;
+	border-radius: 50%;
+}
+.option-smile-box.selected img,.option-star-box.selected img,
+.option-smile-box:hover img,.option-star-box:hover img{
+	border:solid 4px red;
+
+
 }
 .option-star-box img{
 	margin-right: 19px;

@@ -6,7 +6,8 @@ function makeRequest (method : string, url : string, postParams : string, header
     xhr.open(method, url);
     xhr.onload = function () {
       if ((this as any).status >= 200 && (this as any).status < 300) {
-        resolve(JSON.parse(xhr.response));
+        let res : any = xhr.response?JSON.parse(xhr.response):'';
+        resolve(res);
       } else {
         reject({
           status: (this as any).status,

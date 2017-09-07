@@ -1,7 +1,12 @@
 "use strict";
+var Templates_1 = require("../Templates");
+var Config_1 = require("../../Config");
 var DomUtilities = (function () {
     function DomUtilities() {
     }
+    DomUtilities.prototype.get = function (selector) {
+        return document.querySelectorAll(selector);
+    };
     DomUtilities.prototype.appendStyle = function (css) {
         var head = document.head || document.getElementsByTagName('head')[0];
         var style = document.createElement('style');
@@ -13,6 +18,14 @@ var DomUtilities = (function () {
             style.appendChild(document.createTextNode(css));
         }
         head.appendChild(style);
+    };
+    DomUtilities.prototype.remove = function (el) {
+        el.parentNode.removeChild(el);
+    };
+    DomUtilities.prototype.removeAll = function (elements) {
+        Array.prototype.forEach.call(elements, function (el, i) {
+            el.parentNode.removeChild(el);
+        });
     };
     DomUtilities.prototype.removeClassAll = function (elements, className) {
         var _this = this;
@@ -68,7 +81,7 @@ var DomUtilities = (function () {
         parents.push(parentSelector);
         return parents;
     };
-    DomUtilities.prototype.listner = function (el, evt, sel, handler) {
+    DomUtilities.prototype.listener = function (el, evt, sel, handler) {
         el.addEventListener(evt, function (event) {
             var t = event.target;
             while (t && t !== this) {
@@ -78,6 +91,25 @@ var DomUtilities = (function () {
                 t = t.parentNode;
             }
         });
+    };
+    DomUtilities.prototype.on = function (evt, el, handler) {
+        el.addEventListener(evt, handler);
+    };
+    DomUtilities.prototype.off = function (evt, el, handler) {
+        el.removeEventListener(evt, handler);
+    };
+    DomUtilities.prototype.trigger = function (el, eventName, data) {
+        if (typeof CustomEvent === 'function') {
+            var event = new CustomEvent(eventName, { detail: data });
+        }
+        else {
+            var event = document.createEvent('CustomEvent');
+            event.initCustomEvent(eventName, true, true, data);
+        }
+        el.dispatchEvent(event);
+    };
+    DomUtilities.prototype.removeTrigger = function (el, eventName) {
+        el.removeEventListener(eventName);
     };
     DomUtilities.prototype.shadeBlendConvert = function (p, from, to) {
         if (typeof (p) != "number" || p < -1 || p > 1 || typeof (from) != "string" || (from[0] != 'r' && from[0] != '#') || (typeof (to) != "string" && typeof (to) != "undefined"))
@@ -124,6 +156,63 @@ var DomUtilities = (function () {
         }
         else {
             return "rgb(" + r + ", " + g + ", " + b + ")";
+        }
+    };
+    DomUtilities.prototype.arrayContains = function (needle) {
+        var findNaN = needle !== needle;
+        var indexOf;
+        if (!findNaN && typeof Array.prototype.indexOf === 'function') {
+            indexOf = Array.prototype.indexOf;
+        }
+        else {
+            indexOf = function (needle) {
+                var i = -1, index = -1;
+                for (i = 0; i < this.length; i++) {
+                    var item = this[i];
+                    if ((findNaN && item !== item) || item === needle) {
+                        index = i;
+                        break;
+                    }
+                }
+                return index;
+            };
+        }
+        return indexOf.call(this, needle) > -1;
+    };
+    DomUtilities.prototype.generateSelectOptions = function (arr) {
+        if (Array.isArray(arr)) {
+            var i = 0;
+            var res = '';
+            for (i = 0; i < arr.length; i++) {
+                res += '<option value="' + arr[i] + '">' + arr[i] + '</option>';
+            }
+            return res;
+        }
+    };
+    DomUtilities.prototype.checkOptionContainsImage = function (arr) {
+        if (Array.isArray(arr)) {
+            var i = 0;
+            var res = true;
+            for (i = 0; i < arr.length; i++) {
+                var opt = arr[i];
+                res = res && opt.includes(';') && opt.includes('.');
+            }
+            return res;
+        }
+    };
+    DomUtilities.prototype.generateRadioImageOptions = function (arr) {
+        if (Array.isArray(arr)) {
+            var i = 0;
+            var res = '';
+            for (i = 0; i < arr.length; i++) {
+                var optHtml = Templates_1.templates.option_radio_image;
+                var opt = arr[i].split(';');
+                optHtml = optHtml.replace(/{{image}}/g, Config_1.Config.CDN_URL + opt[1]);
+                optHtml = optHtml.replace(/{{label}}/g, opt[0]);
+                optHtml = optHtml.replace(/{{value}}/g, opt[0]);
+                res += optHtml;
+            }
+            return res;
         }
     };
     return DomUtilities;

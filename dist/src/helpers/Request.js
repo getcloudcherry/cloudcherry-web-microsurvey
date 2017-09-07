@@ -5,7 +5,8 @@ function makeRequest(method, url, postParams, headers) {
         xhr.open(method, url);
         xhr.onload = function () {
             if (this.status >= 200 && this.status < 300) {
-                resolve(JSON.parse(xhr.response));
+                var res = xhr.response ? JSON.parse(xhr.response) : '';
+                resolve(res);
             }
             else {
                 reject({

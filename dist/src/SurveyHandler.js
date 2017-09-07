@@ -3,6 +3,7 @@ var Config_1 = require("./Config");
 var Request_1 = require("./helpers/Request");
 var Templates_1 = require("./helpers/Templates");
 var DomUtilities_1 = require("./helpers/dom/DomUtilities");
+var DomSurvey_1 = require("./helpers/dom/DomSurvey");
 var SurveyHandler = (function () {
     function SurveyHandler(surveyToken) {
         this.surveyToken = surveyToken;
@@ -12,6 +13,7 @@ var SurveyHandler = (function () {
         this.prefillQuestions = [];
         this.answers = [];
         this.util = new DomUtilities_1.DomUtilities();
+        this.dom = new DomSurvey_1.DomSurvey();
     }
     SurveyHandler.prototype.fetchQuestions = function () {
         this.randomNumber = parseInt((String)(Math.random() * 1000));
@@ -22,13 +24,37 @@ var SurveyHandler = (function () {
         console.log(data);
         return data;
     };
+    SurveyHandler.prototype.attachSurvey = function (surveyData) {
+        this.surveyData = surveyData;
+        this.setupSurveyContainer();
+        this.displayQuestions();
+        this.displayThankYou();
+        this.destroySurvey();
+    };
     SurveyHandler.prototype.setupSurveyContainer = function () {
-        document.querySelectorAll("body")[0].insertAdjacentHTML('afterbegin', Templates_1.templates.question_survey);
+        var surveyHtml = Templates_1.templates.question_survey;
+        surveyHtml = surveyHtml.replace("{{surveyToken}}", this.surveyToken);
+        this.dom.appendInBody(surveyHtml);
     };
     SurveyHandler.prototype.displayWelcomeQuestion = function () {
-        document.querySelectorAll("body")[0].insertAdjacentHTML('afterbegin', Templates_1.templates.question_start);
-        var startContainer = document.querySelectorAll(".act-cc-welcome-question-box")[0];
-        this.util.addClass(startContainer, "show");
+        var welcomeHtml = Templates_1.templates.question_start;
+        welcomeHtml = welcomeHtml.replace("{{surveyToken}}", this.surveyToken);
+        welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
+        welcomeHtml = welcomeHtml.replace("{{button}}", 'Start');
+        this.dom.appendInBody(welcomeHtml);
+        this.dom.showWelcomeContainer();
+        this.acceptAnswers();
+    };
+    SurveyHandler.prototype.displayThankYou = function () {
+        var self = this;
+        document.addEventListener('ccdone', function (e) {
+            var thankyouHtml = Templates_1.templates.thankyou;
+            thankyouHtml = thankyouHtml.replace("{{question}}", self.surveyData.thankyouText);
+            thankyouHtml = thankyouHtml.replace("{{button}}", 'Start');
+            self.dom.appendInQuestionsContainer(thankyouHtml);
+            var thankyouContainer = self.util.get("#cc-thankyou-container");
+            self.util.addClassAll(thankyouContainer, 'show');
+        });
     };
     SurveyHandler.prototype.displayQuestions = function () {
         this.questions = this.surveyData.questions;
@@ -49,6 +75,77 @@ var SurveyHandler = (function () {
                 }
             }
         }
+    };
+    SurveyHandler.prototype.acceptAnswers = function () {
+        var self = this;
+        console.log('add question answered listener');
+        document.addEventListener('q-answered', function (e) {
+            console.log('question answered', e);
+            var data = e.detail;
+            var response = {};
+            switch (data.type) {
+                case 'scale':
+                    response.text = null;
+                    response.number = data.data.number;
+                    self.postPartialAnswer(data.index, response);
+                    self.dom.domSelectElements();
+                    break;
+                case 'smile':
+                    response.text = null;
+                    response.number = data.data.number;
+                    self.postPartialAnswer(data.index, response);
+                    self.dom.domSelectElements();
+                    break;
+                case 'star':
+                    response.text = null;
+                    response.number = data.data.number;
+                    self.postPartialAnswer(data.index, response);
+                    self.dom.domSelectElements();
+                    break;
+                case 'multiline':
+                    response.text = data.data.text;
+                    response.number = null;
+                    console.log(data);
+                    self.postPartialAnswer(data.index, response);
+                    self.dom.domSelectElements();
+                    self.dom.setQIndex(data.index);
+                    break;
+                case 'singleline':
+                    response.text = data.data.text;
+                    response.number = null;
+                    console.log(data);
+                    self.postPartialAnswer(data.index, response);
+                    self.dom.domSelectElements();
+                    self.dom.setQIndex(data.index);
+                    break;
+                case 'checkbox':
+                    response.text = data.data.text;
+                    response.number = null;
+                    console.log(data);
+                    self.postPartialAnswer(data.index, response);
+                    self.dom.domSelectElements();
+                    self.dom.setQIndex(data.index);
+                    break;
+                case 'select':
+                    response.text = data.data.text;
+                    response.number = data.data.number;
+                    console.log(data);
+                    self.postPartialAnswer(data.index, response);
+                    self.dom.domSelectElements();
+                    self.dom.setQIndex(data.index);
+                    break;
+                case 'slider':
+                    response.text = data.data.text;
+                    response.number = data.data.number;
+                    console.log(data);
+                    self.postPartialAnswer(data.index, response);
+                    self.dom.domSelectElements();
+                    self.dom.setQIndex(data.index);
+                    break;
+                default:
+                    break;
+            }
+        });
     };
     SurveyHandler.prototype.fillPrefillQuestion = function (id, value, valueType) {
         var question = this.getQuestionById(id);
@@ -118,8 +215,8 @@ var SurveyHandler = (function () {
         var data = {
             questionId: question.id,
             questionText: question.text,
-            textInput: null,
-            numberInput: 5
+            textInput: response.text,
+            numberInput: response.number
         };
         console.log("Submitting for : " + index);
         var surveyPartialUrl = Config_1.Config.SURVEY_PARTIAL_RESPONSE.replace("{id}", this.surveyData.partialResponseId);
@@ -139,38 +236,101 @@ var SurveyHandler = (function () {
         return true;
     };
     SurveyHandler.prototype.compileTemplate = function (question) {
+        var self = this;
         var questionTemplate;
         console.log(question);
         switch (question.displayType) {
+            case "Slider":
+                var opt = question.multiSelect[0].split("-");
+                var optMin = opt[0].split(";");
+                var optMax = opt[1].split(";");
+                questionTemplate = Templates_1.templates.question_slider;
+                questionTemplate = questionTemplate.replace("{{question}}", question.text);
+                questionTemplate = questionTemplate.replace("{{min}}", optMin[0]);
+                questionTemplate = questionTemplate.replace("{{minLabel}}", optMin[1]);
+                questionTemplate = questionTemplate.replace("{{max}}", optMax[0]);
+                questionTemplate = questionTemplate.replace("{{maxLabel}}", optMax[1]);
+                questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+                questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+                break;
             case "Scale":
                 questionTemplate = Templates_1.templates.question_scale;
                 questionTemplate = questionTemplate.replace("{{question}}", question.text);
-                questionTemplate = questionTemplate.replace("{{is_required}}", question.isRequired ? "*" : "");
+                questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+                questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
                 break;
             case "Text":
                 questionTemplate = Templates_1.templates.question_text;
                 questionTemplate = questionTemplate.replace("{{question}}", question.text);
-                questionTemplate = questionTemplate.replace("{{is_required}}", question.isRequired ? "*" : "");
+                questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+                questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
                 break;
             case "MultilineText":
                 questionTemplate = Templates_1.templates.question_multi_line_text;
                 questionTemplate = questionTemplate.replace("{{question}}", question.text);
-                questionTemplate = questionTemplate.replace("{{is_required}}", question.isRequired ? "*" : "");
+                questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+                questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
                 break;
             case "MultiSelect":
-                questionTemplate = Templates_1.templates.question_multi_select;
+                var acTemplate = void 0;
+                if (question.displayStyle == 'radiobutton/checkbox') {
+                    console.log(question.displayStyle);
+                    acTemplate = Templates_1.templates.question_checkbox;
+                }
+                else {
+                    acTemplate = Templates_1.templates.question_multi_select;
+                }
+                questionTemplate = acTemplate;
                 questionTemplate = questionTemplate.replace("{{question}}", question.text);
-                questionTemplate = questionTemplate.replace("{{is_required}}", question.isRequired ? "*" : "");
+                questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+                questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
                 break;
             case "Select":
-                questionTemplate = Templates_1.templates.question_select;
+                var acTemplate1 = void 0;
+                var acTemplate2 = void 0;
+                var options1 = void 0;
+                var options2 = void 0;
+                if (question.displayStyle == 'radiobutton/checkbox') {
+                    console.log('select type 1');
+                    console.log(question.displayStyle);
+                    acTemplate1 = Templates_1.templates.question_radio;
+                    questionTemplate = acTemplate1;
+                }
+                else {
+                    var checkOptionContainsImage = self.util.checkOptionContainsImage(question.multiSelect);
+                    console.log('select radio image', checkOptionContainsImage);
+                    if (checkOptionContainsImage) {
+                        console.log('select type 2');
+                        acTemplate2 = Templates_1.templates.question_radio_image;
+                        options2 = self.util.generateRadioImageOptions(question.multiSelect);
+                        console.log(options2);
+                        questionTemplate = acTemplate2;
+                        questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
+                    }
+                    else {
+                        console.log('select type 3');
+                        acTemplate1 = Templates_1.templates.question_select;
+                        options1 = self.util.generateSelectOptions(question.multiSelect);
+                        questionTemplate = acTemplate1;
+                        questionTemplate = questionTemplate.replace("{{options}}", options1);
+                    }
+                }
                 questionTemplate = questionTemplate.replace("{{question}}", question.text);
-                questionTemplate = questionTemplate.replace("{{is_required}}", question.isRequired ? "*" : "");
+                questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+                questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+                console.log(questionTemplate);
                 break;
             case "Smile-5":
                 questionTemplate = Templates_1.templates.question_smile_5;
                 questionTemplate = questionTemplate.replace("{{question}}", question.text);
-                questionTemplate = questionTemplate.replace("{{is_required}}", question.isRequired ? "*" : "");
+                questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+                questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+                break;
+            case "Star-5":
+                questionTemplate = Templates_1.templates.question_star_5;
+                questionTemplate = questionTemplate.replace("{{question}}", question.text);
+                questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+                questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
                 break;
         }
         return questionTemplate;
@@ -198,6 +358,18 @@ var SurveyHandler = (function () {
             return true;
         }
         return false;
+    };
+    SurveyHandler.prototype.destroySurvey = function () {
+        var self = this;
+        document.addEventListener('ccclose', function (e) {
+            self.destroy();
+        });
+    };
+    SurveyHandler.prototype.destroy = function () {
+        var surveyContainer = this.dom.getSurveyContainer(this.surveyToken);
+        var welcomeContainer = this.dom.getWelcomeContainer(this.surveyToken);
+        this.util.remove(surveyContainer);
+        this.util.remove(welcomeContainer);
     };
     return SurveyHandler;
 }());

@@ -68,19 +68,22 @@
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translateY(calc( -100% - 80px ));
+    transform: translateY(calc( -100% - 65px ));
     height: 150px;
+    overflow: hidden;
 }
 
 .cc-select-options{
     /*  max-height: 150px;
     overflow-y: scroll; */
+    overflow: scroll;
+    height: 100%;
 }
 .cc-select.opened .cc-select-options-container {
     opacity: 1;
     visibility: visible;
     pointer-events: all;
-    transform: translateY(calc( -100% - 80px ));
+    transform: translateY(calc( -100% - 65px ));
 }
 .cc-select-options:before {
     /*       position: absolute;
