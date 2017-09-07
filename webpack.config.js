@@ -13,7 +13,7 @@ var languages = {
 let config = Object.keys(languages).map(function(language) {
   return {
     entry: {
-      CCSDK : './src/CCSDKEntry.ts',
+      cc : './src/CCSDKEntry.ts',
       // test : './test/ccsdk.test.ts'
     },
     devtool: 'inline-source-map',
@@ -28,6 +28,7 @@ let config = Object.keys(languages).map(function(language) {
       //   $: 'cash-dom'
       // }),
       new UglifyJSPlugin({
+				sourceMap : false
       }),
       new CompressionPlugin({
         asset: "[path].gz[query]",

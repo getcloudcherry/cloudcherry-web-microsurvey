@@ -1,8 +1,10 @@
-<div class="cc-question-container detail-box mobile-detail-box" >
+<div class="cc-question-container detail-box mobile-detail-box" data-required="{{isRequired}}" data-type="singleline" data-id="{{questionId}}">
   <div class="cc-question-container__text">
-    <p>{{question}}</p>
+    <span>{{question}}</span>
+    <span class="cc-question-container__required">Required *</span>
+    
   </div>
   <div class="cc-question-container__content">
-    <input type="text" name="" placeholder="Enter your full name" class="form-control">
+    <input type="text" name="" id="{{questionId}}" placeholder="Enter your full name" class="form-control">
   </div>
 </div>

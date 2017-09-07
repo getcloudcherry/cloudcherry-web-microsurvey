@@ -1,23 +1,13 @@
-<div class="cc-question-container radio-toggle radio-toggle--image-toggle" >
+<div class="cc-question-container radio-toggle radio-toggle--image-toggle" data-required="{{isRequired}}" data-type="radioImage" data-id="{{questionId}}" >
   <div class="cc-question-container__text">
     <p>{{question}}</p>
+    <span class="cc-question-container__required">Required *</span>
+    
   </div>
-  <div class="cc-question-container__content">
+  <div class="cc-question-container__content" id="{{questionId}}">
     <ul class="cc-question-container__list">
-      <li>
-        <div class="cc-checkbox cc-radio">
-          <input type="radio" name="serv" id="img-service-yes">
-          <label class="ui checkbox" for="img-service-yes"></label>
-        </div>
-        <span><label for="img-service-yes">Image</label></span>
-      </li>
-      <li>
-        <div class="cc-checkbox cc-radio">
-          <input type="radio" name="serv" id="img-service-no">
-          <label class="ui checkbox" for="img-service-no"></label>
-        </div>
-        <span><label for="img-service-no">Image</label></span>
-      </li>
+    {{options}}
+
     </ul>
   </div>
 </div>

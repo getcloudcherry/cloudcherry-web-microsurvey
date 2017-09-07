@@ -8,6 +8,9 @@
 .cc-checkbox label {
     cursor: pointer;
 }
+.cc-checkbox + span label img{
+  width:40px;
+}
 .cc-checkbox label:before, .cc-checkbox label:after {
     bottom: 0;
     content: "";

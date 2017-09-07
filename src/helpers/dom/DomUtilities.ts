@@ -1,3 +1,6 @@
+import { templates } from '../Templates';
+import { Config } from '../../Config';
+
 class DomUtilities{
 
   sbcRip : any;
@@ -11,6 +14,9 @@ class DomUtilities{
     // HTMLElement.prototype.oMatchesSelector;
   }
 
+  get(selector : string){
+    return document.querySelectorAll(selector);
+  }
 
    appendStyle(css : string) : void {
 		let head : any = document.head || document.getElementsByTagName('head')[0];
@@ -22,6 +28,16 @@ class DomUtilities{
 		  style.appendChild(document.createTextNode(css));
 		}
 		head.appendChild(style);
+	}
+
+  remove( el : any ){
+    el.parentNode.removeChild(el);
+  }
+
+  removeAll(elements : any) : void {
+		Array.prototype.forEach.call(elements, (el, i) => {
+      el.parentNode.removeChild(el);
+		});
 	}
 
 	removeClassAll(elements : any, className : string) : void {
@@ -86,7 +102,7 @@ class DomUtilities{
     return parents;
 	}
 
-	listner(el : any, evt : any, sel : any, handler : any) : void {
+	listener(el : any, evt : any, sel : any, handler : any) : void {
     el.addEventListener(evt, function(event) {
         var t = event.target;
         while (t && t !== this) {
@@ -96,6 +112,31 @@ class DomUtilities{
             t = t.parentNode;
         }
     });
+  }
+
+  on( evt : any, el : any, handler : any){
+    el.addEventListener(evt, handler);
+  }
+  off( evt : any, el : any, handler : any){
+    el.removeEventListener(evt, handler);
+  }
+  // removeListener(el : any, evt : any, handler : any ){
+  //   el.removeEventListener(evt, handler);
+  // }
+
+  trigger(el : any, eventName : string, data : Object){
+    if (typeof CustomEvent === 'function') {
+      var event = new CustomEvent(eventName, {detail: data});
+    } else {
+      var event = document.createEvent('CustomEvent');
+      event.initCustomEvent(eventName, true, true, data);
+    }
+
+    el.dispatchEvent(event);
+  }
+
+  removeTrigger(el : any, eventName : string){
+    el.removeEventListener(eventName);
   }
 
    shadeBlendConvert(p : number, from : any, to : string) : string {
@@ -141,6 +182,73 @@ class DomUtilities{
 	        return "rgb(" + r + ", " + g + ", " + b + ")";
 	    }
 	}
+
+
+  arrayContains(needle) {
+    // Per spec, the way to identify NaN is that it is not equal to itself
+    var findNaN = needle !== needle;
+    var indexOf;
+
+    if(!findNaN && typeof Array.prototype.indexOf === 'function') {
+        indexOf = Array.prototype.indexOf;
+    } else {
+        indexOf = function(needle) {
+            var i = -1, index = -1;
+
+            for(i = 0; i < this.length; i++) {
+                var item = this[i];
+
+                if((findNaN && item !== item) || item === needle) {
+                    index = i;
+                    break;
+                }
+            }
+
+            return index;
+        };
+    }
+
+    return indexOf.call(this, needle) > -1;
+}
+
+generateSelectOptions(arr : any){
+  if(Array.isArray(arr)){
+    let i : number = 0;
+    let res : string = '';
+    for(i=0;i<arr.length;i++){
+       res += '<option value="'+arr[i]+'">'+arr[i]+'</option>';
+    }
+    return res;
+  }
+}
+checkOptionContainsImage(arr : any){
+  if(Array.isArray(arr)){
+    let i : number = 0;
+    let res : boolean = true;
+    for(i=0;i<arr.length;i++){
+       let opt : any = arr[i];
+       res = res && opt.includes(';') && opt.includes('.');
+    }
+    return res;
+  }
+}
+
+generateRadioImageOptions(arr : any){
+  if(Array.isArray(arr)){
+    let i : number = 0;
+    let res : string = '' ;
+    for(i=0;i<arr.length;i++){
+       let optHtml : string = templates.option_radio_image;
+       let opt : any = arr[i].split(';')
+       optHtml = optHtml.replace(/{{image}}/g, Config.CDN_URL+opt[1] );
+       optHtml = optHtml.replace(/{{label}}/g, opt[0] );
+       optHtml = optHtml.replace(/{{value}}/g, opt[0] );
+       res += optHtml;
+
+    }
+    return res;
+  }
+}
 
 
 

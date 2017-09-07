@@ -3,11 +3,12 @@ import { Config } from "./Config";
 import { RequestHelper } from './helpers/Request';
 import { templates } from "./helpers/Templates";
 import { DomUtilities } from "./helpers/dom/DomUtilities";
+import { DomSurvey } from "./helpers/dom/DomSurvey";
 
 // console.log($);
 // console.log($);
 class SurveyHandler {
-  surveyToken : String;
+  surveyToken : string;
   surveyData : any;
   questions : any;
   prefillQuestions : any;
@@ -19,9 +20,10 @@ class SurveyHandler {
   questionResponses : any;
   answers : any;
   util : DomUtilities;
+  dom : DomSurvey;
   // isPartialAvailable : Boolean;
 
-  constructor(surveyToken : String) {
+  constructor(surveyToken : string) {
     this.surveyToken = surveyToken;
     this.surveyData = {};
     this.questions = [];
@@ -29,6 +31,7 @@ class SurveyHandler {
     this.prefillQuestions = [];
     this.answers = [];
     this.util = new DomUtilities();
+    this.dom = new DomSurvey();
   }
 
   fetchQuestions() {
@@ -43,18 +46,44 @@ class SurveyHandler {
     // console.log(this.surveyData);
   }
 
+  attachSurvey(surveyData : any){
+    this.surveyData = surveyData;
+    this.setupSurveyContainer();
+    this.displayQuestions();
+    this.displayThankYou();
+    this.destroySurvey();
+
+    // this.dom = new DomSurvey();
+  }
+
   setupSurveyContainer(){
-    document.querySelectorAll("body")[0].insertAdjacentHTML(
-      'afterbegin', templates.question_survey
-    );
+    let surveyHtml : any = templates.question_survey;
+    surveyHtml = surveyHtml.replace("{{surveyToken}}", this.surveyToken);
+    this.dom.appendInBody(surveyHtml);
+
   }
 
   displayWelcomeQuestion() {
-     document.querySelectorAll("body")[0].insertAdjacentHTML(
-       'afterbegin', templates.question_start
-     );
-     let startContainer = <HTMLElement>document.querySelectorAll(".act-cc-welcome-question-box")[0];
-      this.util.addClass(startContainer, "show");
+    let welcomeHtml : any = templates.question_start;
+    welcomeHtml = welcomeHtml.replace("{{surveyToken}}", this.surveyToken);
+    welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
+    welcomeHtml = welcomeHtml.replace("{{button}}", 'Start');
+    this.dom.appendInBody(welcomeHtml);
+    this.dom.showWelcomeContainer();
+    this.acceptAnswers();
+  }
+
+  displayThankYou() {
+    var self : SurveyHandler = this;
+    document.addEventListener('ccdone', function(e : any){
+      let thankyouHtml : any = templates.thankyou;
+      thankyouHtml = thankyouHtml.replace("{{question}}", self.surveyData.thankyouText);
+      thankyouHtml = thankyouHtml.replace("{{button}}", 'Start');
+      self.dom.appendInQuestionsContainer(thankyouHtml);
+      let thankyouContainer : any =   self.util.get("#cc-thankyou-container");
+      self.util.addClassAll(thankyouContainer, 'show');
+    });
+
   }
 
   displayQuestions() {
@@ -87,7 +116,91 @@ class SurveyHandler {
 
   }
 
-  fillPrefillQuestion(id : any, value : any, valueType : String) {
+  acceptAnswers(){
+    var self : SurveyHandler = this;
+    console.log('add question answered listener')
+    document.addEventListener('q-answered', function(e : any){
+      console.log('question answered',e)
+        let data : any = <any>e.detail;
+        let response : any = {};
+        switch(data.type){
+          case 'scale':
+            response.text = null;
+            response.number = data.data.number;
+            self.postPartialAnswer( data.index, response);
+            self.dom.domSelectElements();
+            // self.dom.nextQuestion();
+          break;
+          case 'smile':
+            response.text = null;
+            response.number = data.data.number;
+            self.postPartialAnswer( data.index, response);
+            self.dom.domSelectElements();
+            // self.dom.nextQuestion();
+          break;
+          case 'star':
+            response.text = null;
+            response.number = data.data.number;
+            self.postPartialAnswer( data.index, response);
+            self.dom.domSelectElements();
+            // self.dom.nextQuestion();
+          break;
+          case 'multiline':
+            response.text = data.data.text;
+            response.number = null;
+            console.log(data);
+            self.postPartialAnswer( data.index, response);
+            self.dom.domSelectElements();
+            self.dom.setQIndex(data.index);
+            // self.dom.nextQuestion();
+          break;
+          case 'singleline':
+            response.text = data.data.text;
+            response.number = null;
+            console.log(data);
+            self.postPartialAnswer( data.index, response);
+            self.dom.domSelectElements();
+            self.dom.setQIndex(data.index);
+            // self.dom.nextQuestion();
+          break;
+          case 'checkbox':
+            response.text = data.data.text;
+            response.number = null;
+            console.log(data);
+            self.postPartialAnswer( data.index, response);
+            self.dom.domSelectElements();
+            self.dom.setQIndex(data.index);
+            // self.dom.nextQuestion();
+          break;
+          case 'select':
+            response.text = data.data.text;
+            response.number = data.data.number;
+            console.log(data);
+            self.postPartialAnswer( data.index, response);
+            self.dom.domSelectElements();
+            self.dom.setQIndex(data.index);
+            // self.dom.nextQuestion();
+          break;
+          case 'slider':
+            response.text = data.data.text;
+            response.number = data.data.number;
+            console.log(data);
+            self.postPartialAnswer( data.index, response);
+            self.dom.domSelectElements();
+            self.dom.setQIndex(data.index);
+            // self.dom.nextQuestion();
+          break;
+          default:
+          break;
+        }
+
+    })
+
+
+
+  }
+
+  fillPrefillQuestion(id : any, value : any, valueType : string) {
     let question : any = this.getQuestionById(id);
     let response : any;
     let responseStored = this.getPrefillResponseById(id);
@@ -162,8 +275,8 @@ class SurveyHandler {
     let data : any = {
       questionId : question.id,
       questionText : question.text,
-      textInput : null,
-      numberInput : 5
+      textInput : response.text,
+      numberInput : response.number
     };
     // if(this.isPartialAvailable == false) {
     //   this.answers.push(data);
@@ -200,50 +313,113 @@ class SurveyHandler {
   }
 
   compileTemplate(question : any) {
+    var self : SurveyHandler = this;
     //get question type
     let questionTemplate;
     console.log(question);
 
     switch(question.displayType) {
+      case "Slider":
+        let opt : any = question.multiSelect[0].split("-");
+        let optMin : any = opt[0].split(";");
+        let optMax : any = opt[1].split(";");
+        //get text question template and compile it.
+        questionTemplate = templates.question_slider;
+        questionTemplate = questionTemplate.replace("{{question}}", question.text);
+        questionTemplate = questionTemplate.replace("{{min}}", optMin[0]);
+        questionTemplate = questionTemplate.replace("{{minLabel}}", optMin[1]);
+        questionTemplate = questionTemplate.replace("{{max}}", optMax[0]);
+        questionTemplate = questionTemplate.replace("{{maxLabel}}", optMax[1]);
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+      break;
       case "Scale":
         //get text question template and compile it.
         questionTemplate = templates.question_scale;
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
-        questionTemplate = questionTemplate.replace("{{is_required}}", question.isRequired ? "*" : "");
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
       break;
       case "Text":
         //get text question template and compile it.
         questionTemplate = templates.question_text;
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
-        questionTemplate = questionTemplate.replace("{{is_required}}", question.isRequired ? "*" : "");
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
 
       break;
       case "MultilineText":
         //get text question template and compile it.
         questionTemplate = templates.question_multi_line_text;
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
-        questionTemplate = questionTemplate.replace("{{is_required}}", question.isRequired ? "*" : "");
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
 
       break;
       case "MultiSelect":
+        let acTemplate : string ;
         //get text question template and compile it.
-        questionTemplate = templates.question_multi_select;
+        if(question.displayStyle == 'radiobutton/checkbox'){
+          console.log(question.displayStyle);
+          acTemplate = templates.question_checkbox;
+        }else{
+           acTemplate = templates.question_multi_select;
+        }
+        questionTemplate = acTemplate;
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
-        questionTemplate = questionTemplate.replace("{{is_required}}", question.isRequired ? "*" : "");
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
 
       break;
       case "Select":
+      let acTemplate1 : string ;
+        let acTemplate2 : string ;
+        let options1 : string ;
+        let options2 : string ;
         //get text question template and compile it.
-        questionTemplate = templates.question_select;
+        if(question.displayStyle == 'radiobutton/checkbox'){
+          console.log('select type 1');
+          console.log(question.displayStyle);
+          acTemplate1 = templates.question_radio;
+          questionTemplate = acTemplate1;
+        }else{
+          let checkOptionContainsImage : boolean = self.util.checkOptionContainsImage(question.multiSelect);
+          console.log('select radio image',checkOptionContainsImage);
+          if(checkOptionContainsImage){
+            console.log('select type 2');
+            acTemplate2 = templates.question_radio_image;
+            options2 = self.util.generateRadioImageOptions(question.multiSelect);
+            console.log(options2);
+            questionTemplate = acTemplate2;
+            questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
+          }else{
+            console.log('select type 3');
+            acTemplate1 = templates.question_select;
+            options1 = self.util.generateSelectOptions(question.multiSelect);
+            questionTemplate = acTemplate1;
+            questionTemplate = questionTemplate.replace("{{options}}", options1);
+          }
+
+        }
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
-        questionTemplate = questionTemplate.replace("{{is_required}}", question.isRequired ? "*" : "");
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+        console.log(questionTemplate);
 
       break;
       case "Smile-5":
         //get text question template and compile it.
         questionTemplate = templates.question_smile_5;
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
-        questionTemplate = questionTemplate.replace("{{is_required}}", question.isRequired ? "*" : "");
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+      break;
+      case "Star-5":
+        //get text question template and compile it.
+        questionTemplate = templates.question_star_5;
+        questionTemplate = questionTemplate.replace("{{question}}", question.text);
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
       break;
     }
     return questionTemplate;
@@ -286,6 +462,20 @@ class SurveyHandler {
       return true;
     }
     return false;
+  }
+
+  destroySurvey(){
+    let self : SurveyHandler = this;
+    document.addEventListener('ccclose', function(e : any){
+      self.destroy();
+    });
+  }
+
+  public destroy(){
+    var surveyContainer = this.dom.getSurveyContainer(this.surveyToken);
+    var welcomeContainer = this.dom.getWelcomeContainer(this.surveyToken);
+    this.util.remove(surveyContainer);
+    this.util.remove(welcomeContainer);
   }
 }
 
