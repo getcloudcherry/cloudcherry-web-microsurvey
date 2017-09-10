@@ -20,36 +20,57 @@ let instances: any = {};
 class CCSDKEntry {
   survey : SurveyHandler;
   dom : DomSurvey;
+  surveyData : any;
   util : DomUtilities;
   scrollbar : Scrollbar;
   config : CCSDKConfig;
   surveyToken : string;
   constructor(surveyToken : string, config : CCSDKConfig) {
-    this.setupSurvey(surveyToken, config);
+    this.surveyToken = surveyToken;
+    this.config = config;
+    this.setupSurvey();
+    // this.trigger(undefined, undefined);
 
     //on fetch questions show
   }
 
-  setupSurvey(surveyToken : string, config : CCSDKConfig){
-    this.survey = new SurveyHandler(surveyToken);
-    this.config = config;
+  setupSurvey(){
+    this.survey = new SurveyHandler(this.surveyToken);
+    // this.config = this.config;
     this.util = new DomUtilities;
-    this.surveyToken = surveyToken;
+    //this.surveyToken = this.surveyToken;
     //set themeColor of survey
-    this.config.themeColor = ( config && config.themeColor )?
-      config.themeColor:"#db3c39";
-      console.log(this.config);
+    this.config.themeColor = ( this.config && this.config.themeColor )?
+      this.config.themeColor:"#db3c39";
+      this.getSurveyData();
+      // console.log(this.config);
+  }
+
+  getSurveyData(){
     let data = this.survey.fetchQuestions();
     let self : CCSDKEntry = this;
     data.then(function(surveyData) {
-        console.log(surveyData);
-        self.survey.attachSurvey(surveyData);
-        self.dom = new DomSurvey();
-        self.dom.setTheme(self.config.themeColor);
-        self.dom.setupListeners();
-        self.util.trigger(document, surveyToken + '-ready', {'survey' : self});
+        // console.log(surveyData);
+        // self.survey.attachSurvey(surveyData);
+        // self.dom = new DomSurvey();
+        // self.dom.setTheme(self  .config.themeColor);
+        // self.dom.setupListeners();
+        self.surveyData = surveyData;
+        self.util.trigger(document, self.surveyToken + '-ready', {'survey' : self});
+        // cb(surveyData)
         // dom(self);
     });
+  }
+
+ initSurvey( ){
+    let self : CCSDKEntry = this;
+    self.survey.attachSurvey(this.surveyData);
+    self.dom = new DomSurvey();
+    self.dom.setTheme(self.config.themeColor);
+    self.dom.setupListeners();
+    // self.util.trigger(document, self.surveyToken + '-ready', {'survey' : self});
+    self.survey.displayWelcomeQuestion();
+
   }
 
   public trigger(type : string, target : string) {
@@ -57,17 +78,15 @@ class CCSDKEntry {
     switch( type ){
       case 'click':
         document.querySelectorAll(target)[0].addEventListener('click',function(){
-          console.log('click trigger');
-          // self.setupSurvey()
-          self.survey.displayWelcomeQuestion();
-          console.log(self);
+          // console.log('click trigger');
+          self.initSurvey();
           Scrollbar.initAll();
         });
         break;
       case 'launch':
-      default:
-        self.survey.displayWelcomeQuestion();
+        self.initSurvey();
         Scrollbar.initAll();
+      default:
         break;
     }
   }
@@ -89,14 +108,14 @@ if(typeof (window as any).CCSDK !== 'undefined') {
   (window as any).CCSDK = function()   {
       if(arguments && arguments.length == 0)   {
           var time = new Date();
-          console.log(this.time);
+          // console.log(this.time);
       } else {
-          // console.log(arguments);
-          var args = (Array as any).from(arguments);
           console.log(arguments);
+          var args = (Array as any).from(arguments);
+          // console.log(arguments);
           //Call this functions as ccsdk('functionName', ['argument1', 'argument2']);
           var functionName = args.splice(0,1)[0];
-          // console.log(functionName);
+          console.log(functionName);
           return localCCSDK[functionName].apply(this, args);
       }
   };
@@ -118,7 +137,7 @@ if(typeof (window as any).CCSDK !== 'undefined') {
 export function init(surveyToken : any) {
   //config options can be set in arguments[1]
   //available config options : themeColor
-  console.log(arguments[arguments.length - 1]);
+  // console.log(arguments[arguments.length - 1]);
   let config = (typeof arguments[1] === 'object')? arguments[1] : {};
   instances[surveyToken] = (instances[surveyToken])?
   instances[surveyToken]:new CCSDKEntry(surveyToken, config );

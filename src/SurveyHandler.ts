@@ -21,6 +21,9 @@ class SurveyHandler {
   answers : any;
   util : DomUtilities;
   dom : DomSurvey;
+  displayThankYouCb : any;
+  destroySurveyCb : any;
+  acceptAnswersCb : any;
   // isPartialAvailable : Boolean;
 
   constructor(surveyToken : string) {
@@ -32,6 +35,96 @@ class SurveyHandler {
     this.answers = [];
     this.util = new DomUtilities();
     this.dom = new DomSurvey();
+    this.displayThankYouCb = ( e : any) => {
+      let thankyouHtml : any = templates.thankyou;
+      thankyouHtml = thankyouHtml.replace("{{question}}", this.surveyData.thankyouText);
+      thankyouHtml = thankyouHtml.replace("{{button}}", 'Start');
+      this.dom.appendInQuestionsContainer(thankyouHtml);
+      let thankyouContainer : any =   this.util.get("#cc-thankyou-container");
+      this.util.addClassAll(thankyouContainer, 'show-slide');
+    }
+    this.destroySurveyCb = ( e : any ) => {
+        let self : SurveyHandler = this;
+        self.destroy();
+    }
+
+    this.acceptAnswersCb = ( e : any ) => {
+        let self : SurveyHandler = this;
+        console.log(self);
+        console.log('question answered',e)
+          let data : any = <any>e.detail;
+          let response : any = {};
+          switch(data.type){
+            case 'scale':
+              response.text = null;
+              response.number = data.data.number;
+              self.postPartialAnswer( data.index, response);
+              self.dom.domSelectElements();
+              // self.dom.nextQuestion();
+            break;
+            case 'smile':
+              response.text = null;
+              response.number = data.data.number;
+              self.postPartialAnswer( data.index, response);
+              self.dom.domSelectElements();
+              // self.dom.nextQuestion();
+            break;
+            case 'star':
+              response.text = null;
+              response.number = data.data.number;
+              self.postPartialAnswer( data.index, response);
+              self.dom.domSelectElements();
+              // self.dom.nextQuestion();
+            break;
+            case 'multiline':
+              response.text = data.data.text;
+              response.number = null;
+              console.log(data);
+              self.postPartialAnswer( data.index, response);
+              self.dom.domSelectElements();
+              self.dom.setQIndex(data.index);
+              // self.dom.nextQuestion();
+            break;
+            case 'singleline':
+              response.text = data.data.text;
+              response.number = null;
+              console.log(data);
+              self.postPartialAnswer( data.index, response);
+              self.dom.domSelectElements();
+              self.dom.setQIndex(data.index);
+              // self.dom.nextQuestion();
+            break;
+            case 'checkbox':
+              response.text = data.data.text;
+              response.number = null;
+              console.log(data);
+              self.postPartialAnswer( data.index, response);
+              self.dom.domSelectElements();
+              self.dom.setQIndex(data.index);
+              // self.dom.nextQuestion();
+            break;
+            case 'select':
+              response.text = data.data.text;
+              response.number = data.data.number;
+              console.log(data);
+              self.postPartialAnswer( data.index, response);
+              self.dom.domSelectElements();
+              self.dom.setQIndex(data.index);
+              // self.dom.nextQuestion();
+            break;
+            case 'slider':
+              response.text = data.data.text;
+              response.number = data.data.number;
+              console.log(data);
+              self.postPartialAnswer( data.index, response);
+              self.dom.domSelectElements();
+              self.dom.setQIndex(data.index);
+              // self.dom.nextQuestion();
+            break;
+            default:
+            break;
+          }
+      }
   }
 
   fetchQuestions() {
@@ -68,23 +161,17 @@ class SurveyHandler {
     welcomeHtml = welcomeHtml.replace("{{surveyToken}}", this.surveyToken);
     welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
     welcomeHtml = welcomeHtml.replace("{{button}}", 'Start');
+    console.log("Appending in body");
     this.dom.appendInBody(welcomeHtml);
     this.dom.showWelcomeContainer();
     this.acceptAnswers();
   }
 
   displayThankYou() {
-    var self : SurveyHandler = this;
-    document.addEventListener('ccdone', function(e : any){
-      let thankyouHtml : any = templates.thankyou;
-      thankyouHtml = thankyouHtml.replace("{{question}}", self.surveyData.thankyouText);
-      thankyouHtml = thankyouHtml.replace("{{button}}", 'Start');
-      self.dom.appendInQuestionsContainer(thankyouHtml);
-      let thankyouContainer : any =   self.util.get("#cc-thankyou-container");
-      self.util.addClassAll(thankyouContainer, 'show');
-    });
-
+    let self : SurveyHandler = this;
+    document.addEventListener('ccdone', this.displayThankYouCb);
   }
+
 
   displayQuestions() {
     //check question is supported, based on question types.
@@ -117,87 +204,9 @@ class SurveyHandler {
   }
 
   acceptAnswers(){
-    var self : SurveyHandler = this;
+    let self : SurveyHandler = this;
     console.log('add question answered listener')
-    document.addEventListener('q-answered', function(e : any){
-      console.log('question answered',e)
-        let data : any = <any>e.detail;
-        let response : any = {};
-        switch(data.type){
-          case 'scale':
-            response.text = null;
-            response.number = data.data.number;
-            self.postPartialAnswer( data.index, response);
-            self.dom.domSelectElements();
-            // self.dom.nextQuestion();
-          break;
-          case 'smile':
-            response.text = null;
-            response.number = data.data.number;
-            self.postPartialAnswer( data.index, response);
-            self.dom.domSelectElements();
-            // self.dom.nextQuestion();
-          break;
-          case 'star':
-            response.text = null;
-            response.number = data.data.number;
-            self.postPartialAnswer( data.index, response);
-            self.dom.domSelectElements();
-            // self.dom.nextQuestion();
-          break;
-          case 'multiline':
-            response.text = data.data.text;
-            response.number = null;
-            console.log(data);
-            self.postPartialAnswer( data.index, response);
-            self.dom.domSelectElements();
-            self.dom.setQIndex(data.index);
-            // self.dom.nextQuestion();
-          break;
-          case 'singleline':
-            response.text = data.data.text;
-            response.number = null;
-            console.log(data);
-            self.postPartialAnswer( data.index, response);
-            self.dom.domSelectElements();
-            self.dom.setQIndex(data.index);
-            // self.dom.nextQuestion();
-          break;
-          case 'checkbox':
-            response.text = data.data.text;
-            response.number = null;
-            console.log(data);
-            self.postPartialAnswer( data.index, response);
-            self.dom.domSelectElements();
-            self.dom.setQIndex(data.index);
-            // self.dom.nextQuestion();
-          break;
-          case 'select':
-            response.text = data.data.text;
-            response.number = data.data.number;
-            console.log(data);
-            self.postPartialAnswer( data.index, response);
-            self.dom.domSelectElements();
-            self.dom.setQIndex(data.index);
-            // self.dom.nextQuestion();
-          break;
-          case 'slider':
-            response.text = data.data.text;
-            response.number = data.data.number;
-            console.log(data);
-            self.postPartialAnswer( data.index, response);
-            self.dom.domSelectElements();
-            self.dom.setQIndex(data.index);
-            // self.dom.nextQuestion();
-          break;
-          default:
-          break;
-        }
-
-    })
-
-
-
+    document.addEventListener('q-answered', this.acceptAnswersCb);
   }
 
   fillPrefillQuestion(id : any, value : any, valueType : string) {
@@ -265,7 +274,7 @@ class SurveyHandler {
   postPartialAnswer(index : any, response : any) {
     // let data = new FormData();
     //in case of file.
-    // var input = document.querySelector('input[type="file"]') ;
+    // let input = document.querySelector('input[type="file"]') ;
     // data.append('file', input.files[0]);
     let question : any = this.questionsToDisplay[index];
     if(typeof question === 'undefined') {
@@ -313,7 +322,7 @@ class SurveyHandler {
   }
 
   compileTemplate(question : any) {
-    var self : SurveyHandler = this;
+    let self : SurveyHandler = this;
     //get question type
     let questionTemplate;
     console.log(question);
@@ -388,7 +397,7 @@ class SurveyHandler {
           if(checkOptionContainsImage){
             console.log('select type 2');
             acTemplate2 = templates.question_radio_image;
-            options2 = self.util.generateRadioImageOptions(question.multiSelect);
+            options2 = self.util.generateRadioImageOptions(question.multiSelect, question.id);
             console.log(options2);
             questionTemplate = acTemplate2;
             questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
@@ -466,16 +475,20 @@ class SurveyHandler {
 
   destroySurvey(){
     let self : SurveyHandler = this;
-    document.addEventListener('ccclose', function(e : any){
-      self.destroy();
-    });
+    document.addEventListener('ccclose', this.destroySurveyCb);
   }
 
-  public destroy(){
-    var surveyContainer = this.dom.getSurveyContainer(this.surveyToken);
-    var welcomeContainer = this.dom.getWelcomeContainer(this.surveyToken);
+  destroy(){
+    let surveyContainer = this.dom.getSurveyContainer(this.surveyToken);
+    let welcomeContainer = this.dom.getWelcomeContainer(this.surveyToken);
     this.util.remove(surveyContainer);
     this.util.remove(welcomeContainer);
+    document.removeEventListener('ccclose', this.destroySurveyCb);
+    document.removeEventListener('ccdone', this.displayThankYouCb);
+    document.removeEventListener('q-answered', this.acceptAnswersCb);
+
+
+
   }
 }
 

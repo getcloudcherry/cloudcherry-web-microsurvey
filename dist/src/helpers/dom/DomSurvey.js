@@ -5,7 +5,9 @@ var Theme_1 = require("./Theme");
 var DomSurvey = (function () {
     function DomSurvey() {
         this.trackSelects = [];
+        this.trackRadios = [];
         var self = this;
+        this.domListeners = [];
         var ccSDK = {
             qIndex: 0,
             totalQuestions: 0
@@ -36,28 +38,46 @@ var DomSurvey = (function () {
         this.$popupContainer2 = document.querySelectorAll(".cc-popup-container-2");
         this.$body = document.querySelectorAll("body")[0];
     };
+    DomSurvey.prototype.addListener = function (id, type, cb) {
+        var ref = {
+            id: id,
+            type: type,
+            cb: cb,
+            internalHandler: undefined,
+        };
+        this.domListeners.push(ref);
+        return ref;
+    };
     DomSurvey.prototype.setupListeners = function () {
         var self = this;
-        this.util.listener(this.$body, "click", ".act-cc-survey-start", function () {
+        var startSurvey = this.addListener(".act-cc-survey-start", "click", function () {
             self.startSurvey();
         });
-        this.util.listener(self.$body, "click", ".act-cc-button-next", function () {
+        startSurvey.internalHandler = this.util.listener(this.$body, startSurvey.type, startSurvey.id, startSurvey.cb);
+        var nextQue = this.addListener(".act-cc-button-next", "click", function () {
             self.nextQuestion();
         });
-        this.util.listener(self.$body, "click", ".act-cc-button-prev", function () {
+        nextQue.internalHandler = this.util.listener(this.$body, nextQue.type, nextQue.id, nextQue.cb);
+        this.util.listener(this.$body, "click", ".act-cc-button-prev", function () {
             self.prevQuestion();
         });
         this.util.listener(self.$body, "click", ".cc-popup-container__close", function () {
+            self.destroyListeners();
             self.util.trigger(document, 'ccclose', undefined);
         });
     };
     DomSurvey.prototype.destroyListeners = function () {
+        for (var _i = 0, _a = this.domListeners; _i < _a.length; _i++) {
+            var listener = _a[_i];
+            console.log('removing listener', listener);
+            this.util.removeListener(this.$body, listener.type, listener.internalHandler);
+        }
     };
     DomSurvey.prototype.startSurvey = function () {
         this.domSelectElements();
         console.log("click in setup listener survey start");
-        this.util.addClassAll(this.$popupContainer2, 'show');
-        this.util.removeClass(this.$popupContainer[0], 'show');
+        this.util.addClassAll(this.$popupContainer2, 'show-slide');
+        this.util.removeClass(this.$popupContainer[0], 'show-slide');
         this.loadFirstQuestion();
     };
     DomSurvey.prototype.updateProgress = function () {
@@ -65,8 +85,8 @@ var DomSurvey = (function () {
         el.style.width = (this.qIndex / this.$questionContainer.length) * 100 + '%';
     };
     DomSurvey.prototype.loadFirstQuestion = function () {
-        this.util.removeClassAll(this.$questionContainer, 'show');
-        this.util.addClass(this.$questionContainer[0], 'show');
+        this.util.removeClassAll(this.$questionContainer, 'show-slide');
+        this.util.addClass(this.$questionContainer[0], 'show-slide');
         this.loadQuestionSpecifics(this.$questionContainer[0], 0);
     };
     DomSurvey.prototype.nextQuestion = function () {
@@ -100,11 +120,11 @@ var DomSurvey = (function () {
             var leftIcon = this.util.get('.cc-icon-left');
             var rightIcon = this.util.get('.cc-icon-right');
             var nextIcon = this.util.get('.act-cc-button-next');
-            this.util.addClassAll(leftIcon, 'hide');
-            this.util.addClassAll(rightIcon, 'hide');
-            this.util.addClassAll(nextIcon, 'hide');
+            this.util.addClassAll(leftIcon, 'hide-slide');
+            this.util.addClassAll(rightIcon, 'hide-slide');
+            this.util.addClassAll(nextIcon, 'hide-slide');
             this.util.trigger(document, 'ccdone', undefined);
-            this.util.removeClassAll(this.$questionContainer, 'show');
+            this.util.removeClassAll(this.$questionContainer, 'show-slide');
             this.updateProgress();
         }
         else {
@@ -112,8 +132,8 @@ var DomSurvey = (function () {
                 && (this.qIndex > this.$questionContainer.length)) {
                 this.qIndex = 0;
             }
-            this.util.removeClassAll(this.$questionContainer, 'show');
-            this.util.addClass(nextQ, 'show');
+            this.util.removeClassAll(this.$questionContainer, 'show-slide');
+            this.util.addClass(nextQ, 'show-slide');
             this.updateProgress();
             this.loadQuestionSpecifics(nextQ, this.qIndex);
         }
@@ -123,8 +143,8 @@ var DomSurvey = (function () {
         if (!this.$questionContainer[this.qIndex]) {
             this.qIndex = this.$questionContainer.length - 1;
         }
-        this.util.removeClassAll(this.$questionContainer, 'show');
-        this.util.addClass(this.$questionContainer[this.qIndex], 'show');
+        this.util.removeClassAll(this.$questionContainer, 'show-slide');
+        this.util.addClass(this.$questionContainer[this.qIndex], 'show-slide');
         this.updateProgress();
     };
     DomSurvey.prototype.appendInBody = function (html) {
@@ -134,9 +154,12 @@ var DomSurvey = (function () {
         document.querySelectorAll(".cc-questions-container")[0].insertAdjacentHTML('afterbegin', html);
     };
     DomSurvey.prototype.showWelcomeContainer = function () {
-        var startContainer = document.
-            querySelectorAll(".act-cc-welcome-question-box")[0];
-        this.util.addClass(startContainer, "show");
+        var _this = this;
+        setTimeout(function () {
+            var startContainer = document.
+                querySelectorAll(".act-cc-welcome-question-box")[0];
+            _this.util.addClass(startContainer, "show-slide");
+        }, 200);
     };
     DomSurvey.prototype.getSurveyContainer = function (token) {
         return document.querySelectorAll("#" + token + "-survey")[0];
@@ -251,12 +274,13 @@ var DomSurvey = (function () {
     DomSurvey.prototype.setupListenersQuestionSlider = function (index, qId) {
         var self = this;
         var sliderRes = '';
-        this.util.listener(this.$body, 'change', '#' + qId + " input", function () {
+        var ref = this.addListener('#' + qId + " input", "change", function () {
             sliderRes = this.value;
             self.qResponse.type = 'slider';
             self.qResponse.number = sliderRes;
             self.qResponse.text = null;
         });
+        ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
     };
     DomSurvey.prototype.setupListenersQuestionSelect = function (index, qId) {
         var self = this;
