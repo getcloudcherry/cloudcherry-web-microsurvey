@@ -102,8 +102,8 @@ class DomUtilities{
     return parents;
 	}
 
-	listener(el : any, evt : any, sel : any, handler : any) : void {
-    el.addEventListener(evt, function(event) {
+	listener(el : any, evt : any, sel : any, handler : any) : any {
+    let internalHandler = function(event) {
         var t = event.target;
         while (t && t !== this) {
             if (t.matches(sel)) {
@@ -111,7 +111,9 @@ class DomUtilities{
             }
             t = t.parentNode;
         }
-    });
+    };
+    el.addEventListener(evt, internalHandler);
+    return internalHandler;
   }
 
   on( evt : any, el : any, handler : any){
@@ -120,9 +122,9 @@ class DomUtilities{
   off( evt : any, el : any, handler : any){
     el.removeEventListener(evt, handler);
   }
-  // removeListener(el : any, evt : any, handler : any ){
-  //   el.removeEventListener(evt, handler);
-  // }
+  removeListener(el : any, evt : any, handler : any ){
+    el.removeEventListener(evt, handler);
+  }
 
   trigger(el : any, eventName : string, data : Object){
     if (typeof CustomEvent === 'function') {
@@ -233,7 +235,7 @@ checkOptionContainsImage(arr : any){
   }
 }
 
-generateRadioImageOptions(arr : any){
+generateRadioImageOptions(arr : any, id : string){
   if(Array.isArray(arr)){
     let i : number = 0;
     let res : string = '' ;
@@ -241,6 +243,7 @@ generateRadioImageOptions(arr : any){
        let optHtml : string = templates.option_radio_image;
        let opt : any = arr[i].split(';')
        optHtml = optHtml.replace(/{{image}}/g, Config.CDN_URL+opt[1] );
+       optHtml = optHtml.replace(/{{qId}}/g, "nm"+id );
        optHtml = optHtml.replace(/{{label}}/g, opt[0] );
        optHtml = optHtml.replace(/{{value}}/g, opt[0] );
        res += optHtml;

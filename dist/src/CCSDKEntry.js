@@ -11,42 +11,46 @@ var localCCSDK = {
 var instances = {};
 var CCSDKEntry = (function () {
     function CCSDKEntry(surveyToken, config) {
-        this.setupSurvey(surveyToken, config);
-    }
-    CCSDKEntry.prototype.setupSurvey = function (surveyToken, config) {
-        this.survey = new SurveyHandler_1.SurveyHandler(surveyToken);
-        this.config = config;
-        this.util = new DomUtilities_1.DomUtilities;
         this.surveyToken = surveyToken;
-        this.config.themeColor = (config && config.themeColor) ?
-            config.themeColor : "#db3c39";
-        console.log(this.config);
+        this.config = config;
+        this.setupSurvey();
+    }
+    CCSDKEntry.prototype.setupSurvey = function () {
+        this.survey = new SurveyHandler_1.SurveyHandler(this.surveyToken);
+        this.util = new DomUtilities_1.DomUtilities;
+        this.config.themeColor = (this.config && this.config.themeColor) ?
+            this.config.themeColor : "#db3c39";
+        this.getSurveyData();
+    };
+    CCSDKEntry.prototype.getSurveyData = function () {
         var data = this.survey.fetchQuestions();
         var self = this;
         data.then(function (surveyData) {
-            console.log(surveyData);
-            self.survey.attachSurvey(surveyData);
-            self.dom = new DomSurvey_1.DomSurvey();
-            self.dom.setTheme(self.config.themeColor);
-            self.dom.setupListeners();
-            self.util.trigger(document, surveyToken + '-ready', { 'survey': self });
+            self.surveyData = surveyData;
+            self.util.trigger(document, self.surveyToken + '-ready', { 'survey': self });
         });
+    };
+    CCSDKEntry.prototype.initSurvey = function () {
+        var self = this;
+        self.survey.attachSurvey(this.surveyData);
+        self.dom = new DomSurvey_1.DomSurvey();
+        self.dom.setTheme(self.config.themeColor);
+        self.dom.setupListeners();
+        self.survey.displayWelcomeQuestion();
     };
     CCSDKEntry.prototype.trigger = function (type, target) {
         var self = this;
         switch (type) {
             case 'click':
                 document.querySelectorAll(target)[0].addEventListener('click', function () {
-                    console.log('click trigger');
-                    self.survey.displayWelcomeQuestion();
-                    console.log(self);
+                    self.initSurvey();
                     Scrollbar_1.Scrollbar.initAll();
                 });
                 break;
             case 'launch':
-            default:
-                self.survey.displayWelcomeQuestion();
+                self.initSurvey();
                 Scrollbar_1.Scrollbar.initAll();
+            default:
                 break;
         }
     };
@@ -63,12 +67,12 @@ if (typeof window.CCSDK !== 'undefined') {
     window.CCSDK = function () {
         if (arguments && arguments.length == 0) {
             var time = new Date();
-            console.log(this.time);
         }
         else {
-            var args = Array.from(arguments);
             console.log(arguments);
+            var args = Array.from(arguments);
             var functionName = args.splice(0, 1)[0];
+            console.log(functionName);
             return localCCSDK[functionName].apply(this, args);
         }
     };
@@ -86,7 +90,6 @@ if (typeof window.CCSDK !== 'undefined') {
     window.CCSDK = localCCSDK;
 }
 function init(surveyToken) {
-    console.log(arguments[arguments.length - 1]);
     var config = (typeof arguments[1] === 'object') ? arguments[1] : {};
     instances[surveyToken] = (instances[surveyToken]) ?
         instances[surveyToken] : new CCSDKEntry(surveyToken, config);

@@ -6,6 +6,7 @@ var DomUtilities_1 = require("./helpers/dom/DomUtilities");
 var DomSurvey_1 = require("./helpers/dom/DomSurvey");
 var SurveyHandler = (function () {
     function SurveyHandler(surveyToken) {
+        var _this = this;
         this.surveyToken = surveyToken;
         this.surveyData = {};
         this.questions = [];
@@ -14,72 +15,21 @@ var SurveyHandler = (function () {
         this.answers = [];
         this.util = new DomUtilities_1.DomUtilities();
         this.dom = new DomSurvey_1.DomSurvey();
-    }
-    SurveyHandler.prototype.fetchQuestions = function () {
-        this.randomNumber = parseInt((String)(Math.random() * 1000));
-        var surveyUrl = Config_1.Config.SURVEY_BY_TOKEN.replace("{token}", "" + this.surveyToken);
-        surveyUrl = surveyUrl.replace("{tabletId}", "" + this.randomNumber);
-        surveyUrl = Config_1.Config.API_URL + surveyUrl;
-        var data = Request_1.RequestHelper.get(surveyUrl);
-        console.log(data);
-        return data;
-    };
-    SurveyHandler.prototype.attachSurvey = function (surveyData) {
-        this.surveyData = surveyData;
-        this.setupSurveyContainer();
-        this.displayQuestions();
-        this.displayThankYou();
-        this.destroySurvey();
-    };
-    SurveyHandler.prototype.setupSurveyContainer = function () {
-        var surveyHtml = Templates_1.templates.question_survey;
-        surveyHtml = surveyHtml.replace("{{surveyToken}}", this.surveyToken);
-        this.dom.appendInBody(surveyHtml);
-    };
-    SurveyHandler.prototype.displayWelcomeQuestion = function () {
-        var welcomeHtml = Templates_1.templates.question_start;
-        welcomeHtml = welcomeHtml.replace("{{surveyToken}}", this.surveyToken);
-        welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
-        welcomeHtml = welcomeHtml.replace("{{button}}", 'Start');
-        this.dom.appendInBody(welcomeHtml);
-        this.dom.showWelcomeContainer();
-        this.acceptAnswers();
-    };
-    SurveyHandler.prototype.displayThankYou = function () {
-        var self = this;
-        document.addEventListener('ccdone', function (e) {
+        this.displayThankYouCb = function (e) {
             var thankyouHtml = Templates_1.templates.thankyou;
-            thankyouHtml = thankyouHtml.replace("{{question}}", self.surveyData.thankyouText);
+            thankyouHtml = thankyouHtml.replace("{{question}}", _this.surveyData.thankyouText);
             thankyouHtml = thankyouHtml.replace("{{button}}", 'Start');
-            self.dom.appendInQuestionsContainer(thankyouHtml);
-            var thankyouContainer = self.util.get("#cc-thankyou-container");
-            self.util.addClassAll(thankyouContainer, 'show');
-        });
-    };
-    SurveyHandler.prototype.displayQuestions = function () {
-        this.questions = this.surveyData.questions;
-        this.questionsToDisplay = this.surveyData.questions.filter(this.filterQuestions);
-        this.questionsToDisplay = this.questionsToDisplay.sort(this.questionCompare);
-        var ccSurvey;
-        ccSurvey = document.getElementsByClassName("cc-questions-container");
-        var surveyObject = ccSurvey[0];
-        for (var _i = 0, _a = this.questionsToDisplay; _i < _a.length; _i++) {
-            var question = _a[_i];
-            if (this.checkConditionals(question)) {
-                var compiledTemplate = this.compileTemplate(question);
-                surveyObject.innerHTML += compiledTemplate;
-            }
-            else {
-                if (this.isPrefillQuestion(question)) {
-                    this.prefillQuestions.push(question);
-                }
-            }
-        }
-    };
-    SurveyHandler.prototype.acceptAnswers = function () {
-        var self = this;
-        console.log('add question answered listener');
-        document.addEventListener('q-answered', function (e) {
+            _this.dom.appendInQuestionsContainer(thankyouHtml);
+            var thankyouContainer = _this.util.get("#cc-thankyou-container");
+            _this.util.addClassAll(thankyouContainer, 'show-slide');
+        };
+        this.destroySurveyCb = function (e) {
+            var self = _this;
+            self.destroy();
+        };
+        this.acceptAnswersCb = function (e) {
+            var self = _this;
+            console.log(self);
             console.log('question answered', e);
             var data = e.detail;
             var response = {};
@@ -145,7 +95,67 @@ var SurveyHandler = (function () {
                 default:
                     break;
             }
-        });
+        };
+    }
+    SurveyHandler.prototype.fetchQuestions = function () {
+        this.randomNumber = parseInt((String)(Math.random() * 1000));
+        var surveyUrl = Config_1.Config.SURVEY_BY_TOKEN.replace("{token}", "" + this.surveyToken);
+        surveyUrl = surveyUrl.replace("{tabletId}", "" + this.randomNumber);
+        surveyUrl = Config_1.Config.API_URL + surveyUrl;
+        var data = Request_1.RequestHelper.get(surveyUrl);
+        console.log(data);
+        return data;
+    };
+    SurveyHandler.prototype.attachSurvey = function (surveyData) {
+        this.surveyData = surveyData;
+        this.setupSurveyContainer();
+        this.displayQuestions();
+        this.displayThankYou();
+        this.destroySurvey();
+    };
+    SurveyHandler.prototype.setupSurveyContainer = function () {
+        var surveyHtml = Templates_1.templates.question_survey;
+        surveyHtml = surveyHtml.replace("{{surveyToken}}", this.surveyToken);
+        this.dom.appendInBody(surveyHtml);
+    };
+    SurveyHandler.prototype.displayWelcomeQuestion = function () {
+        var welcomeHtml = Templates_1.templates.question_start;
+        welcomeHtml = welcomeHtml.replace("{{surveyToken}}", this.surveyToken);
+        welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
+        welcomeHtml = welcomeHtml.replace("{{button}}", 'Start');
+        console.log("Appending in body");
+        this.dom.appendInBody(welcomeHtml);
+        this.dom.showWelcomeContainer();
+        this.acceptAnswers();
+    };
+    SurveyHandler.prototype.displayThankYou = function () {
+        var self = this;
+        document.addEventListener('ccdone', this.displayThankYouCb);
+    };
+    SurveyHandler.prototype.displayQuestions = function () {
+        this.questions = this.surveyData.questions;
+        this.questionsToDisplay = this.surveyData.questions.filter(this.filterQuestions);
+        this.questionsToDisplay = this.questionsToDisplay.sort(this.questionCompare);
+        var ccSurvey;
+        ccSurvey = document.getElementsByClassName("cc-questions-container");
+        var surveyObject = ccSurvey[0];
+        for (var _i = 0, _a = this.questionsToDisplay; _i < _a.length; _i++) {
+            var question = _a[_i];
+            if (this.checkConditionals(question)) {
+                var compiledTemplate = this.compileTemplate(question);
+                surveyObject.innerHTML += compiledTemplate;
+            }
+            else {
+                if (this.isPrefillQuestion(question)) {
+                    this.prefillQuestions.push(question);
+                }
+            }
+        }
+    };
+    SurveyHandler.prototype.acceptAnswers = function () {
+        var self = this;
+        console.log('add question answered listener');
+        document.addEventListener('q-answered', this.acceptAnswersCb);
     };
     SurveyHandler.prototype.fillPrefillQuestion = function (id, value, valueType) {
         var question = this.getQuestionById(id);
@@ -302,7 +312,7 @@ var SurveyHandler = (function () {
                     if (checkOptionContainsImage) {
                         console.log('select type 2');
                         acTemplate2 = Templates_1.templates.question_radio_image;
-                        options2 = self.util.generateRadioImageOptions(question.multiSelect);
+                        options2 = self.util.generateRadioImageOptions(question.multiSelect, question.id);
                         console.log(options2);
                         questionTemplate = acTemplate2;
                         questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
@@ -361,15 +371,16 @@ var SurveyHandler = (function () {
     };
     SurveyHandler.prototype.destroySurvey = function () {
         var self = this;
-        document.addEventListener('ccclose', function (e) {
-            self.destroy();
-        });
+        document.addEventListener('ccclose', this.destroySurveyCb);
     };
     SurveyHandler.prototype.destroy = function () {
         var surveyContainer = this.dom.getSurveyContainer(this.surveyToken);
         var welcomeContainer = this.dom.getWelcomeContainer(this.surveyToken);
         this.util.remove(surveyContainer);
         this.util.remove(welcomeContainer);
+        document.removeEventListener('ccclose', this.destroySurveyCb);
+        document.removeEventListener('ccdone', this.displayThankYouCb);
+        document.removeEventListener('q-answered', this.acceptAnswersCb);
     };
     return SurveyHandler;
 }());

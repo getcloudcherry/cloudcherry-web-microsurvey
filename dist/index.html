@@ -67,7 +67,7 @@
         // execute your script immediately here
         //WW-02872
         //CH-88360
-        window.CCSDK("init", "WW-02872",{
+        var ins = window.CCSDK("init", "WW-02872",{
           themeColor : "rgb(235, 28, 35)"
         });
         // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
@@ -84,7 +84,8 @@
     // });
 
     document.addEventListener('WW-02872-ready', function(e){
-      console.log(e);
+      // console.log(e);
+			// console.log(ins);
       // e.detail.survey.trigger('launch');
       e.detail.survey.trigger('click', '#anywhere');
       //  e.detail.survey.trigger('launch');

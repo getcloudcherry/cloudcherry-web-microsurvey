@@ -1,0 +1,46 @@
+.cc-question-container, .hide-slide{
+  -webkit-transform: translateX(5px);
+  -moz-transform: translateX(5px);
+  -ms-transform: translateX(5px);
+  -o-transform: translateX(5px);
+  transform: translateX(5px);
+  -webkit-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  -moz-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  -ms-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  -o-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  visibility: hidden;
+  opacity: 0;
+}
+
+
+
+.hide-bottom-up{
+  -webkit-transform: translateY(30px);
+  -moz-transform: translateY(30px);
+  -ms-transform: translateY(30px);
+  -o-transform: translateY(30px);
+  transform: translateY(30px);
+  -webkit-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  -moz-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  -ms-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  -o-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.show-slide{
+  -webkit-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  -moz-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  -ms-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  -o-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
+  visibility: visible;
+  opacity: 1;
+  -webkit-transform: translateX(0) translateY(0);
+  -moz-transform: translateX(0) translateY(0);
+  -ms-transform: translateX(0) translateY(0);
+  -o-transform: translateX(0) translateY(0);
+  transform: translateX(0) translateY(0);
+}

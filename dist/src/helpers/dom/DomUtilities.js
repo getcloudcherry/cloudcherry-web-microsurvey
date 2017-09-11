@@ -82,7 +82,7 @@ var DomUtilities = (function () {
         return parents;
     };
     DomUtilities.prototype.listener = function (el, evt, sel, handler) {
-        el.addEventListener(evt, function (event) {
+        var internalHandler = function (event) {
             var t = event.target;
             while (t && t !== this) {
                 if (t.matches(sel)) {
@@ -90,12 +90,17 @@ var DomUtilities = (function () {
                 }
                 t = t.parentNode;
             }
-        });
+        };
+        el.addEventListener(evt, internalHandler);
+        return internalHandler;
     };
     DomUtilities.prototype.on = function (evt, el, handler) {
         el.addEventListener(evt, handler);
     };
     DomUtilities.prototype.off = function (evt, el, handler) {
+        el.removeEventListener(evt, handler);
+    };
+    DomUtilities.prototype.removeListener = function (el, evt, handler) {
         el.removeEventListener(evt, handler);
     };
     DomUtilities.prototype.trigger = function (el, eventName, data) {
@@ -200,7 +205,7 @@ var DomUtilities = (function () {
             return res;
         }
     };
-    DomUtilities.prototype.generateRadioImageOptions = function (arr) {
+    DomUtilities.prototype.generateRadioImageOptions = function (arr, id) {
         if (Array.isArray(arr)) {
             var i = 0;
             var res = '';
@@ -208,6 +213,7 @@ var DomUtilities = (function () {
                 var optHtml = Templates_1.templates.option_radio_image;
                 var opt = arr[i].split(';');
                 optHtml = optHtml.replace(/{{image}}/g, Config_1.Config.CDN_URL + opt[1]);
+                optHtml = optHtml.replace(/{{qId}}/g, "nm" + id);
                 optHtml = optHtml.replace(/{{label}}/g, opt[0]);
                 optHtml = optHtml.replace(/{{value}}/g, opt[0]);
                 res += optHtml;

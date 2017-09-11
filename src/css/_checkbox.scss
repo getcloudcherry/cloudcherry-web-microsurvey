@@ -38,9 +38,9 @@
     border: none;
 }
 .cc-checkbox input[type="checkbox"]:checked + label:after {
+    border: 3px solid #222;
     border-right-style: none;
     border-top-style: none;
-    border: 3px solid #222;
     height: 7px;
     left: 4px;
     top: -3px;

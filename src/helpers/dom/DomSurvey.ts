@@ -7,6 +7,7 @@ class DomSurvey{
 
   util : DomUtilities;
   // scrollbar : ScrollBar;
+  domListeners: any;
   select : Select;
   theme : Theme;
   qIndex : number;
@@ -16,11 +17,12 @@ class DomSurvey{
   $body : any;
   qResponse : any;
   trackSelects : any = [];
+  trackRadios : any = [];
 
 
   constructor(){
     let self : DomSurvey = this;
-
+    this.domListeners = [];
   	let ccSDK = {
   		qIndex : 0,
   		totalQuestions : 0
@@ -31,7 +33,7 @@ class DomSurvey{
     this.util = new DomUtilities()
     // self.scrollbar = new ScrollBar("data-cc-scrollbar");
     this.util.ready(function(){
-  	   // self.util.addClassAll(self.$popupContainer,'show');
+  	   // self.util.addClassAll(self.$popupContainer,'show-slide');
   	});
   }
 
@@ -60,32 +62,53 @@ class DomSurvey{
 
   }
 
+
+  addListener(id, type, cb) {
+    let ref : any =  {
+      id : id,
+      type : type,
+      cb : cb,
+      internalHandler: undefined,
+    };
+    this.domListeners.push(ref);
+    return ref;
+  }
+
+
+
   setupListeners(){
     let self = this;
-
-    this.util.listener(this.$body, "click", ".act-cc-survey-start", function(){
-      self.startSurvey()
+    let startSurvey = this.addListener(".act-cc-survey-start", "click", function() {
+      self.startSurvey();
     });
-    this.util.listener(self.$body, "click", ".act-cc-button-next",function(){
+    startSurvey.internalHandler = this.util.listener(this.$body, startSurvey.type, startSurvey.id, startSurvey.cb);
+
+    let nextQue = this.addListener(".act-cc-button-next", "click", function(){
       self.nextQuestion()
     });
-    this.util.listener(self.$body, "click", ".act-cc-button-prev", function(){
+    nextQue.internalHandler = this.util.listener(this.$body, nextQue.type, nextQue.id, nextQue.cb);
+
+    this.util.listener(this.$body, "click", ".act-cc-button-prev", function(){
       self.prevQuestion()
     });
     this.util.listener(self.$body, "click", ".cc-popup-container__close", function(){
+      self.destroyListeners();
       self.util.trigger(document, 'ccclose', undefined);
     });
   }
 
   destroyListeners(){
-    //
+    for(let listener of this.domListeners) {
+      console.log('removing listener', listener);
+      this.util.removeListener(this.$body, listener.type, listener.internalHandler);
+    }
   }
 
   startSurvey(){
       this.domSelectElements();
       console.log("click in setup listener survey start");
-      this.util.addClassAll(this.$popupContainer2, 'show');
-      this.util.removeClass(this.$popupContainer[0], 'show');
+      this.util.addClassAll(this.$popupContainer2, 'show-slide');
+      this.util.removeClass(this.$popupContainer[0], 'show-slide');
       this.loadFirstQuestion();
   }
 
@@ -96,8 +119,8 @@ class DomSurvey{
 
 	loadFirstQuestion(){
 		// applyRuleToAllEl(this.$questionContainer, );
-		this.util.removeClassAll(this.$questionContainer, 'show');
-		this.util.addClass(this.$questionContainer[0], 'show');
+		this.util.removeClassAll(this.$questionContainer, 'show-slide');
+		this.util.addClass(this.$questionContainer[0], 'show-slide');
     this.loadQuestionSpecifics(this.$questionContainer[0], 0);
 	}
 
@@ -140,11 +163,11 @@ class DomSurvey{
       let rightIcon : any = this.util.get('.cc-icon-right');
       let nextIcon : any = this.util.get('.act-cc-button-next');
 
-      this.util.addClassAll(leftIcon , 'hide');
-      this.util.addClassAll(rightIcon , 'hide');
-      this.util.addClassAll(nextIcon , 'hide');
+      this.util.addClassAll(leftIcon , 'hide-slide');
+      this.util.addClassAll(rightIcon , 'hide-slide');
+      this.util.addClassAll(nextIcon , 'hide-slide');
       this.util.trigger(document,'ccdone', undefined);
-      this.util.removeClassAll(this.$questionContainer, 'show');
+      this.util.removeClassAll(this.$questionContainer, 'show-slide');
       this.updateProgress();
 		}else{
       if( !nextQ
@@ -152,8 +175,8 @@ class DomSurvey{
         //reset the counter to show first question
         this.qIndex = 0;
       }
-        this.util.removeClassAll(this.$questionContainer, 'show');
-    		this.util.addClass(nextQ, 'show');
+        this.util.removeClassAll(this.$questionContainer, 'show-slide');
+    		this.util.addClass(nextQ, 'show-slide');
     		this.updateProgress();
         this.loadQuestionSpecifics(nextQ, this.qIndex);
         // if(nextButtonState === 'dirty'){
@@ -167,8 +190,8 @@ class DomSurvey{
 		if(!this.$questionContainer[this.qIndex]){
 			this.qIndex = this.$questionContainer.length - 1;
 		}
-		this.util.removeClassAll(this.$questionContainer,'show');
-		this.util.addClass(this.$questionContainer[this.qIndex], 'show');
+		this.util.removeClassAll(this.$questionContainer,'show-slide');
+		this.util.addClass(this.$questionContainer[this.qIndex], 'show-slide');
 		this.updateProgress();
 	}
 
@@ -185,9 +208,12 @@ class DomSurvey{
   }
 
   showWelcomeContainer(){
-    let startContainer = <HTMLElement>document.
-    querySelectorAll(".act-cc-welcome-question-box")[0];
-      this.util.addClass(startContainer, "show");
+    setTimeout(() => {
+      let startContainer = <HTMLElement>document.
+      querySelectorAll(".act-cc-welcome-question-box")[0];
+        this.util.addClass(startContainer, "show-slide");
+    },200);
+
   }
 
   getSurveyContainer( token : string){
@@ -325,12 +351,13 @@ class DomSurvey{
   setupListenersQuestionSlider( index : number, qId : string ){
     let self : DomSurvey = this;
     let sliderRes : string = '';
-    this.util.listener(this.$body, 'change', '#'+qId+ " input",function(){
+    let ref = this.addListener('#' + qId + " input", "change", function(){
       sliderRes = this.value;
       self.qResponse.type = 'slider';
       self.qResponse.number = sliderRes;
       self.qResponse.text = null;
     });
+    ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 
   setupListenersQuestionSelect( index : number, qId : string ){
