@@ -486,9 +486,6 @@ class SurveyHandler {
     document.removeEventListener('ccclose', this.destroySurveyCb);
     document.removeEventListener('ccdone', this.displayThankYouCb);
     document.removeEventListener('q-answered', this.acceptAnswersCb);
-
-
-
   }
 }
 
