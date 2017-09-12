@@ -91,10 +91,28 @@ class DomSurvey{
     this.util.listener(this.$body, "click", ".act-cc-button-prev", function(){
       self.prevQuestion()
     });
-    this.util.listener(self.$body, "click", ".cc-popup-container__close", function(){
+    this.util.listener(self.$body, "click", ".act-cc-button-close", function(){
       self.destroyListeners();
       self.util.trigger(document, 'ccclose', undefined);
     });
+    this.util.listener(self.$body, "click", ".act-cc-button-minimize", function(){
+      self.minimizeSurvey();
+    });
+  }
+
+
+  minimizeSurvey(){
+    // this.$popupContainer[0].removeClass('');
+    this.util.removeClass(this.$popupContainer2[0], 'hide-right-left');
+    this.util.addClass(this.$popupContainer2[0], 'hide-up-bottom');
+    setTimeout(()=>{
+      this.util.removeClass(this.$popupContainer2[0], 'show-slide');
+    },200);
+    this.util.removeClass(this.$popupContainer[0], 'hide-right-left');
+    this.util.addClass(this.$popupContainer[0], 'hide-bottom-up');
+    setTimeout(()=>{
+      this.util.addClass(this.$popupContainer[0], 'show-slide');
+    },200);
   }
 
   destroyListeners(){
