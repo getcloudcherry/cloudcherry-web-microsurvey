@@ -96,6 +96,7 @@ class DomSurvey{
 
     let closeSurvey = this.addListener( "click",".act-cc-button-close", function(){
       self.answers = {};
+      self.trackSelects = [];
       self.destroyListeners();
       self.util.trigger(document, 'ccclose', undefined);
     });
@@ -175,7 +176,6 @@ class DomSurvey{
         && this.qResponse.number == this.answers[this.qIndex].number
       ) {
         //don't submit if already submitted.
-        alert('aready sbumitted');
       } else {
         this.submitQuestion(this.qIndex, this.qResponse, this.qResponse.type);
       }
@@ -195,10 +195,9 @@ class DomSurvey{
 		if( !nextQ &&
       (this.qIndex == this.$questionContainer.length)){
       //Last run to show thank you message
-      let leftIcon : any = this.util.get('.cc-icon-left');
+      let leftIcon : any = this.util.get('.act-cc-button-prev');
       let rightIcon : any = this.util.get('.cc-icon-right');
       let nextIcon : any = this.util.get('.act-cc-button-next');
-
       this.util.addClassAll(leftIcon , 'hide-slide');
       this.util.addClassAll(rightIcon , 'hide-slide');
       this.util.addClassAll(nextIcon , 'hide-slide');
