@@ -3,11 +3,39 @@ import { SurveyHandler } from "./SurveyHandler";
 import { DomSurvey } from "./helpers/dom/DomSurvey";
 import { DomUtilities } from "./helpers/dom/DomUtilities";
 import { Scrollbar } from "./helpers/dom/Scrollbar";
-
+import { Triggers } from './Triggers';
+import { Cookie } from './helpers/Cookie';
+import { Constants } from './Constants';
 /**
  * functions that are exposed to SDK User are written here.
  * Entry point for CCSDK.
  */
+
+
+//collect initial data
+//if on site time is null, add on site time
+if(Cookie.get(Constants.CCTriggerSiteStartTime) == null) {
+  Cookie.set(Constants.CCTriggerSiteStartTime, new Date(), undefined, undefined);
+}
+//always add on page Time
+Cookie.set(Constants.CCTriggerPageStartTime, new Date(), undefined, undefined);
+
+let sitePageViewCount = Cookie.get(Constants.CCTriggerSitePageViewCount);
+if( sitePageViewCount == null) {
+  Cookie.set(Constants.CCTriggerSitePageViewCount, 1, undefined, undefined);
+} else {
+  sitePageViewCount = (parseInt(sitePageViewCount) + 1).toString();
+  Cookie.set(Constants.CCTriggerSitePageViewCount, sitePageViewCount, undefined, undefined);
+}
+
+let individualPageViewCount = Cookie.get(Constants.CCTriggerIndividualPageViewCount);
+if( individualPageViewCount == null) {
+  Cookie.set(Constants.CCTriggerIndividualPageViewCount, 1, undefined, window.location.href);
+} else {
+  individualPageViewCount = (parseInt(individualPageViewCount) + 1).toString();
+  Cookie.set(Constants.CCTriggerIndividualPageViewCount, individualPageViewCount, undefined, window.location.href);
+}
+
 
 let localCCSDK = {
   init : init,
@@ -25,6 +53,9 @@ class CCSDKEntry {
   scrollbar : Scrollbar;
   config : CCSDKConfig;
   surveyToken : string;
+  triggerInterval : any;
+  triggers : Triggers;
+
   constructor(surveyToken : string, config : CCSDKConfig) {
     this.surveyToken = surveyToken;
     this.config = config;
@@ -57,12 +88,25 @@ class CCSDKEntry {
         // self.dom.setupListeners();
         self.surveyData = surveyData;
         self.util.trigger(document, self.surveyToken + '-ready', {'survey' : self});
+        self.triggers = new Triggers(self);
+
+        //call below functions when survey is locked and loaded.
+        self.triggers.TriggerPopUpByURLPattern(/xyz=33/);
+        self.triggers.TriggerPopUpByUTMParameter();
+        self.triggers.TriggerPopUpByPageCount(3);
+        self.triggerInterval = setInterval(self.triggerHandler, 100, self);
         // cb(surveyData)
         // dom(self);
     });
   }
 
- initSurvey( ){
+  triggerHandler(self) {
+    //survey specific Trigger Handlers
+    self.triggers.TriggerPopUpByTimeSpentOnSite(10);
+    self.triggers.TriggerPopUpByTimeSpentOnPage(10);
+  }
+
+  initSurvey( ){
     let self : CCSDKEntry = this;
     self.survey.attachSurvey(this.surveyData);
     self.dom = new DomSurvey();
@@ -156,3 +200,7 @@ export function trigger(type : string, target : string) {
 // export function prefill(id : string, value : string, valueType : string) {
 //   instances[this.surveyToken].prefill(id, value, valueType);
 // }
+
+// setInterval(function() {
+//   //collect data and add to cookies.
+// }, 1000);

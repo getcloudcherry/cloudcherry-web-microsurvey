@@ -7,7 +7,7 @@ class Cookie {
      * @param days      OPTIONAL Days till this cookie will stay valid. Default is current session
      * @param path      OPTIONAL domain root will be used by default
      */
-    set(name : any, value : any, days : any, path : any) {
+    static set(name : any, value : any, days : any, path : any) {
       if (days) {
           var date = new Date();
               date.setTime(date.getTime()+(days*24*60*60*1000));
@@ -24,7 +24,7 @@ class Cookie {
    * @param name
    * @return String|null
    */
-  get(name) {
+  static get(name) {
       var nameEQ = name + "=";
       var ca = document.cookie.split(';');
       for(var i=0;i < ca.length;i++) {
@@ -40,7 +40,9 @@ class Cookie {
    *
    * @param name
    */
-  delete(name) {
-      this.set(name,"",-1, undefined);
+  static delete(name) {
+    Cookie.set(name,"",-1, undefined);
   }
 }
+
+export { Cookie };
