@@ -1,6 +1,6 @@
 <div class="cc-question-container" data-required="{{isRequired}}" data-type="slider" data-id="{{questionId}}">
     <div class="cc-question-container__text">
-        <p>{{question}}</p>
+        <p><span class="cc-question-container__required-label">{{requiredLabel}}</span>{{question}}</p>
         <span class="cc-question-container__required">Required *</span>
         
     </div>
@@ -9,7 +9,7 @@
             <input type="range" name="" value="" min="{{min}}" max="{{max}}" class="range blue">
             <span class="option-left-rating-text">{{minLabel}}-{{min}}</span>
             <span class="option-right-rating-text">{{maxLabel}}-{{max}}</span>
-            <span class="slider-tip act-slider-tip">{{min}}</span>
+            <!-- <span class="slider-tip act-slider-tip">{{min}}</span> -->
         </div>
     </div>
 </div>

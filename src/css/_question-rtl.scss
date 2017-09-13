@@ -28,6 +28,11 @@ html[dir="rtl"] .cc-question-container__required{
     left: 1%;
     right:initial;
 }
+html[dir="rtl"] .cc-question-container__required-label {
+    top: -2px;
+    right: -2px;
+    left:initial;
+}
 html[dir="rtl"] .cc-question-container__list li{
 	display: inline-block;
     // padding-right: 29px;

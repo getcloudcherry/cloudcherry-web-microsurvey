@@ -225,13 +225,18 @@ class DomSurvey{
 	prevQuestion(){
 		this.qIndex--;
 		if(!this.$questionContainer[this.qIndex]){
-			this.qIndex = this.$questionContainer.length - 1;
+      // this.qIndex = this.$questionContainer.length - 1;
+      this.qIndex = 0;
+			return;
+    }else{
+       //re populate qResponse based on answers.
+      this.qResponse = typeof this.answers[this.qIndex] !== 'undefined' ? JSON.parse(JSON.stringify(this.answers[this.qIndex])) : {};
+		  this.util.removeClassAll(this.$questionContainer,'show-slide');
+		  this.util.addClass(this.$questionContainer[this.qIndex], 'show-slide');
+		  this.updateProgress();
+
     }
-    //re populate qResponse based on answers.
-    this.qResponse = typeof this.answers[this.qIndex] !== 'undefined' ? JSON.parse(JSON.stringify(this.answers[this.qIndex])) : {};
-		this.util.removeClassAll(this.$questionContainer,'show-slide');
-		this.util.addClass(this.$questionContainer[this.qIndex], 'show-slide');
-		this.updateProgress();
+   
 	}
 
   appendInBody(html){
@@ -348,6 +353,11 @@ class DomSurvey{
       let rating : number = this.getAttribute('data-rating');
       self.util.removeClassAll(allOptions, "selected");
       self.util.addClass(this, "selected");
+      let child : any = this.previousSibling;
+      while( ( child = child.previousSibling) != null ){
+        console.log('questionstar', 'previousSiblings', child);
+        self.util.addClass(child, "selected");
+      }
       // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
       // console.log('Star selected',rating);
       self.qResponse.type = 'star';
@@ -366,6 +376,11 @@ class DomSurvey{
       let rating : number = this.getAttribute('data-rating');
       self.util.removeClassAll(allOptions, "selected");
       self.util.addClass(this, "selected");
+      let child : any = this.previousSibling;
+      while( ( child = child.previousSibling) != null ){
+        console.log('questionscale', 'previousSiblings', child);
+        self.util.addClass(child, "selected");
+      }
       // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
       // console.log('Smile selected',rating);
       self.qResponse.type = 'smile';
@@ -374,7 +389,26 @@ class DomSurvey{
       //move to next question automagically
       self.nextQuestion();
     });
+    // let ref2 = this.addListener('mouseover', '#'+qId+' .option-smile-box', function(){
+    //   let allOptions : any = document.querySelectorAll('#'+qId+' .option-smile-box');
+    //   self.util.removeClassAll(allOptions, "selected");
+    //   self.util.addClass(this, "selected");
+    //   let child : any;
+    //   while( ( child = this.previousSibling) != null ){
+    //     self.util.addClass(child, "selected");
+    //   } 
+    // });
+    // let ref2 = this.addListener('mouseout', '#'+qId+' .option-smile-box', function(){
+    //   let allOptions : any = document.querySelectorAll('#'+qId+' .option-smile-box');
+    //   self.util.removeClassAll(allOptions, "selected");
+    //   self.util.addClass(this, "selected");
+    //   let child : any;
+    //   while( ( child = this.previousSibling) != null ){
+    //     self.util.addClass(child, "selected");
+    //   } 
+    // });
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
+    // ref2.internalHandler = this.util.listener(this.$body, ref2.type, ref2.id, ref2.cb);
   }
 
   setupListenersQuestionMultiline( index : number, qId : string ){

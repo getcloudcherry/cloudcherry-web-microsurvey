@@ -23,6 +23,7 @@
     "compression-webpack-plugin": "^1.0.0",
     "css-loader": "^0.28.5",
     "exports-loader": "^0.6.4",
+    "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^0.11.2",
     "html-loader": "^0.5.1",
     "i18n-webpack-plugin": "^1.0.0",
