@@ -335,10 +335,10 @@ class SurveyHandler {
         //get text question template and compile it.
         questionTemplate = templates.question_slider;
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
-        questionTemplate = questionTemplate.replace("{{min}}", optMin[0]);
-        questionTemplate = questionTemplate.replace("{{minLabel}}", optMin[1]);
-        questionTemplate = questionTemplate.replace("{{max}}", optMax[0]);
-        questionTemplate = questionTemplate.replace("{{maxLabel}}", optMax[1]);
+        questionTemplate = questionTemplate.replace(/{{min}}/g, optMin[0]);
+        questionTemplate = questionTemplate.replace(/{{minLabel}}/g, optMin[1]);
+        questionTemplate = questionTemplate.replace(/{{max}}/g, optMax[0]);
+        questionTemplate = questionTemplate.replace(/{{maxLabel}}/g, optMax[1]);
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
       break;
@@ -486,9 +486,6 @@ class SurveyHandler {
     document.removeEventListener('ccclose', this.destroySurveyCb);
     document.removeEventListener('ccdone', this.displayThankYouCb);
     document.removeEventListener('q-answered', this.acceptAnswersCb);
-
-
-
   }
 }
 

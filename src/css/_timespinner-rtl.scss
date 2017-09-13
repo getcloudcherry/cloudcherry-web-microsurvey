@@ -1,0 +1,15 @@
+html[dir="rtl"] .chart canvas {
+	right: 0;
+	left:initial;
+}
+html[dir="rtl"] .loader{
+	right: 28px;
+	left:initial;
+}
+
+@media (min-width: 768px){
+	html[dir="rtl"] .chart canvas{
+		margin-right: 10px;
+		margin-left: 0;
+	}
+}

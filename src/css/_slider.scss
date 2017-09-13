@@ -67,6 +67,23 @@ input[type=range]::-moz-range-thumb:active {
    height: 50px;
    padding-top: 9px;
 }
+.slider-tip{
+    background: #eb1c23;
+    padding: 8px 9px 9px 9px;
+    position: absolute;
+    top: 0;
+    left: 0px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 100%;
+    border-bottom-right-radius: 100%;
+    color: #fff;
+    
+}
+.slider-tip:after{
+    border-width: 5px 5px 0;
+    border-top-color: #000;
+}
 
 
 @media(max-width: 1024px){

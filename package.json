@@ -31,6 +31,7 @@
     "mocha": "^3.5.0",
     "mocha-loader": "^1.1.1",
     "node-sass": "^4.5.3",
+    "rtl-css-loader": "^1.0.1",
     "sass-loader": "^6.0.6",
     "script-loader": "^0.7.0",
     "style-loader": "^0.18.2",
@@ -39,7 +40,8 @@
     "uglifyjs-webpack-plugin": "^0.4.6",
     "url-loader": "^0.5.9",
     "webpack": "^3.5.5",
-    "webpack-dev-server": "^2.7.1"
+    "webpack-dev-server": "^2.7.1",
+    "webpack-rtl-plugin": "^1.6.0"
   },
   "dependencies": {
     "@types/es6-promise": "0.0.33",
