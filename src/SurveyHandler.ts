@@ -60,6 +60,13 @@ class SurveyHandler {
               self.dom.domSelectElements();
               // self.dom.nextQuestion();
             break;
+            case 'nps':
+            response.text = null;
+            response.number = data.data.number;
+            self.postPartialAnswer( data.index, response);
+            self.dom.domSelectElements();
+            // self.dom.nextQuestion();
+            break;
             case 'smile':
               response.text = null;
               response.number = data.data.number;
@@ -341,10 +348,32 @@ class SurveyHandler {
       break;
       case "Scale":
         //get text question template and compile it.
-        questionTemplate = templates.question_scale;
-        questionTemplate = questionTemplate.replace("{{question}}", question.text);
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
-        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+        if(question.questionTags.includes("NPS")) {
+          questionTemplate = templates.question_nps;
+          questionTemplate = questionTemplate.replace("{{question}}", question.text);
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          //construct NPS scale here....
+          let startRange = 0.0;
+          let endRange = 10.0;
+          let options = "";
+          if(question.multiSelect.length > 0) {
+            startRange = parseFloat(question.multiSelect[0].split("-")[0]);
+            endRange = parseFloat(question.multiSelect[0].split("-")[1]);
+          }
+          let divider = (endRange - startRange) / 10.0;
+          let initial = 0.0;
+          for(let initial = startRange ; initial < endRange ; initial += divider) {
+            options += '<span data-rating="'+ initial + '" class="option-number-item option-nps">' + initial + '</span>';
+          }
+          questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
+        } else {
+          questionTemplate = templates.question_scale;
+          questionTemplate = questionTemplate.replace("{{question}}", question.text);
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+        }
+
       break;
       case "Text":
         //get text question template and compile it.

@@ -8,6 +8,7 @@ import  * as QuestionRadio from '../templates/QuestionRadio.html';
 import  * as QuestionRadioMore from '../templates/QuestionRadioMore.html';
 import  * as QuestionRadioImage from '../templates/QuestionRadioImage.html';
 import  * as QuestionScale from '../templates/QuestionScale.html';
+import  * as QuestionNPS from '../templates/QuestionNPS.html';
 import  * as QuestionSelect from '../templates/QuestionSelect.html';
 import  * as QuestionSmile from '../templates/QuestionSmile.html';
 import  * as QuestionStar from '../templates/QuestionStar.html';
@@ -20,6 +21,7 @@ let templates = {
   question_start : "",
   question_text : "",
   question_scale : "",
+  question_nps : "",
   question_multi_line_text : "",
   question_multi_select : "",
   question_radio_more : "",
@@ -44,6 +46,7 @@ templates.question_text = QuestionSingleline;
 
 
 templates.question_scale = QuestionScale;
+templates.question_nps = QuestionNPS;
 
 templates.question_slider = QuestionSlider;
 

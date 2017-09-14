@@ -157,11 +157,13 @@ class DomSurvey{
 		this.util.removeClassAll(this.$questionContainer, 'show-slide');
 		this.util.addClass(this.$questionContainer[0], 'show-slide');
     this.loadQuestionSpecifics(this.$questionContainer[0], 0);
+    let leftIcon : any = this.util.get('.act-cc-button-prev');
+    this.util.addClassAll(leftIcon , 'hide-slide');
 	}
 
 	nextQuestion(){
     //submit the current response
-    console.error('submit ',this.qResponse.type, this.qResponse);
+    console.log('submit ',this.qResponse.type, this.qResponse);
     let isRequired : boolean = false;
     let q : HTMLElement = this.$questionContainer[this.qIndex];
     isRequired = q.getAttribute('data-required').toLowerCase() == 'true' ? true : false;
@@ -215,8 +217,8 @@ class DomSurvey{
       if( !nextQ
         && (this.qIndex > this.$questionContainer.length)){
         //reset the counter to show first question
-        this.qIndex = 0;
-      }
+          this.qIndex = 0;
+        }
         //repopulate qResponse based on answers.
         this.qResponse = typeof this.answers[this.qIndex] !== 'undefined' ? JSON.parse(JSON.stringify(this.answers[this.qIndex])) : {};
         this.util.removeClassAll(this.$questionContainer, 'show-slide');
@@ -227,18 +229,30 @@ class DomSurvey{
           // this.submitQuestion(this.qIndex, 'test', 'multiline');
         // }
     }
+    if(this.qIndex == 0) {
+      let leftIcon : any = this.util.get('.act-cc-button-prev');
+      this.util.addClassAll(leftIcon , 'hide-slide');
+    } else {
+      let leftIcon : any = this.util.get('.act-cc-button-prev');
+      this.util.addClassAll(leftIcon , 'show-slide');
+    }
 	}
 
 	prevQuestion(){
-		this.qIndex--;
+    this.qIndex--;
 		if(!this.$questionContainer[this.qIndex]){
-			this.qIndex = this.$questionContainer.length - 1;
+      this.qIndex = this.$questionContainer.length - 1;
     }
     //re populate qResponse based on answers.
     this.qResponse = typeof this.answers[this.qIndex] !== 'undefined' ? JSON.parse(JSON.stringify(this.answers[this.qIndex])) : {};
 		this.util.removeClassAll(this.$questionContainer,'show-slide');
 		this.util.addClass(this.$questionContainer[this.qIndex], 'show-slide');
-		this.updateProgress();
+    this.updateProgress();
+    //TODO : fix this, I have no clue why this isn't working
+    if(this.qIndex == 0) {
+      let leftIcon : any = this.util.get('.act-cc-button-prev');
+      this.util.addClassAll(leftIcon , 'hide-slide');
+    }
 	}
 
   appendInBody(html){
@@ -279,6 +293,9 @@ class DomSurvey{
         case 'scale':
           this.setupListenersQuestionScale(index, qId);
         break;
+        case 'nps':
+          this.setupListenersQuestionNPS(index, qId);
+        break;
         case 'multiline':
           this.setupListenersQuestionMultiline(index, qId);
           break;
@@ -297,6 +314,8 @@ class DomSurvey{
         case 'slider':
           this.setupListenersQuestionSlider(index, qId);
           break;
+        case 'singleline':
+          this.setupListenersQuestionSingleline(index, qId);
         default:
         break;
     }
@@ -319,6 +338,35 @@ class DomSurvey{
       // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
       // console.log('Scale selected',rating);
       self.qResponse.type = 'scale';
+      self.qResponse.text = null;
+      self.qResponse.number = rating;
+      //move to next question automagically
+      // alert('calling next questions inside scale');
+      self.nextQuestion();
+      // self.util.trigger(document,'q-answered', {
+      //   index : index,
+      //   rating : rating,
+      //   type : 'scale'
+      // });
+    });
+    ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
+  }
+
+  setupListenersQuestionNPS( index : number, qId : string ){
+    var self : DomSurvey = this;
+    //add id too.
+    if(this.checkIfListenerExists('#' + qId + ' span.option-number-item')) {
+      return;
+    }
+    console.log(self.domListeners);
+    let ref = this.addListener('click', '#' + qId + ' span.option-number-item', function(){
+      let allOptions : any = document.querySelectorAll('#' + qId + ' span.option-number-item');
+      let rating : number = this.getAttribute('data-rating');
+      self.util.removeClassAll(allOptions, "selected");
+      self.util.addClass(this, "selected");
+      // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
+      // console.log('Scale selected',rating);
+      self.qResponse.type = 'nps';
       self.qResponse.text = null;
       self.qResponse.number = rating;
       //move to next question automagically

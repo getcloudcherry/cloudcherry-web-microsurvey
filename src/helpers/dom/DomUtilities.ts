@@ -258,5 +258,7 @@ generateRadioImageOptions(arr : any, id : string){
 }
 
 
+//add Math.round
+
 
 export { DomUtilities };

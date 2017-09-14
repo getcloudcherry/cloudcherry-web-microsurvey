@@ -83,7 +83,7 @@ class CCSDKEntry {
     let data = this.survey.fetchQuestions();
     let self : CCSDKEntry = this;
     data.then(function(surveyData) {
-        // console.log(surveyData);
+        console.log(surveyData);
         // self.survey.attachSurvey(surveyData);
         // self.dom = new DomSurvey();
         // self.dom.setTheme(self  .config.themeColor);
