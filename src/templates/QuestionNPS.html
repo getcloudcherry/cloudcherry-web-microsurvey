@@ -1,11 +1,21 @@
-<div class="cc-question-container" data-type="nps" data-id="{{questionId}}" data-required="{{isRequired}}">
+<div class="cc-question-container" data-type="scale" data-id="{{questionId}}" data-required="{{isRequired}}">
   <div class="cc-question-container__text">
-    <p>{{question}}</p>
+    <p><span class="cc-question-container__required-label">{{requiredLabel}}</span>{{question}}</p>
     <span class="cc-question-container__required">Required *</span>
   </div>
-  <div class="cc-question-container__content rating-color act-cc-question-nps" id="{{questionId}}">
+  <div class="cc-question-container__content rating-color act-cc-question-scale" id="{{questionId}}">
     <div class="cc-question-container__list">
-      {{optionsRange}}
+      <span data-rating="0" class="option-number-item option-zero">0</span>
+      <span data-rating="1" class="option-number-item option-one">1</span>
+      <span data-rating="2" class="option-number-item option-two">2</span>
+      <span data-rating="3" class="option-number-item option-three">3</span>
+      <span data-rating="4" class="option-number-item option-four">4</span>
+      <span data-rating="5" class="option-number-item option-five">5</span>
+      <span data-rating="6" class="option-number-item option-six">6</span>
+      <span data-rating="7" class="option-number-item option-seven">7</span>
+      <span data-rating="8" class="option-number-item option-eight">8</span>
+      <span data-rating="9" class="option-number-item option-nine">9</span>
+      <span data-rating="10" class="option-number-item option-ten">10</span>
       <span class="clearfix"></span>
       <span class="option-left-rating-text">Not at all likely</span>
       <span class="option-right-rating-text">Very likely</span>

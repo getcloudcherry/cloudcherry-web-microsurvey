@@ -354,6 +354,13 @@ class SurveyHandler {
           questionTemplate = questionTemplate.replace("{{question}}", question.text);
           questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
           questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+        } else {
+          questionTemplate = templates.question_scale;
+          questionTemplate = questionTemplate.replace("{{question}}", question.text);
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
           //construct NPS scale here....
           let startRange = 0.0;
           let endRange = 10.0;
@@ -368,12 +375,6 @@ class SurveyHandler {
             options += '<span data-rating="'+ initial + '" class="option-number-item option-nps">' + initial + '</span>';
           }
           questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
-        } else {
-          questionTemplate = templates.question_scale;
-          questionTemplate = questionTemplate.replace("{{question}}", question.text);
-          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
-          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
         }
 
       break;
