@@ -1,0 +1,45 @@
+/*cc-question-container color scale css*/
+html[dir="rtl"] .option-number-item{
+	margin-right: 1px;
+    margin-left: 0px;
+    float:right;
+}
+html[dir="rtl"] .cc-question-container__content.rating-color{
+	margin-right: 74px;
+	margin-left: 0px;
+}
+
+html[dir="rtl"] .option-left-rating-text,.option-right-rating-text{
+    right: 0;
+    left:initial;
+}
+html[dir="rtl"] .option-right-rating-text{
+	left: 0;
+	right: auto;
+}
+html[dir="rtl"] .rating-color{
+	position: relative;
+}
+html[dir="rtl"] .option-smile-box img,.option-star-box img{
+	margin-right: 29px;
+	margin-left: 0px;
+}
+html[dir="rtl"] .option-star-box img{
+	margin-left: 19px;
+	margin-right: 0px;
+}
+
+@media (min-width: 768px) and (max-width: 992px){
+	html[dir="rtl"] .option-smile-box img, html[dir="rtl"]  .option-star-box img {
+	    margin-left: 0px;
+	    margin-right: 10px;
+    }
+}
+@media (max-width: 768px){
+	html[dir="rtl"] .option-smile-box img, html[dir="rtl"] .option-star-box img{
+		padding-right: 0px;
+		padding-left : 5px;
+		margin-right: 0;
+		margin-left: 0;
+	}
+}

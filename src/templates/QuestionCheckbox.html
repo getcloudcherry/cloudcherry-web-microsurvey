@@ -1,8 +1,8 @@
 <div class="cc-question-container" data-type="checkbox" data-id="{{questionId}}" data-required="{{isRequired}}">
   <div class="cc-question-container__text">
-    <p>{{question}}</p>
+    <p><span>{{requiredLabel}}</span>{{question}}</p>
     <span class="cc-question-container__required">Required *</span>
-    
+
   </div>
   <div class="cc-question-container__content cc-big-list-container" id="{{questionId}}">
     <ul class="cc-question-container__list" >
@@ -32,7 +32,7 @@
       </li>
       <li>
         <div class="cc-checkbox">
-          <input type="checkbox" value="Buy a" name="" id="check-four" checked>
+          <input type="checkbox" value="Buy a" name="" id="check-four">
           <label class="ui checkbox" for="check-four"></label>
         </div>
             <span><label for="check-four">Buy a product</label></span>

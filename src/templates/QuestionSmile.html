@@ -1,16 +1,16 @@
 <div class="cc-question-container" data-type="smile" data-required="{{isRequired}}" data-id="{{questionId}}">
   <div class="cc-question-container__text">
-    <p>{{question}}</p>
+    <p><span class="cc-question-container__required-label">{{requiredLabel}}</span>{{question}}</p>
     <span class="cc-question-container__required">Required *</span>
     
   </div>
   <div class="cc-question-container__content rating-color" id="{{questionId}}">
     <div class="cc-question-container__list">
-      <span class="option-smile-box" data-rating="1"><img src="images/Sad_Smilie.svg"></span>
-      <span class="option-smile-box" data-rating="2"><img src="images/StraightFace_smilie.svg"></span>
-      <span class="option-smile-box" data-rating="3"><img src="images/MEh_smilie.svg"></span>
-      <span class="option-smile-box" data-rating="4"><img src="images/Similing_Smilie.svg"></span>
-      <span class="option-smile-box" data-rating="5"><img src="images/Happy_Smilie.svg"></span>
+      <span class="option-smile-box sad" data-rating="1"></span>
+      <span class="option-smile-box straight" data-rating="2"></span>
+      <span class="option-smile-box meh" data-rating="3"></span>
+      <span class="option-smile-box smiling" data-rating="4"></span>
+      <span class="option-smile-box happy" data-rating="5"></span>
     </div>
   </div>
 </div>

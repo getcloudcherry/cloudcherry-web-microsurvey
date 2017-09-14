@@ -2,6 +2,8 @@ const path = require('path');
 const webpack = require('webpack');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const CompressionPlugin = require("compression-webpack-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const WebpackRTLPlugin = require('webpack-rtl-plugin');
 
 var I18nPlugin = require("i18n-webpack-plugin");
 var languages = {
@@ -44,7 +46,23 @@ let config = Object.keys(languages).map(function(language) {
         //   loader: 'imports-loader?this=>window'
         // },
         // { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" },
-        { test: /\.css$/, use: [ 'style-loader', 'css-loader'] , exclude: /node_modules/ },
+        { 
+          test: /\.css$/, 
+          use: [ 
+            'style-loader',
+            // 'css-loader', 
+            'rtl-css-loader'
+          ] ,
+           exclude: /node_modules/ 
+        },
+        
+        {
+          test: /\.css$/,
+          use: ExtractTextPlugin.extract({
+            // fallback: "style-loader",
+            use: "rtl-css-loader"
+          })
+        },
 				// {
 				// 	test: /\.svg$/,
         // 	loader: 'svg-inline-loader'
@@ -71,11 +89,12 @@ let config = Object.keys(languages).map(function(language) {
           use: [{
               loader: "style-loader" // creates style nodes from JS strings
           }, {
-              loader: "css-loader" // translates CSS into CommonJS
+              loader: "rtl-css-loader" // translates CSS into CommonJS
           }, {
               loader: "sass-loader" // compiles Sass to CSS
           }]
         },
+        
         { test: /test\.ts$/, use: 'mocha-loader', exclude: /node_modules/ },
         { test: /\.tsx?$/, use: 'awesome-typescript-loader', exclude: /node_modules/ },
       ]
@@ -97,5 +116,10 @@ let config = Object.keys(languages).map(function(language) {
     }
   }
 });
+
+config.plugins = [
+  new ExtractTextPlugin('css/main.scss'),
+  new WebpackRTLPlugin()
+];
 
 module.exports = config;
