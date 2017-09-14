@@ -415,6 +415,11 @@ class DomSurvey{
       let rating : number = this.getAttribute('data-rating');
       self.util.removeClassAll(allOptions, "selected");
       self.util.addClass(this, "selected");
+      let child : any = this.previousSibling;
+      while( ( child = child.previousSibling) != null ){
+        console.log('questionstar', 'previousSiblings', child);
+        self.util.addClass(child, "selected");
+      }
       // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
       // console.log('Star selected',rating);
       self.qResponse.type = 'star';
@@ -436,6 +441,11 @@ class DomSurvey{
       let rating : number = this.getAttribute('data-rating');
       self.util.removeClassAll(allOptions, "selected");
       self.util.addClass(this, "selected");
+      let child : any = this.previousSibling;
+      while( ( child = child.previousSibling) != null ){
+        console.log('questionscale', 'previousSiblings', child);
+        self.util.addClass(child, "selected");
+      }
       // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
       // console.log('Smile selected',rating);
       self.qResponse.type = 'smile';

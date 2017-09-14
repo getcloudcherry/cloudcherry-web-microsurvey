@@ -339,12 +339,13 @@ class SurveyHandler {
         //get text question template and compile it.
         questionTemplate = templates.question_slider;
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
-        questionTemplate = questionTemplate.replace("{{min}}", optMin[0]);
-        questionTemplate = questionTemplate.replace("{{minLabel}}", optMin[1]);
-        questionTemplate = questionTemplate.replace("{{max}}", optMax[0]);
-        questionTemplate = questionTemplate.replace("{{maxLabel}}", optMax[1]);
+        questionTemplate = questionTemplate.replace(/{{min}}/g, optMin[0]);
+        questionTemplate = questionTemplate.replace(/{{minLabel}}/g, optMin[1]);
+        questionTemplate = questionTemplate.replace(/{{max}}/g, optMax[0]);
+        questionTemplate = questionTemplate.replace(/{{maxLabel}}/g, optMax[1]);
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
       break;
       case "Scale":
         //get text question template and compile it.
@@ -372,6 +373,7 @@ class SurveyHandler {
           questionTemplate = questionTemplate.replace("{{question}}", question.text);
           questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
           questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
         }
 
       break;
@@ -381,6 +383,7 @@ class SurveyHandler {
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
 
       break;
       case "MultilineText":
@@ -389,6 +392,7 @@ class SurveyHandler {
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
 
       break;
       case "MultiSelect":
@@ -404,6 +408,7 @@ class SurveyHandler {
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
 
       break;
       case "Select":
@@ -439,6 +444,7 @@ class SurveyHandler {
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
         // console.log(questionTemplate);
 
       break;
@@ -448,6 +454,7 @@ class SurveyHandler {
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
       break;
       case "Star-5":
         //get text question template and compile it.
@@ -455,6 +462,7 @@ class SurveyHandler {
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
       break;
     }
     return questionTemplate;

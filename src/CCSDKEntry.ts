@@ -6,6 +6,7 @@ import { Scrollbar } from "./helpers/dom/Scrollbar";
 import { Triggers } from './Triggers';
 import { Cookie } from './helpers/Cookie';
 import { Constants } from './Constants';
+import { Slider } from "./helpers/dom/Slider";
 /**
  * functions that are exposed to SDK User are written here.
  * Entry point for CCSDK.
@@ -51,6 +52,7 @@ class CCSDKEntry {
   surveyData : any;
   util : DomUtilities;
   scrollbar : Scrollbar;
+  slider : Slider;
   config : CCSDKConfig;
   surveyToken : string;
   triggerInterval : any;
@@ -75,8 +77,17 @@ class CCSDKEntry {
     //set themeColor of survey
     this.config.themeColor = ( this.config && this.config.themeColor )?
       this.config.themeColor:"#db3c39";
-      this.getSurveyData();
+      //use config variable textDirection and set dir
+    this.setHtmlTextDirection();
+    this.getSurveyData();
       // console.log(this.config);
+  }
+
+  setHtmlTextDirection(){
+    let htmlDir : string = document.getElementsByTagName('html')[0].getAttribute('dir');
+    let direction : string = ( this.config && this.config.textDirection )?
+    this.config.textDirection:(htmlDir?htmlDir:"ltr");
+    document.getElementsByTagName('html')[0].setAttribute('dir', direction);
   }
 
   getSurveyData(){
@@ -138,12 +149,14 @@ class CCSDKEntry {
           // console.log('click trigger');
           self.initSurvey();
           Scrollbar.initAll();
+          self.slider = new Slider();
         });
         break;
       case 'launch':
         self.initSurvey();
         Scrollbar.initAll();
-      default:
+          self.slider = new Slider();
+          default:
         break;
     }
   }

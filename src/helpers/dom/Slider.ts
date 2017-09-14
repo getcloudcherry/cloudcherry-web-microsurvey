@@ -7,17 +7,20 @@ class Slider{
 
   constructor(){
    this.inputRange = document.getElementsByClassName('range')[0];
-   this.maxValue = 100; // the higher the smoother when dragging
+  //  this.maxValue = 100; // the higher the smoother when dragging
    this.speed = 5;
 
   // set min/max value
-  this.inputRange.min = 0;
-  this.inputRange.max = this.maxValue;
+  // this.inputRange.min = 0;
+  this.inputRange.min = this.inputRange.getAttribute('min');
+  // this.inputRange.max = this.maxValue;
+  this.inputRange.max = this.inputRange.getAttribute('max');
   this.setupListeners();
   }
 
   setupListeners(){
     let self : Slider = this;
+    // let rangeTip : any = self.inputRange.parentNode.querySelectorAll(".act-slider-tip")[0];
     // bind events
     // this.inputRange.addEventListener('mousedown', this.unlockStartHandler, false);
     // this.inputRange.addEventListener('mousestart', this.unlockStartHandler, false);
@@ -47,6 +50,10 @@ class Slider{
     if (this.value < 60) {
        self.inputRange.classList.remove('pink');
     }
+    // rangeTip.innerHTML = this.value;
+    // rangeTip.style.left = (this.value/self.inputRange.max)*100 +"%" ;
+    // console.log(rangeTip.style.left);
+    // rangeTip.style.left = "calc("+rangeTip.style.left+")";
     });
   }
 
@@ -106,3 +113,5 @@ class Slider{
 
 
 }
+
+export { Slider };
