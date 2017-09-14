@@ -214,3 +214,12 @@
 		margin-right: 0;
 	}
 }
+
+.option-number-item.option-nps{
+	background: #4db47c;
+}
+
+.option-number-item.option-nps.selected,
+.option-number-item.option-nps:hover{
+	background: #712827;
+}
