@@ -55,10 +55,12 @@ class CCSDKEntry {
   surveyToken : string;
   triggerInterval : any;
   triggers : Triggers;
+  surveyRunning : boolean;
 
   constructor(surveyToken : string, config : CCSDKConfig) {
     this.surveyToken = surveyToken;
     this.config = config;
+    this.surveyRunning = false;
     this.setupSurvey();
     // this.trigger(undefined, undefined);
 
@@ -88,13 +90,15 @@ class CCSDKEntry {
         // self.dom.setupListeners();
         self.surveyData = surveyData;
         self.util.trigger(document, self.surveyToken + '-ready', {'survey' : self});
+
+
         self.triggers = new Triggers(self);
 
         //call below functions when survey is locked and loaded.
-        self.triggers.TriggerPopUpByURLPattern(/xyz=33/);
-        self.triggers.TriggerPopUpByUTMParameter();
+        // self.triggers.TriggerPopUpByURLPattern(/xyz=33/);
+        // self.triggers.TriggerPopUpByUTMParameter();
         self.triggers.TriggerPopUpByPageCount(3);
-        self.triggerInterval = setInterval(self.triggerHandler, 100, self);
+        self.triggerInterval = setInterval(self.triggerHandler, 1000, self);
         // cb(surveyData)
         // dom(self);
     });
@@ -102,12 +106,21 @@ class CCSDKEntry {
 
   triggerHandler(self) {
     //survey specific Trigger Handlers
+    // self.surveyRunning = self.util.get('#' + self.surveyToken  + "-survey").length == 1;
+    Cookie.set(Constants.CCTriggerPageElapsedTime, new Date(), undefined, window.location.href);
+    Cookie.set(Constants.CCTriggerSiteElapsedTime, new Date(), undefined, undefined);
     self.triggers.TriggerPopUpByTimeSpentOnSite(10);
+    // self.surveyRunning = self.util.get('#' + self.surveyToken  + "-survey").length == 1;
     self.triggers.TriggerPopUpByTimeSpentOnPage(10);
+    
   }
 
-  initSurvey( ){
+  initSurvey() {
+    //if survey already run don't run?
+    //if default trigger initiated and survey already run then don't run.
     let self : CCSDKEntry = this;
+    if(!self.surveyRunning)
+      self.surveyRunning = true;
     self.survey.attachSurvey(this.surveyData);
     self.dom = new DomSurvey();
     self.dom.setTheme(self.config.themeColor);

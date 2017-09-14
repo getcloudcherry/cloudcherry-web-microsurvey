@@ -63,7 +63,7 @@ class DomSurvey{
   }
 
 
-  addListener(type, id, cb) {
+  addListener(type : string, id : string, cb : any) {
     let ref : any =  {
       id : id,
       type : type,
@@ -74,7 +74,14 @@ class DomSurvey{
     return ref;
   }
 
-
+  checkIfListenerExists(id : string) : boolean {
+    for(let listener of this.domListeners) {
+      if(listener.id == id) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   setupListeners(){
     let self = this;
@@ -299,8 +306,13 @@ class DomSurvey{
 
   setupListenersQuestionScale( index : number, qId : string ){
     var self : DomSurvey = this;
-    let ref = this.addListener('click', '.act-cc-question-scale span.option-number-item', function(){
-      let allOptions : any = document.querySelectorAll('.act-cc-question-scale span.option-number-item');
+    //add id too.
+    if(this.checkIfListenerExists('#' + qId + ' span.option-number-item')) {
+      return;
+    }
+    console.log(self.domListeners);
+    let ref = this.addListener('click', '#' + qId + ' span.option-number-item', function(){
+      let allOptions : any = document.querySelectorAll('#' + qId + ' span.option-number-item');
       let rating : number = this.getAttribute('data-rating');
       self.util.removeClassAll(allOptions, "selected");
       self.util.addClass(this, "selected");
@@ -310,6 +322,7 @@ class DomSurvey{
       self.qResponse.text = null;
       self.qResponse.number = rating;
       //move to next question automagically
+      // alert('calling next questions inside scale');
       self.nextQuestion();
       // self.util.trigger(document,'q-answered', {
       //   index : index,
@@ -322,6 +335,9 @@ class DomSurvey{
 
   setupListenersQuestionCheckbox( index : number, qId : string ){
     var self : DomSurvey = this;
+    if(this.checkIfListenerExists('#'+qId+' .cc-checkbox')) {
+      return;
+    }
     let ref = this.addListener('click', '#'+qId+' .cc-checkbox', function(){
       // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox input');
       // let rating : number = this.querySelectorAll('input')[0].value;
@@ -343,6 +359,9 @@ class DomSurvey{
 
   setupListenersQuestionStar(index : number, qId : string ){
     var self : DomSurvey = this;
+    if(this.checkIfListenerExists('#'+qId+' .option-star-box')) {
+      return;
+    }
     let ref = this.addListener('click', '#'+qId+' .option-star-box', function(){
       let allOptions : any = document.querySelectorAll('#'+qId+' .option-star-box');
       let rating : number = this.getAttribute('data-rating');
@@ -361,6 +380,9 @@ class DomSurvey{
 
   setupListenersQuestionSmile(index : number, qId : string ){
     var self : DomSurvey = this;
+    if(this.checkIfListenerExists('#'+qId+' .option-smile-box')) {
+      return;
+    }
     let ref = this.addListener('click', '#'+qId+' .option-smile-box', function(){
       let allOptions : any = document.querySelectorAll('#'+qId+' .option-smile-box');
       let rating : number = this.getAttribute('data-rating');
@@ -380,6 +402,9 @@ class DomSurvey{
   setupListenersQuestionMultiline( index : number, qId : string ){
     let self : DomSurvey = this;
     let multilineRes : string = '';
+    if(this.checkIfListenerExists('#'+qId)) {
+      return;
+    }
     let ref = this.addListener('change', '#'+qId,function(){
       multilineRes = this.value;
       self.qResponse.type = 'multiline';
@@ -392,6 +417,9 @@ class DomSurvey{
   setupListenersQuestionSingleline( index : number, qId : string ){
     let self : DomSurvey = this;
     let singlelineRes : string = '';
+    if(this.checkIfListenerExists('#'+qId)) {
+      return;
+    }
     let ref = this.addListener('change', '#'+qId,function(){
       singlelineRes = this.value;
       self.qResponse.type = 'singleline';
@@ -404,6 +432,9 @@ class DomSurvey{
   setupListenersQuestionSlider( index : number, qId : string ){
     let self : DomSurvey = this;
     let sliderRes : string = '';
+    if(this.checkIfListenerExists('#' + qId + " input")) {
+      return;
+    }
     let ref = this.addListener("change", '#' + qId + " input", function(){
       sliderRes = this.value;
       self.qResponse.type = 'slider';
@@ -417,6 +448,9 @@ class DomSurvey{
 
   setupListenersQuestionSelect( index : number, qId : string ){
     let self : DomSurvey = this;
+    if(this.checkIfListenerExists('#'+qId+" .cc-select-options .cc-select-option")) {
+      return;
+    }
     if(!self.util.arrayContains.call(self.trackSelects, qId)){
       self.select = new Select(qId);
       self.select.init(qId);

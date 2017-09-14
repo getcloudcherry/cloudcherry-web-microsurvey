@@ -24,10 +24,10 @@ class Triggers {
     if(pageCount == NaN) {
       pageCount = 0;
     }
-    if(!this.pageCountTrigger && pageCount > minPageCount) {
+    if(!this.ccsdk.surveyRunning && !this.pageCountTrigger && pageCount > minPageCount) {
       this.pageCountTrigger = true;
       //displayQuestion
-      this.ccsdk.survey.displayWelcomeQuestion();
+      this.ccsdk.initSurvey();
     } else {
       //already executed.
       //or condition not satisified yet.
@@ -38,10 +38,10 @@ class Triggers {
     let pageStartTime = new Date(Cookie.get(Constants.CCTriggerPageStartTime)).getTime();
     let pageTime = new Date(Cookie.get(Constants.CCTriggerPageElapsedTime)).getTime();
 
-    if(!this.pageTimeTrigger && Math.round((pageTime - pageStartTime) / 1000) > minPageTime ) {
+    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyRunning && !this.pageTimeTrigger && Math.round((pageTime - pageStartTime) / 1000) > minPageTime ) {
       this.pageTimeTrigger = true;
       //displayQuestion
-      this.ccsdk.survey.displayWelcomeQuestion();
+      this.ccsdk.initSurvey();
     } else {
       //already executed.
       //or condition not satisified yet.
@@ -50,12 +50,12 @@ class Triggers {
 
   TriggerPopUpByTimeSpentOnSite(minSiteTime : number) {
     let siteStartTime = new Date(Cookie.get(Constants.CCTriggerSiteStartTime)).getTime();
-    let pageTime = new Date(Cookie.get(Constants.CCTriggerSiteElapsedTime)).getTime();
+    let siteTime = new Date(Cookie.get(Constants.CCTriggerSiteElapsedTime)).getTime();
 
-    if(!Triggers.siteTimeTrigger && Math.round((pageTime - siteStartTime) / 1000) > minSiteTime ) {
+    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyRunning && !Triggers.siteTimeTrigger && Math.round((siteTime - siteStartTime) / 1000) > minSiteTime ) {
       Triggers.siteTimeTrigger = true;
       //displayQuestion
-      this.ccsdk.survey.displayWelcomeQuestion();
+      this.ccsdk.initSurvey();
     } else {
       //already executed.
       //or condition not satisified yet.
@@ -68,9 +68,10 @@ class Triggers {
 
   TriggerPopUpByScrollPercentage(minScrollPercent : number, scrollNow : number, totalScroll : number) {
     let scrollPercent = scrollNow / totalScroll;
-    if(!Triggers.scrollPercentageTrigger && scrollPercent > minScrollPercent) {
+    if(!this.ccsdk.surveyRunning && !Triggers.scrollPercentageTrigger && scrollPercent > minScrollPercent) {
       Triggers.scrollPercentageTrigger = true;
-      this.ccsdk.survey.displayWelcomeQuestion();
+      this.ccsdk.initSurvey();
+      // this.ccsdk.initSurvey();
     } else {
       //already executed?
       //or condition not satisified yet.
@@ -79,16 +80,16 @@ class Triggers {
 
   //run only once?
   TriggerPopUpByURLPattern(inUrl : RegExp) {
-    if(!Triggers.urlParamTrigger && window.location.href.match(inUrl)) {
+    if(!this.ccsdk.surveyRunning && !Triggers.urlParamTrigger && window.location.href.match(inUrl)) {
       Triggers.urlParamTrigger = true;
-      this.ccsdk.survey.displayWelcomeQuestion();
+      this.ccsdk.initSurvey();
     } else {
 
     }
   }
 
   TriggerPopUpByUTMParameter() {
-
+    let utmVal = Cookie.getParameterByName("utm", undefined);
   }
 
   resetTriggers() {

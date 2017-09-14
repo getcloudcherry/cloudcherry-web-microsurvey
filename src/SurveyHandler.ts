@@ -5,8 +5,6 @@ import { templates } from "./helpers/Templates";
 import { DomUtilities } from "./helpers/dom/DomUtilities";
 import { DomSurvey } from "./helpers/dom/DomSurvey";
 
-// console.log($);
-// console.log($);
 class SurveyHandler {
   surveyToken : string;
   surveyData : any;
@@ -50,8 +48,8 @@ class SurveyHandler {
 
     this.acceptAnswersCb = ( e : any ) => {
         let self : SurveyHandler = this;
-        console.log(self);
-        console.log('question answered',e)
+        // console.log(self);
+        // console.log('question answered',e)
           let data : any = <any>e.detail;
           let response : any = {};
           switch(data.type){
@@ -79,7 +77,7 @@ class SurveyHandler {
             case 'multiline':
               response.text = data.data.text;
               response.number = null;
-              console.log(data);
+              // console.log(data);
               self.postPartialAnswer( data.index, response);
               self.dom.domSelectElements();
               self.dom.setQIndex(data.index);
@@ -88,7 +86,7 @@ class SurveyHandler {
             case 'singleline':
               response.text = data.data.text;
               response.number = null;
-              console.log(data);
+              // console.log(data);
               self.postPartialAnswer( data.index, response);
               self.dom.domSelectElements();
               self.dom.setQIndex(data.index);
@@ -97,7 +95,7 @@ class SurveyHandler {
             case 'checkbox':
               response.text = data.data.text;
               response.number = null;
-              console.log(data);
+              // console.log(data);
               self.postPartialAnswer( data.index, response);
               self.dom.domSelectElements();
               self.dom.setQIndex(data.index);
@@ -106,7 +104,7 @@ class SurveyHandler {
             case 'select':
               response.text = data.data.text;
               response.number = data.data.number;
-              console.log(data);
+              // console.log(data);
               self.postPartialAnswer( data.index, response);
               self.dom.domSelectElements();
               self.dom.setQIndex(data.index);
@@ -115,7 +113,7 @@ class SurveyHandler {
             case 'slider':
               response.text = data.data.text;
               response.number = data.data.number;
-              console.log(data);
+              // console.log(data);
               self.postPartialAnswer( data.index, response);
               self.dom.domSelectElements();
               self.dom.setQIndex(data.index);
@@ -133,7 +131,7 @@ class SurveyHandler {
     surveyUrl = surveyUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyUrl = Config.API_URL + surveyUrl;
     let data = RequestHelper.get(surveyUrl);
-    console.log(data);
+    // console.log(data);
     return data;
     // this.surveyData = data.then(function();
     // console.log(this.surveyData);
@@ -161,7 +159,7 @@ class SurveyHandler {
     welcomeHtml = welcomeHtml.replace("{{surveyToken}}", this.surveyToken);
     welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
     welcomeHtml = welcomeHtml.replace("{{button}}", 'Start');
-    console.log("Appending in body");
+    // console.log("Appending in body");
     this.dom.appendInBody(welcomeHtml);
     this.dom.showWelcomeContainer();
     this.acceptAnswers();
@@ -205,7 +203,7 @@ class SurveyHandler {
 
   acceptAnswers(){
     let self : SurveyHandler = this;
-    console.log('add question answered listener')
+    // console.log('add question answered listener')
     document.addEventListener('q-answered', this.acceptAnswersCb);
   }
 
@@ -243,7 +241,6 @@ class SurveyHandler {
     surveyPartialUrl = surveyPartialUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyPartialUrl = Config.API_URL + surveyPartialUrl;
     return RequestHelper.post(surveyPartialUrl, this.prefillResponses);
-    // console.log(await result);
   }
 
   updatePrefillResponseById(id : any, resp : any) {
@@ -279,7 +276,7 @@ class SurveyHandler {
     let question : any = this.questionsToDisplay[index];
     if(typeof question === 'undefined') {
       //now?
-      return console.log("No Partial Remaining");
+      // return console.log("No Partial Remaining");
     }
     let data : any = {
       questionId : question.id,
@@ -291,7 +288,7 @@ class SurveyHandler {
     //   this.answers.push(data);
     //   return;
     // }
-    console.log("Submitting for : " + index);
+    // console.log("Submitting for : " + index);
     let surveyPartialUrl = Config.SURVEY_PARTIAL_RESPONSE.replace("{id}", this.surveyData.partialResponseId);
     //if this is the last of displayed question
     if(question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id) {
@@ -325,7 +322,7 @@ class SurveyHandler {
     let self : SurveyHandler = this;
     //get question type
     let questionTemplate;
-    console.log(question);
+    // console.log(question);
 
     switch(question.displayType) {
       case "Slider":
@@ -369,7 +366,7 @@ class SurveyHandler {
         let acTemplate : string ;
         //get text question template and compile it.
         if(question.displayStyle == 'radiobutton/checkbox'){
-          console.log(question.displayStyle);
+          // console.log(question.displayStyle);
           acTemplate = templates.question_checkbox;
         }else{
            acTemplate = templates.question_multi_select;
@@ -387,22 +384,22 @@ class SurveyHandler {
         let options2 : string ;
         //get text question template and compile it.
         if(question.displayStyle == 'radiobutton/checkbox'){
-          console.log('select type 1');
-          console.log(question.displayStyle);
+          // console.log('select type 1');
+          // console.log(question.displayStyle);
           acTemplate1 = templates.question_radio;
           questionTemplate = acTemplate1;
         }else{
           let checkOptionContainsImage : boolean = self.util.checkOptionContainsImage(question.multiSelect);
-          console.log('select radio image',checkOptionContainsImage);
+          // console.log('select radio image',checkOptionContainsImage);
           if(checkOptionContainsImage){
-            console.log('select type 2');
+            // console.log('select type 2');
             acTemplate2 = templates.question_radio_image;
             options2 = self.util.generateRadioImageOptions(question.multiSelect, question.id);
-            console.log(options2);
+            // console.log(options2);
             questionTemplate = acTemplate2;
             questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
           }else{
-            console.log('select type 3');
+            // console.log('select type 3');
             acTemplate1 = templates.question_select;
             options1 = self.util.generateSelectOptions(question.multiSelect);
             questionTemplate = acTemplate1;
@@ -413,7 +410,7 @@ class SurveyHandler {
         questionTemplate = questionTemplate.replace("{{question}}", question.text);
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-        console.log(questionTemplate);
+        // console.log(questionTemplate);
 
       break;
       case "Smile-5":
