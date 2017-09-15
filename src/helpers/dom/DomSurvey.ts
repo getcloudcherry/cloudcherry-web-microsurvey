@@ -159,8 +159,6 @@ class DomSurvey{
     this.loadQuestionSpecifics(this.$questionContainer[0], 0);
     let leftIcon : any = this.util.get('.act-cc-button-prev');
     this.util.addClassAll(leftIcon , 'hide-slide');
-
-    
 	}
 
 	nextQuestion(){
