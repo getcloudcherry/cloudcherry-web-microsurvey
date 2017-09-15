@@ -308,8 +308,10 @@ class DomSurvey{
           this.setupListenersQuestionSelect(index, qId);
           break;
         case 'radio':
-        case 'radioImage':
         this.setupListenersQuestionRadio(index, qId);
+        break;        
+        case 'radioImage':
+        this.setupListenersQuestionRadioImage(index, qId);
         break;
         case 'checkbox':
           this.setupListenersQuestionCheckbox(index, qId);
@@ -429,6 +431,27 @@ class DomSurvey{
       self.qResponse.type = 'radio';
       self.qResponse.text = null;
       self.qResponse.number = rating;
+      //move to next question automagically
+      self.nextQuestion();
+    });
+    ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
+  }
+
+  setupListenersQuestionRadioImage(index : number, qId : string ){
+    var self : DomSurvey = this;
+    if(this.checkIfListenerExists('#'+qId+' .cc-checkbox input')) {
+      return;
+    }
+    let ref = this.addListener('click', '#'+qId+' .cc-checkbox input', function(){
+      // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox');
+      let rating : number = this.value;
+      // self.util.removeClassAll(allOptions, "selected");
+      // self.util.addClass(this, "selected");
+      // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
+      // console.log('Star selected',rating);
+      self.qResponse.type = 'radioImage';
+      self.qResponse.text = rating;
+      self.qResponse.number = null;
       //move to next question automagically
       self.nextQuestion();
     });

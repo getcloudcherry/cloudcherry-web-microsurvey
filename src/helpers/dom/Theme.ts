@@ -46,6 +46,28 @@ class Theme{
 		.cc-question-container__required-label{\
 			color: '+brandColor+';\
 		}\
+		input[type="range"]::-webkit-slider-runnable-track{\
+			background: '+brandColor+' !important;\
+			   background: -moz-linear-gradient(-45deg, '+brandColor+' 0%, '+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+' 100%)!important;\
+			   background: -webkit-linear-gradient(-45deg, '+brandColor+' 0%,'+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+' 100%)!important;\
+			   background: linear-gradient(135deg, '+brandColor+' 0%,'+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+' 100%)!important;\
+			   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='+brandColor+ ', endColorstr='+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+',GradientType=1 );\
+		   }\
+		input[type="range"]::-moz-range-track {\
+			background: '+brandColor+' !important;\
+			background: -moz-linear-gradient(-45deg, '+brandColor+' 0%, '+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+' 100%)!important;\
+			background: -webkit-linear-gradient(-45deg, '+brandColor+' 0%,'+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+' 100%)!important;\
+			background: linear-gradient(135deg, '+brandColor+' 0%,'+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+' 100%)!important;\
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='+brandColor+ ', endColorstr='+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+',GradientType=1 );\
+		}\
+		   input[type="range"]::-webkit-slider-thumb{\
+			border: 1px solid '+brandColor+' ;\
+			background-color: #fff;\
+		   }\
+		   input[type="range"]::-moz-range-thumb {\
+			border: 1px solid '+brandColor+' ;\
+			background-color: #fff;\
+		   }\
 		 @media (max-width: 768px){\
 	 			.overlay.glass{\
 	 			background-color:rgba(255,255,255,.85);\

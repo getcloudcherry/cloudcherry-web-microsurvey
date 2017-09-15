@@ -63,7 +63,7 @@
 .cc-popup-container-2{
 	/* box-shadow: 0 0 4px 5px rgba(0,0,0,0.05); */
 	height: 144px;
-	padding: 8px;
+	// padding: 8px;
 	position: fixed;
 	width: 100%;
 	z-index: 1111;
@@ -83,7 +83,7 @@
 	left: 0;
 }
 .cc-popup-container__back {
-	background-image: url(../images/Back_Icon_.svg);
+	background-image: url(http://localhost:8080/images/Back_Icon_.svg);
 	display: inline-block;
     width: 21px;
     height: 21px;
@@ -216,7 +216,7 @@
 }
 
 .hl.dropdown{
-	background-image: url(../images/arrow-down.black.svg);
+	background-image: url('http://localhost:8080/images/arrow-down.black.svg');
 	background-position: 97% center;
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #6d6d6d;

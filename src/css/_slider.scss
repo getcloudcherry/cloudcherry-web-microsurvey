@@ -91,3 +91,8 @@ input[type=range]::-moz-range-thumb:active {
        width: 100%;
     }
 }
+
+input.range.blue::-moz-range-track,
+input.range.blue::-webkit-slider-runnable-track  {
+    background:blue;
+}

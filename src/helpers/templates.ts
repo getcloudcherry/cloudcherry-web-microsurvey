@@ -14,6 +14,7 @@ import  * as QuestionSmile from '../templates/QuestionSmile.html';
 import  * as QuestionStar from '../templates/QuestionStar.html';
 import  * as QuestionSlider from '../templates/QuestionSlider.html';
 import  * as OptionRadioImage from '../templates/OptionRadioImage.html';
+import  * as OptionCheckbox from '../templates/OptionCheckbox.html';
 import  * as ThankYou from '../templates/ThankYou.html';
 
 let templates = {
@@ -33,6 +34,7 @@ let templates = {
   question_star_5 : "",
   question_slider : "",
   option_radio_image : "",
+  option_checkbox : "",
   thankyou : "",
 
 };
@@ -72,6 +74,7 @@ templates.question_radio_more = QuestionRadioMore;
 
 templates.question_radio_image = QuestionRadioImage;
 templates.option_radio_image = OptionRadioImage;
+templates.option_checkbox = OptionCheckbox;
 
 templates.thankyou = ThankYou;
 

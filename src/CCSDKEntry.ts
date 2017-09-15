@@ -1,4 +1,5 @@
 import { CCSDKConfig } from "./interfaces/CCSDKConfig";
+import { DisplayConfig } from "./interfaces/DisplayConfig";
 import { SurveyHandler } from "./SurveyHandler";
 import { DomSurvey } from "./helpers/dom/DomSurvey";
 import { DomUtilities } from "./helpers/dom/DomUtilities";
@@ -76,9 +77,10 @@ class CCSDKEntry {
     //this.surveyToken = this.surveyToken;
     //set themeColor of survey
     this.config.themeColor = ( this.config && this.config.themeColor )?
-      this.config.themeColor:"#db3c39";
+    this.config.themeColor:"#db3c39";
       //use config variable textDirection and set dir
     this.setHtmlTextDirection();
+    this.setDisplayOptions();
     this.getSurveyData();
       // console.log(this.config);
   }
@@ -88,6 +90,17 @@ class CCSDKEntry {
     let direction : string = ( this.config && this.config.textDirection )?
     this.config.textDirection:(htmlDir?htmlDir:"ltr");
     document.getElementsByTagName('html')[0].setAttribute('dir', direction);
+  }
+
+  setDisplayOptions(){
+    this.survey.surveyDisplay.position =  this.config && this.config.display && this.config.display.position ?
+    this.config.display.position : "bottom right";
+    this.survey.surveyDisplay.welcomePopupAnimation =  this.config && this.config.display && this.config.display.welcomePopupAnimation ?
+    "hide-"+ this.config.display.welcomePopupAnimation : "hide-right-left";
+    this.survey.surveyDisplay.surveyPopupAnimation =  this.config && this.config.display && this.config.display.surveyPopupAnimation ?
+    "hide-"+ this.config.display.surveyPopupAnimation : "hide-right-left";
+    this.survey.surveyDisplay.surveyPosition =  this.config && this.config.display && this.config.display.surveyPosition ?
+    this.config.display.surveyPosition : ( this.config.display.position.search(/bottom/gi)==-1?"top":"bottom" ) ;
   }
 
   getSurveyData(){
@@ -101,8 +114,6 @@ class CCSDKEntry {
         // self.dom.setupListeners();
         self.surveyData = surveyData;
         self.util.trigger(document, self.surveyToken + '-ready', {'survey' : self});
-
-
         self.triggers = new Triggers(self);
 
         //call below functions when survey is locked and loaded.

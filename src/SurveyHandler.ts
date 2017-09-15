@@ -1,5 +1,6 @@
 // import 'whatwg-fetch';
 import { Config } from "./Config";
+import { DisplayConfig } from "./interfaces/DisplayConfig";
 import { RequestHelper } from './helpers/Request';
 import { templates } from "./helpers/Templates";
 import { DomUtilities } from "./helpers/dom/DomUtilities";
@@ -22,11 +23,19 @@ class SurveyHandler {
   displayThankYouCb : any;
   destroySurveyCb : any;
   acceptAnswersCb : any;
+  surveyDisplay : DisplayConfig; 
+  
   // isPartialAvailable : Boolean;
 
   constructor(surveyToken : string) {
     this.surveyToken = surveyToken;
     this.surveyData = {};
+    this.surveyDisplay = {
+      'position' : '',
+      'surveyPosition' : '',
+      'welcomePopupAnimation' : '',
+      'surveyPopupAnimation' : '',
+    };
     this.questions = [];
     this.questionsToDisplay = [];
     this.prefillQuestions = [];
@@ -55,35 +64,42 @@ class SurveyHandler {
           switch(data.type){
             case 'scale':
               response.text = null;
-              response.number = data.data.number;
+              response.number = Number(data.data.number);
               self.postPartialAnswer( data.index, response);
               self.dom.domSelectElements();
               // self.dom.nextQuestion();
             break;
             case 'nps':
             response.text = null;
-            response.number = data.data.number;
+            response.number = Number(data.data.number);
             self.postPartialAnswer( data.index, response);
             self.dom.domSelectElements();
             // self.dom.nextQuestion();
             break;
             case 'radio':
             response.text = null;
-            response.number = data.data.number;
+            response.number = Number(data.data.number);
+            self.postPartialAnswer( data.index, response);
+            self.dom.domSelectElements();
+            // self.dom.nextQuestion();
+            break;
+            case 'radioImage':
+            response.text = data.data.text;
+            response.number = null;
             self.postPartialAnswer( data.index, response);
             self.dom.domSelectElements();
             // self.dom.nextQuestion();
             break;
             case 'smile':
               response.text = null;
-              response.number = data.data.number;
+              response.number = Number(data.data.number);
               self.postPartialAnswer( data.index, response);
               self.dom.domSelectElements();
               // self.dom.nextQuestion();
             break;
             case 'star':
               response.text = null;
-              response.number = data.data.number;
+              response.number = Number(data.data.number);
               self.postPartialAnswer( data.index, response);
               self.dom.domSelectElements();
               // self.dom.nextQuestion();
@@ -117,7 +133,7 @@ class SurveyHandler {
             break;
             case 'select':
               response.text = data.data.text;
-              response.number = data.data.number;
+              response.number = null;
               // console.log(data);
               self.postPartialAnswer( data.index, response);
               self.dom.domSelectElements();
@@ -126,7 +142,7 @@ class SurveyHandler {
             break;
             case 'slider':
               response.text = data.data.text;
-              response.number = data.data.number;
+              response.number = Number(data.data.number);
               // console.log(data);
               self.postPartialAnswer( data.index, response);
               self.dom.domSelectElements();
@@ -164,6 +180,8 @@ class SurveyHandler {
   setupSurveyContainer(){
     let surveyHtml : any = templates.question_survey;
     surveyHtml = surveyHtml.replace("{{surveyToken}}", this.surveyToken);
+    surveyHtml = surveyHtml.replace("{{animation}}", this.surveyDisplay.surveyPopupAnimation);
+    surveyHtml = surveyHtml.replace("{{location}}", this.surveyDisplay.surveyPosition);
     this.dom.appendInBody(surveyHtml);
 
   }
@@ -173,6 +191,8 @@ class SurveyHandler {
     welcomeHtml = welcomeHtml.replace("{{surveyToken}}", this.surveyToken);
     welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
     welcomeHtml = welcomeHtml.replace("{{button}}", 'Start');
+    welcomeHtml = welcomeHtml.replace("{{location}}", this.surveyDisplay.position );
+    welcomeHtml = welcomeHtml.replace("{{animation}}", this.surveyDisplay.welcomePopupAnimation );
     // console.log("Appending in body");
     this.dom.appendInBody(welcomeHtml);
     this.dom.showWelcomeContainer();
@@ -293,6 +313,7 @@ class SurveyHandler {
       // return console.log("No Partial Remaining");
     }
     let data : any = {
+      comparator : 0,
       questionId : question.id,
       questionText : question.text,
       textInput : response.text,
@@ -305,7 +326,7 @@ class SurveyHandler {
     // console.log("Submitting for : " + index);
     let surveyPartialUrl = Config.SURVEY_PARTIAL_RESPONSE.replace("{id}", this.surveyData.partialResponseId);
     //if this is the last of displayed question
-    console.error(question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id);
+    console.log("partial response",question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id);
     if(question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id) {
       surveyPartialUrl = surveyPartialUrl.replace("{complete}", "true");
     } else {
@@ -413,7 +434,11 @@ class SurveyHandler {
         //get text question template and compile it.
         if(question.displayStyle == 'radiobutton/checkbox'){
           // console.log(question.displayStyle);
+          let options3 : string = self.util.generateCheckboxOptions(question.multiSelect, question.id);
+          // console.log(options2);
           acTemplate = templates.question_checkbox;
+          questionTemplate = acTemplate.replace(/{{options}}/g, options3);
+          acTemplate = questionTemplate;
         }else{
            acTemplate = templates.question_multi_select;
         }
