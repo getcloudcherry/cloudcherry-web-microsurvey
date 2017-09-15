@@ -196,10 +196,14 @@
 .detail-box .cc-question-container__text {
 	height: 56px;
 }
-.detail-box .cc-question-container__content .form-control{
+.detail-box[data-type="singleline"] .cc-question-container__text {
+	margin-right:20px;
+}	
+.detail-box .cc-question-container__content .form-control,
+.single-line .cc-question-container__content .form-control{
 	background: transparent;
-	border-bottom: 1px solid #6d6d6d;
 	border: none;
+	border-bottom: 1px solid #6d6d6d;
 	font-family: "open sans";
 	font-size: 15px;
 	line-height: 26px;

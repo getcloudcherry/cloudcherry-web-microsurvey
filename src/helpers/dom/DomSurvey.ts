@@ -159,6 +159,8 @@ class DomSurvey{
     this.loadQuestionSpecifics(this.$questionContainer[0], 0);
     let leftIcon : any = this.util.get('.act-cc-button-prev');
     this.util.addClassAll(leftIcon , 'hide-slide');
+
+    
 	}
 
 	nextQuestion(){
@@ -179,6 +181,7 @@ class DomSurvey{
         this.util.removeClass(span, "show");
         this.util.addClass(span, "hide");
       }
+      console.log('qindex ' + this.qIndex);
       if(typeof this.answers[this.qIndex] !== 'undefined' && this.qResponse !== 'undefined'
         && this.qResponse.type == this.answers[this.qIndex].type
         && this.qResponse.text == this.answers[this.qIndex].text
@@ -186,7 +189,8 @@ class DomSurvey{
       ) {
         //don't submit if already submitted.
       } else {
-        this.submitQuestion(this.qIndex, this.qResponse, this.qResponse.type);
+      console.log('submitting ' + this.qIndex);
+      this.submitQuestion(this.qIndex, this.qResponse, this.qResponse.type);
       }
       //show error
       this.answers[this.qIndex] = JSON.parse(JSON.stringify(this.qResponse));
@@ -207,9 +211,9 @@ class DomSurvey{
       let leftIcon : any = this.util.get('.act-cc-button-prev');
       let rightIcon : any = this.util.get('.cc-icon-right');
       let nextIcon : any = this.util.get('.act-cc-button-next');
-      this.util.addClassAll(leftIcon , 'hide-slide');
-      this.util.addClassAll(rightIcon , 'hide-slide');
-      this.util.addClassAll(nextIcon , 'hide-slide');
+      this.util.addClassAll(leftIcon , 'hide');
+      this.util.addClassAll(rightIcon , 'hide');
+      this.util.addClassAll(nextIcon , 'hide');
       this.util.trigger(document,'ccdone', undefined);
       this.util.removeClassAll(this.$questionContainer, 'show-slide');
       this.updateProgress();
@@ -241,7 +245,9 @@ class DomSurvey{
 	prevQuestion(){
     this.qIndex--;
 		if(!this.$questionContainer[this.qIndex]){
-      this.qIndex = this.$questionContainer.length - 1;
+      this.qIndex = 0;
+      return;
+      // this.qIndex = this.$questionContainer.length - 1;
     }
     //re populate qResponse based on answers.
     this.qResponse = typeof this.answers[this.qIndex] !== 'undefined' ? JSON.parse(JSON.stringify(this.answers[this.qIndex])) : {};
@@ -252,6 +258,7 @@ class DomSurvey{
     if(this.qIndex == 0) {
       let leftIcon : any = this.util.get('.act-cc-button-prev');
       this.util.addClassAll(leftIcon , 'hide-slide');
+      this.util.removeClassAll(leftIcon , 'show-slide');
     }
 	}
 
@@ -302,6 +309,10 @@ class DomSurvey{
         case 'select':
           this.setupListenersQuestionSelect(index, qId);
           break;
+        case 'radio':
+        case 'radioImage':
+        this.setupListenersQuestionRadio(index, qId);
+        break;
         case 'checkbox':
           this.setupListenersQuestionCheckbox(index, qId);
           break;
@@ -401,6 +412,27 @@ class DomSurvey{
       self.qResponse.number = null;
       //move to next question automagically
       // self.nextQuestion();
+    });
+    ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
+  }
+
+  setupListenersQuestionRadio(index : number, qId : string ){
+    var self : DomSurvey = this;
+    if(this.checkIfListenerExists('#'+qId+' .cc-checkbox input')) {
+      return;
+    }
+    let ref = this.addListener('click', '#'+qId+' .cc-checkbox input', function(){
+      // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox');
+      let rating : number = this.value;
+      // self.util.removeClassAll(allOptions, "selected");
+      // self.util.addClass(this, "selected");
+      // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
+      // console.log('Star selected',rating);
+      self.qResponse.type = 'radio';
+      self.qResponse.text = null;
+      self.qResponse.number = rating;
+      //move to next question automagically
+      self.nextQuestion();
     });
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }

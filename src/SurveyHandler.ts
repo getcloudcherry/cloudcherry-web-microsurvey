@@ -67,6 +67,13 @@ class SurveyHandler {
             self.dom.domSelectElements();
             // self.dom.nextQuestion();
             break;
+            case 'radio':
+            response.text = null;
+            response.number = data.data.number;
+            self.postPartialAnswer( data.index, response);
+            self.dom.domSelectElements();
+            // self.dom.nextQuestion();
+            break;
             case 'smile':
               response.text = null;
               response.number = data.data.number;
@@ -298,6 +305,7 @@ class SurveyHandler {
     // console.log("Submitting for : " + index);
     let surveyPartialUrl = Config.SURVEY_PARTIAL_RESPONSE.replace("{id}", this.surveyData.partialResponseId);
     //if this is the last of displayed question
+    console.error(question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id);
     if(question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id) {
       surveyPartialUrl = surveyPartialUrl.replace("{complete}", "true");
     } else {

@@ -139,6 +139,9 @@ class CCSDKEntry {
     // self.util.trigger(document, self.surveyToken + '-ready', {'survey' : self});
     self.survey.displayWelcomeQuestion();
 
+    //post prefills
+    // self.survey.postPrefillPartialAnswer();
+
   }
 
   public trigger(type : string, target : string) {
