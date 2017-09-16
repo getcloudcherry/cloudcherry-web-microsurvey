@@ -85,6 +85,12 @@
     pointer-events: all;
     transform: translateY(calc( -100% - 65px ));
 }
+
+.cc-popup-container-2.top .cc-select-options-container,
+.cc-popup-container-2.top .cc-select.opened .cc-select-options-container{
+    transform: translateY(calc( -100% + 165px ));
+}
+
 .cc-select-options:before {
     /*       position: absolute;
     display: block;
