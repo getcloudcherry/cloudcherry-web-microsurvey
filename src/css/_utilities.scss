@@ -50,7 +50,7 @@
 	z-index: 0;
 }
 .overlay.glass{
-	background-image: url(../images/ww.png);
+	background-image: url(http://localhost:8080/images/ww.png);
 	background-repeat: no-repeat;
 	background-size: cover;
 }
@@ -113,7 +113,7 @@
 		right: auto;
 	}
 	.overlay.welcome-overlay{
-		/*background-image: url(../images/ww.png);*/
+		/*background-image: url(http://localhost:8080/images/ww.png);*/
 		background: rgba(210, 42, 53, 0.87);
 	}
 	iframe{

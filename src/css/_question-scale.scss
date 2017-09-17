@@ -142,58 +142,58 @@
 	display:inline-block;
 }
 .option-smile-box.sad{
-	background:url('../images/Sad_Smilie.svg') no-repeat;	
+	background:url('http://localhost:8080/images/Sad_Smilie.svg') no-repeat;	
 	background-size:100%;
 	
 }	
 .option-smile-box.straight{
-	background:url('../images/StraightFace_smilie.svg') no-repeat;
+	background:url('http://localhost:8080/images/StraightFace_smilie.svg') no-repeat;
 	background-size:100%;
 }
 .option-smile-box.meh{
-	background:url('../images/smiley_meh_icon.svg') no-repeat;	
+	background:url('http://localhost:8080/images/smiley_meh_icon.svg') no-repeat;	
 	background-size:100%;
 }	
 .option-smile-box.smiling{
-	background:url('../images/Similing_Smilie.svg') no-repeat;	
+	background:url('http://localhost:8080/images/Similing_Smilie.svg') no-repeat;	
 	background-size:100%;
 }	
 .option-smile-box.happy{
-	background:url('../images/Happy_Smilie.svg') no-repeat;	
+	background:url('http://localhost:8080/images/Happy_Smilie.svg') no-repeat;	
 }	
 .option-smile-box.sad.selected,
 .option-smile-box.sad:hover{
-	background:url('../images/smiley_Sad_icon_Selected.svg') no-repeat;	
+	background:url('http://localhost:8080/images/smiley_Sad_icon_Selected.svg') no-repeat;	
 	background-size:100%;
 }	
 .option-smile-box.straight.selected,
 .option-smile-box.straight:hover{
-	background:url('../images/smiley_Straightface_icon_Selected.svg') no-repeat;
+	background:url('http://localhost:8080/images/smiley_Straightface_icon_Selected.svg') no-repeat;
 	background-size:100%;
 }
 .option-smile-box.meh.selected,
 .option-smile-box.meh:hover{
-	background:url('../images/smiley_meh_icon_Selected.svg') no-repeat;	
+	background:url('http://localhost:8080/images/smiley_meh_icon_Selected.svg') no-repeat;	
 	background-size:100%;
 }	
 .option-smile-box.smiling.selected,
 .option-smile-box.smiling:hover{
-	background:url('../images/smiley_Happy_icon_Selected.svg') no-repeat;	
+	background:url('http://localhost:8080/images/smiley_Happy_icon_Selected.svg') no-repeat;	
 	background-size:100%;
 }	
 .option-smile-box.happy.selected,
 .option-smile-box.happy:hover{
-	background:url('../images/smiley_very_Happy_icon_Selected.svg') no-repeat;	
+	background:url('http://localhost:8080/images/smiley_very_Happy_icon_Selected.svg') no-repeat;	
 	background-size:100%;
 }
 
 .option-star-box{
-	background:url('../images/Star_Icon.svg') no-repeat;	
+	background:url('http://localhost:8080/images/Star_Icon.svg') no-repeat;	
 	background-size:100%;
 }
 .option-star-box:hover,
 .option-star-box.selected{
-	background:url('../images/Selected_Star_Icon.svg') no-repeat;	
+	background:url('http://localhost:8080/images/Selected_Star_Icon.svg') no-repeat;	
 	background-size:100%;
 }
 
@@ -213,4 +213,13 @@
 		padding-right: 5px;
 		margin-right: 0;
 	}
+}
+
+.option-number-item.option-nps{
+	background: #4db47c;
+}
+
+.option-number-item.option-nps.selected,
+.option-number-item.option-nps:hover{
+	background: #712827;
 }

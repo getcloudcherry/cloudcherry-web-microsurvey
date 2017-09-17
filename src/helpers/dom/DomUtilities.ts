@@ -253,10 +253,27 @@ generateRadioImageOptions(arr : any, id : string){
   }
 }
 
+generateCheckboxOptions(arr : any, id : string){
+  if(Array.isArray(arr)){
+    let i : number = 0;
+    let res : string = '' ;
+    for(i=0;i<arr.length;i++){
+       let optHtml : string = templates.option_checkbox;
+       let opt : any = arr[i].split(';')
+       optHtml = optHtml.replace(/{{label}}/g, arr[i] );
+       res += optHtml;
+
+    }
+    return res;
+  }
+}
+
 
 
 }
 
+
+//add Math.round
 
 
 export { DomUtilities };
