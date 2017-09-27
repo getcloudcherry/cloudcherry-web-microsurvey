@@ -71,7 +71,8 @@ html[dir="rtl"] .detail-box .cc-question-container__content{
 }
 
 @media (min-width: 767px) and (max-width: 1024px){
-	html[dir="rtl"] .cc-big-list-container .cc-question-container__list,.cc-question-container__list{
+    html[dir="rtl"] .cc-big-list-container .cc-question-container__list,
+    html[dir="rtl"] .cc-question-container__list{
 		text-align: right;
 	}
 }

@@ -38,7 +38,13 @@ class DomUtilities{
 		Array.prototype.forEach.call(elements, (el, i) => {
       el.parentNode.removeChild(el);
 		});
-	}
+  }
+  
+  css(elements : any, property: string, value : any){
+    Array.prototype.forEach.call(elements, (el, i) => {
+      el.style[property] = value; 
+    });
+  }
 
 	removeClassAll(elements : any, className : string) : void {
 		Array.prototype.forEach.call(elements, (el, i) => {

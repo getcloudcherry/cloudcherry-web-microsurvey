@@ -20,3 +20,17 @@ p{
 	color: inherit;
 	margin: 0;
 }
+
+map area {
+	outline:0;
+	cursor: pointer;
+}
+
+map area:hover{
+	outline:1;
+}
+
+// map area:nth-child(1):hover, map area:nth-child(1), map area.selected:nth-child(1){
+// 	outline-color: #572526;
+// 	outline-width: 10px;
+// }

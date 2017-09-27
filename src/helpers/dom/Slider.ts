@@ -68,16 +68,16 @@ class Slider{
     this.rangeTip.style.display = 'block' ;
     this.rangeTip.innerHTML = this.inputRange.value;
     // console.log(( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) )*100);
-    console.log(( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) ) * parseFloat(this.inputRange.getBoundingClientRect().width) + "px");
-    this.rangeTip.style.left = ( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) ) * parseFloat(this.inputRange.getBoundingClientRect().width) + "px" ;
+    // console.log(( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) ) * parseFloat(this.inputRange.getBoundingClientRect().width) + "px");
+    // this.rangeTip.style.left = ( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) ) * parseFloat(this.inputRange.getBoundingClientRect().width) + "px" ;
     
-    if( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) * 100 < 50.0 ) {
-      // this.rangeTip.style.left = ( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) ) * parseFloat(this.inputRange.getBoundingClientRect().width) + this.rangeTip.getBoundingClientRect().width / 2  + "px" ;
+    // if( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) * 100 < 50.0 ) {
+    //   // this.rangeTip.style.left = ( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) ) * parseFloat(this.inputRange.getBoundingClientRect().width) + this.rangeTip.getBoundingClientRect().width / 2  + "px" ;
       
-    } else {
-      // this.rangeTip.style.left = ( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) ) * parseFloat(this.inputRange.getBoundingClientRect().width) - this.rangeTip.getBoundingClientRect().width / 2 + "px" ;
+    // } else {
+    //   // this.rangeTip.style.left = ( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) ) * parseFloat(this.inputRange.getBoundingClientRect().width) - this.rangeTip.getBoundingClientRect().width / 2 + "px" ;
       
-    }
+    // }
     // if(parseInt(this.rangeTip.style.left) <= 50 ){
     //   // console.log("calc( "+ this.rangeTip.style.left +" + "+ this.rangeTip.getBoundingClientRect().width + "px )");
     //   this.rangeTip.style.left = " calc( "+ this.rangeTip.style.left +" + "+ 12 + "px )";
@@ -85,12 +85,12 @@ class Slider{
     //   console.log("calc( "+ this.rangeTip.style.left +" - "+ this.rangeTip.getBoundingClientRect().width + "px )");
     //   this.rangeTip.style.left = " calc( "+ this.rangeTip.style.left +" - "+ this.rangeTip.getBoundingClientRect().width + "px )";
     // }
-    console.log(this.rangeTip.style.left);
+    // console.log(this.rangeTip.style.left);
     if(this.timeout){
       clearTimeout(this.timeout);
     }
     this.timeout = setTimeout(function(){
-      // self.rangeTip.style.display = 'none' ;
+      self.rangeTip.style.display = 'none' ;
     },300)
     
   }

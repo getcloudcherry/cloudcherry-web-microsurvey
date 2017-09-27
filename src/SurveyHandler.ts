@@ -405,7 +405,7 @@ class SurveyHandler {
           }
           let initial = 0.0;
           for(let initial = startRange ; initial <= endRange ; initial += divider) {
-            options += '<span data-rating="'+ initial + '" class="option-number-item option-nps">' + initial + '</span>';
+            options += '<span data-rating="'+ initial + '" class="option-number-item option-scale">' + initial + '</span>';
           }
           questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
         }
