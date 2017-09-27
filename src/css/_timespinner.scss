@@ -27,13 +27,13 @@
 	width: 21px;
 }
 
-@media (min-width: 768px){
+@media (min-width: 767px){
 	.chart canvas{
 		margin-left: 10px;
 	}
 }
 
-@media (max-width: 768px){
+@media (max-width: 767px){
 	.loader{
 		position: relative;
 		left: auto;

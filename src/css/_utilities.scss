@@ -89,13 +89,13 @@
 	color: $color-1;
 }
 
-@media (min-width: 768px){
+@media (min-width: 767px){
 	.desktop-hide{
 		display: none;
 	}
 }
 
-@media (max-width: 768px){
+@media (max-width: 767px){
 	.mobile-hide{
 		display: none;
 	}
@@ -116,7 +116,7 @@
 		/*background-image: url(http://localhost:8080/images/ww.png);*/
 		background: rgba(210, 42, 53, 0.87);
 	}
-	iframe{
+	iframe, .blurr{
 		-webkit-filter: blur(15px);
 		-moz-filter: blur(15px);
 		-ms-filter: blur(15px);

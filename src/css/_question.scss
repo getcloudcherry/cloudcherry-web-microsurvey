@@ -3,7 +3,7 @@
 	background: #fff;
 	box-shadow: 0 0 4px 5px rgba(0,0,0,0.05);
 	font-family: "open sans", sans-serif;
-	margin: 9px;
+	// margin: 9px;
 	position: fixed;
 	text-align: center;
 	// height: 152px;
@@ -76,6 +76,9 @@
 	top: 0;
 	z-index: 111;
 }
+.top.cc-popup-container-2 .cc-popup-container-2__icons{
+	padding-top:15px;
+}
 .cc-popup-container-2__icons.cc-right-icon{
 	right: 0;
 }
@@ -110,15 +113,18 @@
 	padding: 8px 0;
 	text-align: center;
 	vertical-align: middle;
-	width: 15%;
+	width: 20%;
+	position: relative;
 }
 .cc-question-container__required{
 		position: absolute;
-    top: 0;
+	// top: 0;
+	top: -14px;
     font-size: 11px;
-    right: 1%;
+    // right: 1%;
+    left: 0;
     font-weight: normal;
-    color: #7b2626;
+    color: #C1272D;
 		display: none;
 }
 .cc-question-container__required-label {
@@ -130,7 +136,7 @@
 
 .cc-question-container__content{
 	display: inline-block;
-	max-width: 84%;
+	max-width: 78%;
 	vertical-align: middle;
 	width: auto;
 }
@@ -246,7 +252,11 @@
 	vertical-align: middle;
 }
 
-@media (min-width: 768px) and (max-width: 1024px){
+.cc-thankyou-container {
+    width: 100% !important;
+}
+
+@media (min-width: 767px) and (max-width: 1024px){
 	.cc-popup-container-2 {
 		height: 300px;
 	}
@@ -267,9 +277,22 @@
 		min-width: 100%;
 		margin: 0;
 	}
+
+	.option-smile-box img, .option-star-box img {
+	    margin-right: 11px !important;
+	}
+	.cc-thankyou-container .cc-question-container__text p,
+	.cc-thankyou-container .cc-question-container__text{
+ 	    width: 100% !important;
+		text-align: center;
+		margin:0 !important;
+	}
+	 .cc-thankyou-container .cc-question-container__text{
+		max-width: 98%;
+	 }
 }
 
-@media (min-width: 768px) and (max-width: 992px){
+@media (min-width: 767px) and (max-width: 992px){
 	.cc-question-container {
 		width: 100%;
 		margin: auto;
@@ -281,8 +304,17 @@
 	.cc-question-container__content.rating-color {
 		margin-left: 0px;
 	}
+	.submit-icon{
+		margin-right: 40px !important;
+	}
+	.cc-question-container__content.rating-color {
+		    margin-left: 0px !important;
+	}
+	.cc-question-container__content {
+		width: 50% !important;  
+	}
 }
-@media (max-width: 768px){
+@media (max-width: 767px){
 	.cc-survey-container,.cc-survey-content{
 		height: 100%;
 	}

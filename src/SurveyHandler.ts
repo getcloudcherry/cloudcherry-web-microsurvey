@@ -181,7 +181,7 @@ class SurveyHandler {
     let surveyHtml : any = templates.question_survey;
     surveyHtml = surveyHtml.replace("{{surveyToken}}", this.surveyToken);
     surveyHtml = surveyHtml.replace("{{animation}}", this.surveyDisplay.surveyPopupAnimation);
-    surveyHtml = surveyHtml.replace("{{location}}", this.surveyDisplay.surveyPosition);
+    surveyHtml = surveyHtml.replace(/{{location}}/g, this.surveyDisplay.surveyPosition);
     this.dom.appendInBody(surveyHtml);
 
   }

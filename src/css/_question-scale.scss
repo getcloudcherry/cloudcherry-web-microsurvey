@@ -140,71 +140,75 @@
 	border:solid 4px transparent;
 	border-radius: 50%;
 	display:inline-block;
+	background-size:100%;
+	
 }
-.option-smile-box.sad{
-	background:url('http://localhost:8080/images/Sad_Smilie.svg') no-repeat;	
+.option-smile-box.one{
+	background:url('http://localhost:8080/images/Smilie_1.svg') no-repeat;	
 	background-size:100%;
 	
 }	
-.option-smile-box.straight{
-	background:url('http://localhost:8080/images/StraightFace_smilie.svg') no-repeat;
+.option-smile-box.two{
+	background:url('http://localhost:8080/images/Smilie_2.svg') no-repeat;
 	background-size:100%;
 }
-.option-smile-box.meh{
-	background:url('http://localhost:8080/images/smiley_meh_icon.svg') no-repeat;	
+.option-smile-box.three{
+	background:url('http://localhost:8080/images/Smilie_3.svg') no-repeat;	
 	background-size:100%;
 }	
-.option-smile-box.smiling{
-	background:url('http://localhost:8080/images/Similing_Smilie.svg') no-repeat;	
+.option-smile-box.four{
+	background:url('http://localhost:8080/images/Smilie_4.svg') no-repeat;	
 	background-size:100%;
 }	
-.option-smile-box.happy{
-	background:url('http://localhost:8080/images/Happy_Smilie.svg') no-repeat;	
+.option-smile-box.five{
+	background:url('http://localhost:8080/images/Smilie_5.svg') no-repeat;	
+	background-size:100%;
+	
 }	
-.option-smile-box.sad.selected,
-.option-smile-box.sad:hover{
-	background:url('http://localhost:8080/images/smiley_Sad_icon_Selected.svg') no-repeat;	
+.option-smile-box.one.selected,
+.option-smile-box.one:hover{
+	background:url('http://localhost:8080/images/Smilie_1_Selected.svg') no-repeat;	
 	background-size:100%;
 }	
-.option-smile-box.straight.selected,
-.option-smile-box.straight:hover{
-	background:url('http://localhost:8080/images/smiley_Straightface_icon_Selected.svg') no-repeat;
+.option-smile-box.two.selected,
+.option-smile-box.two:hover{
+	background:url('http://localhost:8080/images/Smilie_2_Selected.svg') no-repeat;
 	background-size:100%;
 }
-.option-smile-box.meh.selected,
-.option-smile-box.meh:hover{
-	background:url('http://localhost:8080/images/smiley_meh_icon_Selected.svg') no-repeat;	
+.option-smile-box.three.selected,
+.option-smile-box.three:hover{
+	background:url('http://localhost:8080/images/Smilie_3_Selected.svg') no-repeat;	
 	background-size:100%;
 }	
-.option-smile-box.smiling.selected,
-.option-smile-box.smiling:hover{
-	background:url('http://localhost:8080/images/smiley_Happy_icon_Selected.svg') no-repeat;	
+.option-smile-box.four.selected,
+.option-smile-box.four:hover{
+	background:url('http://localhost:8080/images/Smilie_4_Selected.svg') no-repeat;	
 	background-size:100%;
 }	
-.option-smile-box.happy.selected,
-.option-smile-box.happy:hover{
-	background:url('http://localhost:8080/images/smiley_very_Happy_icon_Selected.svg') no-repeat;	
+.option-smile-box.five.selected,
+.option-smile-box.five:hover{
+	background:url('http://localhost:8080/images/Smilie_5_Selected.svg') no-repeat;	
 	background-size:100%;
 }
 
 .option-star-box{
-	background:url('http://localhost:8080/images/Star_Icon.svg') no-repeat;	
+	background:url('http://localhost:8080/images/Star.svg') no-repeat;	
 	background-size:100%;
 }
 .option-star-box:hover,
 .option-star-box.selected{
-	background:url('http://localhost:8080/images/Selected_Star_Icon.svg') no-repeat;	
+	background:url('http://localhost:8080/images/Star_selected.svg') no-repeat;	
 	background-size:100%;
 }
 
-@media (min-width: 768px) and (max-width: 992px){
+@media (min-width: 767px) and (max-width: 992px){
 	.option-smile-box img, .option-star-box img {
 	    width: 50px;
 	    height: 50px;
 	    margin-right: 10px;
     }
 }
-@media (max-width: 768px){
+@media (max-width: 767px){
 	.option-smile-box,.option-star-box{
 		display: inline-block;
 		width: 18%;

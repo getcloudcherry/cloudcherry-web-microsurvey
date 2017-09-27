@@ -12,6 +12,9 @@ input[type=range]::-webkit-slider-runnable-track {
     background: linear-gradient(135deg, #ff403d 0%,#992a28 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff403d ', endColorstr='#992a28 ',GradientType=1 );
  height: 1px;
+//  box-sizing: border-box;
+//  margin-left: -25px;
+ 
 }
 
 input[type=range]:focus {
@@ -39,6 +42,8 @@ input[type=range]::-webkit-slider-thumb {
  bottom: 25px;
  background-color: #fff;
  cursor: -webkit-grab;
+ 
+ 
 }
 
 input[type=range]::-moz-range-thumb {

@@ -1,14 +1,19 @@
 class Slider{
   inputRange : any;
+  rangeTip : any;
   maxValue : number;
   speed : number;
   currValue : number;
   rafID : any;
+  timeout : any;
 
   constructor(){
    this.inputRange = document.getElementsByClassName('range')[0];
+   this.rangeTip = this.inputRange.parentNode.querySelectorAll(".act-slider-tip")[0];
+   
   //  this.maxValue = 100; // the higher the smoother when dragging
    this.speed = 5;
+   
 
   // set min/max value
   // this.inputRange.min = 0;
@@ -20,8 +25,10 @@ class Slider{
 
   setupListeners(){
     let self : Slider = this;
-    // let rangeTip : any = self.inputRange.parentNode.querySelectorAll(".act-slider-tip")[0];
+   
     // bind events
+    this.inputRange.addEventListener('mouseup', this.clearTo, false);
+    // this.inputRange.addEventListener('mousedown', this.updateRangeTip, false);
     // this.inputRange.addEventListener('mousedown', this.unlockStartHandler, false);
     // this.inputRange.addEventListener('mousestart', this.unlockStartHandler, false);
     // this.inputRange.addEventListener('mouseup', this.unlockEndHandler, false);
@@ -29,6 +36,7 @@ class Slider{
 
     // move gradient
     this.inputRange.addEventListener('input', function() {
+      self.updateRangeTip();
     //Change slide thumb color on way up
     if (this.value > 20) {
        self.inputRange.classList.add('ltpurple');
@@ -50,11 +58,45 @@ class Slider{
     if (this.value < 60) {
        self.inputRange.classList.remove('pink');
     }
-    // rangeTip.innerHTML = this.value;
-    // rangeTip.style.left = (this.value/self.inputRange.max)*100 +"%" ;
-    // console.log(rangeTip.style.left);
-    // rangeTip.style.left = "calc("+rangeTip.style.left+")";
-    });
+  });
+}
+
+
+
+  updateRangeTip(){
+    let self : Slider = this;
+    this.rangeTip.style.display = 'block' ;
+    this.rangeTip.innerHTML = this.inputRange.value;
+    // console.log(( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) )*100);
+    console.log(( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) ) * parseFloat(this.inputRange.getBoundingClientRect().width) + "px");
+    this.rangeTip.style.left = ( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) ) * parseFloat(this.inputRange.getBoundingClientRect().width) + "px" ;
+    
+    if( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) * 100 < 50.0 ) {
+      // this.rangeTip.style.left = ( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) ) * parseFloat(this.inputRange.getBoundingClientRect().width) + this.rangeTip.getBoundingClientRect().width / 2  + "px" ;
+      
+    } else {
+      // this.rangeTip.style.left = ( parseFloat(this.inputRange.value)/parseFloat(this.inputRange.max) ) * parseFloat(this.inputRange.getBoundingClientRect().width) - this.rangeTip.getBoundingClientRect().width / 2 + "px" ;
+      
+    }
+    // if(parseInt(this.rangeTip.style.left) <= 50 ){
+    //   // console.log("calc( "+ this.rangeTip.style.left +" + "+ this.rangeTip.getBoundingClientRect().width + "px )");
+    //   this.rangeTip.style.left = " calc( "+ this.rangeTip.style.left +" + "+ 12 + "px )";
+    // }else{
+    //   console.log("calc( "+ this.rangeTip.style.left +" - "+ this.rangeTip.getBoundingClientRect().width + "px )");
+    //   this.rangeTip.style.left = " calc( "+ this.rangeTip.style.left +" - "+ this.rangeTip.getBoundingClientRect().width + "px )";
+    // }
+    console.log(this.rangeTip.style.left);
+    if(this.timeout){
+      clearTimeout(this.timeout);
+    }
+    this.timeout = setTimeout(function(){
+      // self.rangeTip.style.display = 'none' ;
+    },300)
+    
+  }
+
+  clearTo(){
+    clearTimeout(this.timeout);
   }
 
   // listen for unlock

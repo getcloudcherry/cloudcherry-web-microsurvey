@@ -24,7 +24,7 @@ class Triggers {
     if(pageCount == NaN) {
       pageCount = 0;
     }
-    if(!this.ccsdk.surveyRunning && !this.pageCountTrigger && pageCount > minPageCount) {
+    if(!this.ccsdk.surveyRunning && !this.pageCountTrigger && pageCount >= minPageCount) {
       this.pageCountTrigger = true;
       //displayQuestion
       this.ccsdk.initSurvey();
@@ -33,6 +33,8 @@ class Triggers {
       //or condition not satisified yet.
     }
   }
+
+  
   //minPageTime in seconds
   TriggerPopUpByTimeSpentOnPage(minPageTime : number) {
     let pageStartTime = new Date(Cookie.get(Constants.CCTriggerPageStartTime)).getTime();
@@ -88,8 +90,12 @@ class Triggers {
     }
   }
 
-  TriggerPopUpByUTMParameter() {
-    let utmVal = Cookie.getParameterByName("utm", undefined);
+  TriggerPopUpByUTMParameter(utm : string) {
+    let utmP = utm.split("=");
+    let utmVal = Cookie.getParameterByName(utmP[0], undefined);
+    if(!this.ccsdk.surveyRunning && utmVal === utmP[1]){
+      this.ccsdk.initSurvey();
+    }
   }
 
   resetTriggers() {

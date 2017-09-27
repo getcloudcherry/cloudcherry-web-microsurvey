@@ -69,7 +69,9 @@
     visibility: hidden;
     pointer-events: none;
     transform: translateY(calc( -100% - 65px ));
-    height: 150px;
+    // height: 150px;
+    height: auto;
+    max-height: 150px;
     overflow: hidden;
 }
 
@@ -88,7 +90,7 @@
 
 .cc-popup-container-2.top .cc-select-options-container,
 .cc-popup-container-2.top .cc-select.opened .cc-select-options-container{
-    transform: translateY(calc( -100% + 165px ));
+    transform: translateY(calc( -100% + 75px ));
 }
 
 .cc-select-options:before {
@@ -141,8 +143,15 @@
     transform: translateY(calc( 20px ));
 }
 
+.option-yes-no.No{
+    // background:url('http://localhost:8080/images/Star_selected.svg') no-repeat;	
+    // background-size:100%;
+    position: relative;
+    top: 4px;
+}
 
-@media (max-width: 768px){
+
+@media (max-width: 767px){
     .cc-select,.cc-select-wrapper{
         min-width: 100%;
     }
