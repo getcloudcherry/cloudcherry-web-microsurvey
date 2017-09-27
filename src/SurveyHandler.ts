@@ -181,7 +181,7 @@ class SurveyHandler {
     let surveyHtml : any = templates.question_survey;
     surveyHtml = surveyHtml.replace("{{surveyToken}}", this.surveyToken);
     surveyHtml = surveyHtml.replace("{{animation}}", this.surveyDisplay.surveyPopupAnimation);
-    surveyHtml = surveyHtml.replace("{{location}}", this.surveyDisplay.surveyPosition);
+    surveyHtml = surveyHtml.replace(/{{location}}/g, this.surveyDisplay.surveyPosition);
     this.dom.appendInBody(surveyHtml);
 
   }
@@ -405,7 +405,7 @@ class SurveyHandler {
           }
           let initial = 0.0;
           for(let initial = startRange ; initial <= endRange ; initial += divider) {
-            options += '<span data-rating="'+ initial + '" class="option-number-item option-nps">' + initial + '</span>';
+            options += '<span data-rating="'+ initial + '" class="option-number-item option-scale">' + initial + '</span>';
           }
           questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
         }

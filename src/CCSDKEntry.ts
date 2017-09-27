@@ -59,12 +59,18 @@ class CCSDKEntry {
   triggerInterval : any;
   triggers : Triggers;
   surveyRunning : boolean;
+  pageInterval : number;
+  siteInterval : number;
 
   constructor(surveyToken : string, config : CCSDKConfig) {
+    this.triggers = new Triggers(this);
     this.surveyToken = surveyToken;
     this.config = config;
     this.surveyRunning = false;
+    this.pageInterval = 100000000000000; 
+    this.siteInterval = 100000000000000; 
     this.setupSurvey();
+    
     // this.trigger(undefined, undefined);
 
     //on fetch questions show
@@ -114,13 +120,11 @@ class CCSDKEntry {
         // self.dom.setupListeners();
         self.surveyData = surveyData;
         self.util.trigger(document, self.surveyToken + '-ready', {'survey' : self});
-        self.triggers = new Triggers(self);
 
         //call below functions when survey is locked and loaded.
         // self.triggers.TriggerPopUpByURLPattern(/xyz=33/);
         // self.triggers.TriggerPopUpByUTMParameter();
-        // self.triggers.TriggerPopUpByPageCount(3);
-        // self.triggerInterval = setInterval(self.triggerHandler, 1000, self);
+        self.triggerInterval = setInterval(self.triggerHandler, 1000, self);
         // cb(surveyData)
         // dom(self);
     });
@@ -131,9 +135,9 @@ class CCSDKEntry {
     // self.surveyRunning = self.util.get('#' + self.surveyToken  + "-survey").length == 1;
     Cookie.set(Constants.CCTriggerPageElapsedTime, new Date(), undefined, window.location.href);
     Cookie.set(Constants.CCTriggerSiteElapsedTime, new Date(), undefined, undefined);
-    self.triggers.TriggerPopUpByTimeSpentOnSite(10);
+    self.triggers.TriggerPopUpByTimeSpentOnSite(self.siteInterval);
     // self.surveyRunning = self.util.get('#' + self.surveyToken  + "-survey").length == 1;
-    self.triggers.TriggerPopUpByTimeSpentOnPage(10);
+    self.triggers.TriggerPopUpByTimeSpentOnPage(self.pageInterval);
     
   }
 
@@ -165,6 +169,29 @@ class CCSDKEntry {
           Scrollbar.initAll();
           self.slider = new Slider();
         });
+        break;
+      case 'page-count':
+         let count : number  = parseInt(target);
+          self.triggers.TriggerPopUpByPageCount(count);
+
+      break;
+      case 'site-count':
+        let count2 : number  = parseInt(target);
+        self.triggers = new Triggers(self);
+          // self.triggers.TriggerPopUpBySiteCount(count-1);
+      break;
+      case 'page-time':
+        self.pageInterval = parseInt(target);
+      break;
+      case 'site-time':
+        self.siteInterval = parseInt(target);
+      break;
+      case 'url-match':
+        let tar:any = target;
+        self.triggers.TriggerPopUpByURLPattern(tar);
+      break;
+      case 'utm-match':
+        self.triggers.TriggerPopUpByUTMParameter(target);
         break;
       case 'launch':
         self.initSurvey();

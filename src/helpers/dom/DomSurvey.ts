@@ -106,6 +106,9 @@ class DomSurvey{
       self.trackSelects = [];
       self.destroyListeners();
       self.util.trigger(document, 'ccclose', undefined);
+      let bodyElement = <HTMLElement>document.
+      getElementsByTagName("body")[0];
+        self.util.removeClass( bodyElement, "blurr" )
     });
 
     closeSurvey.internalHandler = this.util.listener(this.$body, closeSurvey.type, closeSurvey.id, closeSurvey.cb);
@@ -276,7 +279,10 @@ class DomSurvey{
     setTimeout(() => {
       let startContainer = <HTMLElement>document.
       querySelectorAll(".act-cc-welcome-question-box")[0];
+      let bodyElement = <HTMLElement>document.
+      getElementsByTagName("body")[0];
         this.util.addClass(startContainer, "show-slide");
+        this.util.addClass( bodyElement, "blurr" );
     },200);
 
   }
@@ -296,6 +302,10 @@ class DomSurvey{
     // console.log(qType);
     switch(qType){
         case 'scale':
+          let allOptions1 : any = document.querySelectorAll('#' + qId + ' .option-number-item');
+          let optionWidth1 = (100/allOptions1.length) - .6;
+          console.log("Option width", allOptions1, optionWidth1.toFixed(2));
+          self.util.css(allOptions1 , 'width',  optionWidth1.toFixed(1) + '%');
           this.setupListenersQuestionScale(index, qId);
         break;
         case 'nps':
@@ -337,12 +347,13 @@ class DomSurvey{
   setupListenersQuestionScale( index : number, qId : string ){
     var self : DomSurvey = this;
     //add id too.
-    if(this.checkIfListenerExists('#' + qId + ' span.option-number-item')) {
+    if(this.checkIfListenerExists('#' + qId + ' .option-number-item')) {
       return;
     }
     console.log(self.domListeners);
-    let ref = this.addListener('click', '#' + qId + ' span.option-number-item', function(){
-      let allOptions : any = document.querySelectorAll('#' + qId + ' span.option-number-item');
+    let ref = this.addListener('click', '#' + qId + ' .option-number-item', function(){
+      let allOptions : any = document.querySelectorAll('#' + qId + ' .option-number-item');
+      
       let rating : number = this.getAttribute('data-rating');
       self.util.removeClassAll(allOptions, "selected");
       self.util.addClass(this, "selected");
@@ -366,12 +377,12 @@ class DomSurvey{
   setupListenersQuestionNPS( index : number, qId : string ){
     var self : DomSurvey = this;
     //add id too.
-    if(this.checkIfListenerExists('#' + qId + ' span.option-number-item')) {
+    if(this.checkIfListenerExists('#' + qId + ' .option-number-item')) {
       return;
     }
     console.log(self.domListeners);
-    let ref = this.addListener('click', '#' + qId + ' span.option-number-item', function(){
-      let allOptions : any = document.querySelectorAll('#' + qId + ' span.option-number-item');
+    let ref = this.addListener('click', '#' + qId + ' .option-number-item', function(){
+      let allOptions : any = document.querySelectorAll('#' + qId + ' .option-number-item');
       let rating : number = this.getAttribute('data-rating');
       self.util.removeClassAll(allOptions, "selected");
       self.util.addClass(this, "selected");
@@ -380,6 +391,8 @@ class DomSurvey{
       self.qResponse.type = 'nps';
       self.qResponse.text = null;
       self.qResponse.number = rating;
+      let selectedRating = <HTMLElement> document.querySelectorAll('#' + qId + ' .cc-nps-selected-rating')[0];
+       selectedRating.innerHTML = ''+ rating;
       //move to next question automagically
       // alert('calling next questions inside scale');
       self.nextQuestion();

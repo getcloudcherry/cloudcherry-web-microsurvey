@@ -2,12 +2,16 @@ import { DomUtilities } from './DomUtilities';
 
 class Theme{
    util : DomUtilities;
+   brandColorDark : string;
+   brandColorWhite : string;
 	 constructor(brandColor){
-     this.util = new DomUtilities();
+	 this.util = new DomUtilities();
+	 this.brandColorDark = this.util.shadeBlendConvert(-0.3, brandColor, undefined);
+	 this.brandColorWhite= this.util.shadeBlendConvert(0.1, brandColor, undefined);
 
 		let css : string = '\
 		#progressBar{ \
-			background : '+ this.util.shadeBlendConvert(-0.3, brandColor, undefined)+';\
+			background : '+ this.brandColorDark+';\
 		}\
 		#progress-line{ \
 			background: '+ brandColor+' \
@@ -48,17 +52,17 @@ class Theme{
 		}\
 		input[type="range"]::-webkit-slider-runnable-track{\
 			background: '+brandColor+' !important;\
-			   background: -moz-linear-gradient(-45deg, '+brandColor+' 0%, '+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+' 100%)!important;\
-			   background: -webkit-linear-gradient(-45deg, '+brandColor+' 0%,'+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+' 100%)!important;\
-			   background: linear-gradient(135deg, '+brandColor+' 0%,'+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+' 100%)!important;\
-			   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='+brandColor+ ', endColorstr='+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+',GradientType=1 );\
+			   background: -moz-linear-gradient(-45deg, '+brandColor+' 0%, '+this.brandColorDark+' 100%)!important;\
+			   background: -webkit-linear-gradient(-45deg, '+brandColor+' 0%,'+this.brandColorDark+' 100%)!important;\
+			   background: linear-gradient(135deg, '+brandColor+' 0%,'+this.brandColorDark+' 100%)!important;\
+			   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='+brandColor+ ', endColorstr='+this.brandColorDark+',GradientType=1 );\
 		   }\
 		input[type="range"]::-moz-range-track {\
 			background: '+brandColor+' !important;\
-			background: -moz-linear-gradient(-45deg, '+brandColor+' 0%, '+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+' 100%)!important;\
-			background: -webkit-linear-gradient(-45deg, '+brandColor+' 0%,'+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+' 100%)!important;\
-			background: linear-gradient(135deg, '+brandColor+' 0%,'+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+' 100%)!important;\
-			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='+brandColor+ ', endColorstr='+this.util.shadeBlendConvert(-0.3, brandColor, undefined)+',GradientType=1 );\
+			background: -moz-linear-gradient(-45deg, '+brandColor+' 0%, '+this.brandColorDark+' 100%)!important;\
+			background: -webkit-linear-gradient(-45deg, '+brandColor+' 0%,'+this.brandColorDark+' 100%)!important;\
+			background: linear-gradient(135deg, '+brandColor+' 0%,'+this.brandColorDark+' 100%)!important;\
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='+brandColor+ ', endColorstr='+this.brandColorDark+',GradientType=1 );\
 		}\
 		   input[type="range"]::-webkit-slider-thumb{\
 			border: 1px solid '+brandColor+' ;\
@@ -68,12 +72,20 @@ class Theme{
 			border: 1px solid '+brandColor+' ;\
 			background-color: #fff;\
 		   }\
-		 @media (max-width: 768px){\
+		 @media (max-width: 767px){\
 	 			.overlay.glass{\
 	 			background-color:rgba(255,255,255,.85);\
 	 			background-image:none;\
 				}\
-			}\
+				.cc-popup-container{\
+					background-color : transparent;\
+				}\
+				.cc-popup-container .overlay.glass{\
+					background-color : ' + this.util.hexToRGB(brandColor,.9)+';\
+				}\
+				.cc-popup-container .cc-message-box .cc-message-box__text{\
+					color:#fff;\
+				}\
 		';
 		this.util.appendStyle(css);
 

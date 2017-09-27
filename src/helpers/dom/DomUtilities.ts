@@ -38,7 +38,13 @@ class DomUtilities{
 		Array.prototype.forEach.call(elements, (el, i) => {
       el.parentNode.removeChild(el);
 		});
-	}
+  }
+  
+  css(elements : any, property: string, value : any){
+    Array.prototype.forEach.call(elements, (el, i) => {
+      el.style[property] = value; 
+    });
+  }
 
 	removeClassAll(elements : any, className : string) : void {
 		Array.prototype.forEach.call(elements, (el, i) => {
@@ -242,7 +248,8 @@ generateRadioImageOptions(arr : any, id : string){
     for(i=0;i<arr.length;i++){
        let optHtml : string = templates.option_radio_image;
        let opt : any = arr[i].split(';')
-       optHtml = optHtml.replace(/{{image}}/g, Config.CDN_URL+opt[1] );
+      //  optHtml = optHtml.replace(/{{image}}/g, Config.CDN_URL+opt[1] );
+       optHtml = optHtml.replace(/{{image}}/g, 'http://localhost:8080/images/'+opt[0]+'_selected.svg' );
        optHtml = optHtml.replace(/{{qId}}/g, "nm"+id );
        optHtml = optHtml.replace(/{{label}}/g, opt[0] );
        optHtml = optHtml.replace(/{{value}}/g, opt[0] );

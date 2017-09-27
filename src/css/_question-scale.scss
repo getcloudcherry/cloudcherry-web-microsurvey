@@ -1,14 +1,23 @@
 /*cc-question-container color scale css*/
 .option-number-item{
+	// color: #fff;
+	// float: left;
+	// font-size: 13px;
+	// height: 32px;
+	// margin-left: 1px;
+	// padding-top: 7px;
+	// text-align: center;
+	// width: 32px;
+	// cursor:pointer;
 	color: #fff;
-	float: left;
-	font-size: 13px;
-	height: 32px;
-	margin-left: 1px;
-	padding-top: 7px;
-	text-align: center;
-	width: 32px;
-	cursor:pointer;
+    float: left;
+    font-size: 13px;
+    height: 38px;
+    padding-top: 10px;
+    text-align: center;
+    width: 8.5%;
+    margin: 0 .25%;
+    cursor: pointer;
 }
 .option-number-item.option-zero{
 	background: #853838;
@@ -140,74 +149,103 @@
 	border:solid 4px transparent;
 	border-radius: 50%;
 	display:inline-block;
+	background-size:100%;
+	
 }
-.option-smile-box.sad{
-	background:url('http://localhost:8080/images/Sad_Smilie.svg') no-repeat;	
+.option-smile-box.one{
+	background:url('http://localhost:8080/images/Smilie_1.svg') no-repeat;	
 	background-size:100%;
 	
 }	
-.option-smile-box.straight{
-	background:url('http://localhost:8080/images/StraightFace_smilie.svg') no-repeat;
+.option-smile-box.two{
+	background:url('http://localhost:8080/images/Smilie_2.svg') no-repeat;
 	background-size:100%;
 }
-.option-smile-box.meh{
-	background:url('http://localhost:8080/images/smiley_meh_icon.svg') no-repeat;	
+.option-smile-box.three{
+	background:url('http://localhost:8080/images/Smilie_3.svg') no-repeat;	
 	background-size:100%;
 }	
-.option-smile-box.smiling{
-	background:url('http://localhost:8080/images/Similing_Smilie.svg') no-repeat;	
+.option-smile-box.four{
+	background:url('http://localhost:8080/images/Smilie_4.svg') no-repeat;	
 	background-size:100%;
 }	
-.option-smile-box.happy{
-	background:url('http://localhost:8080/images/Happy_Smilie.svg') no-repeat;	
+.option-smile-box.five{
+	background:url('http://localhost:8080/images/Smilie_5.svg') no-repeat;	
+	background-size:100%;
+	
 }	
-.option-smile-box.sad.selected,
-.option-smile-box.sad:hover{
-	background:url('http://localhost:8080/images/smiley_Sad_icon_Selected.svg') no-repeat;	
+.option-smile-box.one.selected,
+.option-smile-box.one:hover{
+	background:url('http://localhost:8080/images/Smilie_1_Selected.svg') no-repeat;	
 	background-size:100%;
 }	
-.option-smile-box.straight.selected,
-.option-smile-box.straight:hover{
-	background:url('http://localhost:8080/images/smiley_Straightface_icon_Selected.svg') no-repeat;
+.option-smile-box.two.selected,
+.option-smile-box.two:hover{
+	background:url('http://localhost:8080/images/Smilie_2_Selected.svg') no-repeat;
 	background-size:100%;
 }
-.option-smile-box.meh.selected,
-.option-smile-box.meh:hover{
-	background:url('http://localhost:8080/images/smiley_meh_icon_Selected.svg') no-repeat;	
+.option-smile-box.three.selected,
+.option-smile-box.three:hover{
+	background:url('http://localhost:8080/images/Smilie_3_Selected.svg') no-repeat;	
 	background-size:100%;
 }	
-.option-smile-box.smiling.selected,
-.option-smile-box.smiling:hover{
-	background:url('http://localhost:8080/images/smiley_Happy_icon_Selected.svg') no-repeat;	
+.option-smile-box.four.selected,
+.option-smile-box.four:hover{
+	background:url('http://localhost:8080/images/Smilie_4_Selected.svg') no-repeat;	
 	background-size:100%;
 }	
-.option-smile-box.happy.selected,
-.option-smile-box.happy:hover{
-	background:url('http://localhost:8080/images/smiley_very_Happy_icon_Selected.svg') no-repeat;	
+.option-smile-box.five.selected,
+.option-smile-box.five:hover{
+	background:url('http://localhost:8080/images/Smilie_5_Selected.svg') no-repeat;	
 	background-size:100%;
 }
 
 .option-star-box{
-	background:url('http://localhost:8080/images/Star_Icon.svg') no-repeat;	
+	background:url('http://localhost:8080/images/Star.svg') no-repeat;	
 	background-size:100%;
 }
 .option-star-box:hover,
 .option-star-box.selected{
-	background:url('http://localhost:8080/images/Selected_Star_Icon.svg') no-repeat;	
+	background:url('http://localhost:8080/images/Star_selected.svg') no-repeat;	
 	background-size:100%;
 }
 
-@media (min-width: 768px) and (max-width: 992px){
-	.option-smile-box img, .option-star-box img {
+@media (min-width: 767px) and (max-width: 992px){
+	.option-smile-box, .option-star-box {
 	    width: 50px;
 	    height: 50px;
 	    margin-right: 10px;
     }
 }
-@media (max-width: 768px){
+@media (max-width: 767px){
 	.option-smile-box,.option-star-box{
 		display: inline-block;
-		width: 18%;
+		// width: 18%;
+		margin-right: 3px;
+		
+	}
+	.option-number-item {
+		color: #fff;
+		float: left;
+		font-size: 15px;
+		height: 35px;
+		margin-right: 1px;
+		padding-top: 7px;
+		text-align: center;
+		width: 38px;
+		cursor: pointer;
+		vertical-align: middle;
+	}
+	.cc-question-container[data-type="scale"]{
+		bottom: 106px;
+	}
+	.cc-question-container[data-type="scale"] .option-left-rating-text,
+	.cc-question-container[data-type="scale"] .option-right-rating-text {
+		bottom: -44px;
+		width: 49px;
+	}
+	.cc-question-container[data-type="scale"] .option-right-rating-text{
+		text-align: right;
 	}
 	.option-smile-box img, .option-star-box img{
 		padding-right: 5px;
@@ -215,11 +253,56 @@
 	}
 }
 
-.option-number-item.option-nps{
+@media (max-width: 381px){
+	.option-smile-box,.option-star-box{
+		display: inline-block;
+		// width: 18%;
+		margin-right: 0;
+		height:50px;
+		width:50px;
+		
+	}
+	.option-smile-box img, .option-star-box img{
+		padding-right: 5px;
+		margin-right: 0;
+	}
+}
+
+.option-number-item.option-scale{
 	background: #4db47c;
 }
 
-.option-number-item.option-nps.selected,
-.option-number-item.option-nps:hover{
+.option-number-item.option-scale.selected,
+.option-number-item.option-scale:hover{
 	background: #712827;
+}
+
+.cc-nps-image{
+	cursor: pointer;
+	position: relative;
+	left: -25px;
+}
+.circle-image{
+	margin:auto;
+	width: 247px;
+    overflow: hidden;
+	height: 235px;
+	position: relative;
+}
+.cc-nps-selected-rating{
+	font-size: 100px;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    left: 0px;
+    line-height: 100px;
+    right: 0;
+    margin: auto;
+    bottom: 0;
+    width: 110px;
+    height: 100px;
+    text-align: center;
+    font-weight: 100;
+	color: #bbb;
+	// letter-spacing: -15px;
 }

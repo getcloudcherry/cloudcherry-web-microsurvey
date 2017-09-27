@@ -70,13 +70,14 @@ html[dir="rtl"] .detail-box .cc-question-container__content{
     padding-left:0;
 }
 
-@media (min-width: 768px) and (max-width: 1024px){
-	html[dir="rtl"] .cc-big-list-container .cc-question-container__list,.cc-question-container__list{
+@media (min-width: 767px) and (max-width: 1024px){
+    html[dir="rtl"] .cc-big-list-container .cc-question-container__list,
+    html[dir="rtl"] .cc-question-container__list{
 		text-align: right;
 	}
 }
 
-@media (min-width: 768px) and (max-width: 992px){
+@media (min-width: 767px) and (max-width: 992px){
 	html[dir="rtl"] .cc-question-container__text {
         padding-left: 20px;
         padding-right: 0;
@@ -86,7 +87,7 @@ html[dir="rtl"] .detail-box .cc-question-container__content{
 		margin-right: 0px;
 	}
 }
-@media (max-width: 768px){
+@media (max-width: 767px){
     html[dir="rtl"]	.cc-popup-container-2__icons.cc-right-icon {
             left: auto;
             right: 0;
