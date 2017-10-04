@@ -5,6 +5,7 @@ import { RequestHelper } from './helpers/Request';
 import { templates } from "./helpers/Templates";
 import { DomUtilities } from "./helpers/dom/DomUtilities";
 import { DomSurvey } from "./helpers/dom/DomSurvey";
+import { ConditionalTextFilter } from "./helpers/filters/ConditionalTextFilter";
 
 class SurveyHandler {
   surveyToken : string;
@@ -17,18 +18,21 @@ class SurveyHandler {
   welcomeQuestionButtonText : any;
   prefillResponses : any;
   questionResponses : any;
-  answers : any;
+  answers : any = {};
+  surveyAnswers : any = {};
   util : DomUtilities;
   dom : DomSurvey;
   displayThankYouCb : any;
   destroySurveyCb : any;
   acceptAnswersCb : any;
   surveyDisplay : DisplayConfig; 
-  
+  currentQuestion : any;
+  conditionalQuestions : any;
+  ccsdk : any;
   // isPartialAvailable : Boolean;
 
-  constructor(surveyToken : string) {
-    this.surveyToken = surveyToken;
+  constructor(ccsdk) {
+    this.surveyToken = ccsdk.surveyToken;
     this.surveyData = {};
     this.surveyDisplay = {
       'position' : '',
@@ -36,19 +40,23 @@ class SurveyHandler {
       'welcomePopupAnimation' : '',
       'surveyPopupAnimation' : '',
     };
+    this.ccsdk = ccsdk;
     this.questions = [];
     this.questionsToDisplay = [];
     this.prefillQuestions = [];
-    this.answers = [];
+    this.conditionalQuestions = [];
+    this.answers = {};
     this.util = new DomUtilities();
-    this.dom = new DomSurvey();
+    this.dom = ccsdk.dom;
     this.displayThankYouCb = ( e : any) => {
       let thankyouHtml : any = templates.thankyou;
       thankyouHtml = thankyouHtml.replace("{{question}}", this.surveyData.thankyouText);
       thankyouHtml = thankyouHtml.replace("{{button}}", 'Start');
-      this.dom.appendInQuestionsContainer(thankyouHtml);
-      let thankyouContainer : any =   this.util.get("#cc-thankyou-container");
-      this.util.addClassAll(thankyouContainer, 'show-slide');
+      this.ccsdk.dom.replaceInQuestionsContainer(thankyouHtml);
+      //TODO : Fix this Add class not working???
+      let thankyouContainer : any =  this.util.get("#cc-thankyou-container");
+      console.log(thankyouContainer);
+      this.util.addClass(thankyouContainer[0], 'show-slide');
     }
     this.destroySurveyCb = ( e : any ) => {
         let self : SurveyHandler = this;
@@ -61,93 +69,103 @@ class SurveyHandler {
         // console.log('question answered',e)
           let data : any = <any>e.detail;
           let response : any = {};
+          response.questionId = data.questionId;
           switch(data.type){
             case 'scale':
               response.text = null;
               response.number = Number(data.data.number);
               self.postPartialAnswer( data.index, response);
-              self.dom.domSelectElements();
-              // self.dom.nextQuestion();
+              self.ccsdk.dom.domSelectElements();
+              // self.ccsdk.dom.nextQuestion();
             break;
             case 'nps':
             response.text = null;
             response.number = Number(data.data.number);
             self.postPartialAnswer( data.index, response);
-            self.dom.domSelectElements();
-            // self.dom.nextQuestion();
+            self.ccsdk.dom.domSelectElements();
+            // self.ccsdk.dom.nextQuestion();
             break;
             case 'radio':
             response.text = null;
             response.number = Number(data.data.number);
             self.postPartialAnswer( data.index, response);
-            self.dom.domSelectElements();
-            // self.dom.nextQuestion();
+            self.ccsdk.dom.domSelectElements();
+            // self.ccsdk.dom.nextQuestion();
             break;
             case 'radioImage':
             response.text = data.data.text;
             response.number = null;
             self.postPartialAnswer( data.index, response);
-            self.dom.domSelectElements();
-            // self.dom.nextQuestion();
+            self.ccsdk.dom.domSelectElements();
+            // self.ccsdk.dom.nextQuestion();
             break;
             case 'smile':
               response.text = null;
               response.number = Number(data.data.number);
               self.postPartialAnswer( data.index, response);
-              self.dom.domSelectElements();
-              // self.dom.nextQuestion();
+              self.ccsdk.dom.domSelectElements();
+              // self.ccsdk.dom.nextQuestion();
             break;
             case 'star':
               response.text = null;
               response.number = Number(data.data.number);
               self.postPartialAnswer( data.index, response);
-              self.dom.domSelectElements();
-              // self.dom.nextQuestion();
+              self.ccsdk.dom.domSelectElements();
+              // self.ccsdk.dom.nextQuestion();
             break;
             case 'multiline':
               response.text = data.data.text;
               response.number = null;
               // console.log(data);
               self.postPartialAnswer( data.index, response);
-              self.dom.domSelectElements();
-              self.dom.setQIndex(data.index);
-              // self.dom.nextQuestion();
+              self.ccsdk.dom.domSelectElements();
+              self.ccsdk.dom.setQIndex(data.index);
+              // self.ccsdk.dom.nextQuestion();
             break;
             case 'singleline':
               response.text = data.data.text;
               response.number = null;
               // console.log(data);
               self.postPartialAnswer( data.index, response);
-              self.dom.domSelectElements();
-              self.dom.setQIndex(data.index);
-              // self.dom.nextQuestion();
+              self.ccsdk.dom.domSelectElements();
+              self.ccsdk.dom.setQIndex(data.index);
+              // self.ccsdk.dom.nextQuestion();
             break;
+            case 'number':
+            response.text = null;
+            response.number = Number(data.data.number);
+            // console.log(data);
+            self.postPartialAnswer( data.index, response);
+            self.ccsdk.dom.domSelectElements();
+            self.ccsdk.dom.setQIndex(data.index);
+            // self.ccsdk.dom.nextQuestion();
+          break;
             case 'checkbox':
               response.text = data.data.text;
               response.number = null;
               // console.log(data);
               self.postPartialAnswer( data.index, response);
-              self.dom.domSelectElements();
-              self.dom.setQIndex(data.index);
-              // self.dom.nextQuestion();
+              self.ccsdk.dom.domSelectElements();
+              self.ccsdk.dom.setQIndex(data.index);
+              // self.ccsdk.dom.nextQuestion();
             break;
             case 'select':
               response.text = data.data.text;
               response.number = null;
               // console.log(data);
               self.postPartialAnswer( data.index, response);
-              self.dom.domSelectElements();
-              self.dom.setQIndex(data.index);
-              // self.dom.nextQuestion();
+              self.ccsdk.dom.domSelectElements();
+              self.ccsdk.dom.setQIndex(data.index);
+              // self.ccsdk.dom.nextQuestion();
             break;
             case 'slider':
               response.text = data.data.text;
               response.number = Number(data.data.number);
               // console.log(data);
               self.postPartialAnswer( data.index, response);
-              self.dom.domSelectElements();
-              self.dom.setQIndex(data.index);
-              // self.dom.nextQuestion();
+              self.ccsdk.dom.domSelectElements();
+              self.ccsdk.dom.setQIndex(data.index);
+              // self.ccsdk.dom.nextQuestion();
             break;
             default:
             break;
@@ -167,14 +185,26 @@ class SurveyHandler {
     // console.log(this.surveyData);
   }
 
+  removeAnswer(questionId) {
+    delete this.answers[questionId];
+    delete this.surveyAnswers[questionId];
+  }
+
   attachSurvey(surveyData : any){
     this.surveyData = surveyData;
     this.setupSurveyContainer();
+    //clean survey
+    this.cleanSurvey();
     this.displayQuestions();
     this.displayThankYou();
     this.destroySurvey();
+  }
 
-    // this.dom = new DomSurvey();
+  cleanSurvey() {
+    this.questionsToDisplay = [];
+    this.answers = {};
+    this.surveyAnswers = {};
+    this.conditionalQuestions = [];
   }
 
   setupSurveyContainer(){
@@ -182,8 +212,7 @@ class SurveyHandler {
     surveyHtml = surveyHtml.replace("{{surveyToken}}", this.surveyToken);
     surveyHtml = surveyHtml.replace("{{animation}}", this.surveyDisplay.surveyPopupAnimation);
     surveyHtml = surveyHtml.replace(/{{location}}/g, this.surveyDisplay.surveyPosition);
-    this.dom.appendInBody(surveyHtml);
-
+    this.ccsdk.dom.appendInBody(surveyHtml);
   }
 
   displayWelcomeQuestion() {
@@ -194,8 +223,8 @@ class SurveyHandler {
     welcomeHtml = welcomeHtml.replace("{{location}}", this.surveyDisplay.position );
     welcomeHtml = welcomeHtml.replace("{{animation}}", this.surveyDisplay.welcomePopupAnimation );
     // console.log("Appending in body");
-    this.dom.appendInBody(welcomeHtml);
-    this.dom.showWelcomeContainer();
+    this.ccsdk.dom.appendInBody(welcomeHtml);
+    this.ccsdk.dom.showWelcomeContainer();
     this.acceptAnswers();
   }
 
@@ -209,20 +238,22 @@ class SurveyHandler {
     //check question is supported, based on question types.
     //filter pre fill questions.
     this.questions = this.surveyData.questions;
-    this.questionsToDisplay = (this.surveyData.questions as any[]).filter(this.filterQuestions);
+    // this.questionsToDisplay = (this.surveyData.questions as any[]).filter(this.filterQuestions);
+    this.filterQuestions();
     //sort questions and display them?
     this.questionsToDisplay = this.questionsToDisplay.sort(this.questionCompare);
     let ccSurvey : any;
     ccSurvey = document.getElementsByClassName("cc-questions-container");
     // ccSurvey = ccSurvey[0];
     let surveyObject = ccSurvey[0];
-
+    // console.log(this.questionsToDisplay);
     //chec
     //for now just do 1st question.
     for(let question of this.questionsToDisplay) {
       if(this.checkConditionals(question)) {
         let compiledTemplate = this.compileTemplate(question);
-        surveyObject.innerHTML += compiledTemplate;
+        question.compiledTemplate = compiledTemplate;
+        // surveyObject.innerHTML += compiledTemplate;
         //register handlers for onclick?
       } else {
         if(this.isPrefillQuestion(question)) {
@@ -231,8 +262,17 @@ class SurveyHandler {
       }
       //else don't display it.
     }
+    // console.log(surveyObject.innerHTML);
     // this.postPartialAnswer(this.questionsToDisplay[0], "test");
 
+  }
+
+  getSurveyQuestions() : any {
+    return this.questionsToDisplay;
+  }
+
+  getAnswerForQuestionId(questionId : string) {
+    return this.surveyAnswers[questionId];
   }
 
   acceptAnswers(){
@@ -335,7 +375,7 @@ class SurveyHandler {
     surveyPartialUrl = surveyPartialUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyPartialUrl = Config.API_URL + surveyPartialUrl;
     //add partial answer to main answer
-    this.answers.push(data);
+    this.surveyAnswers[question.id] = data;
 
     data = [data];
     // let result = RequestHelper.post(surveyPartialUrl, "[" + JSON.stringify(data) + "]");
@@ -367,7 +407,7 @@ class SurveyHandler {
         let optMax : any = opt[1].split(";");
         //get text question template and compile it.
         questionTemplate = templates.question_slider;
-        questionTemplate = questionTemplate.replace("{{question}}", question.text);
+        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
         questionTemplate = questionTemplate.replace(/{{min}}/g, optMin[0]);
         questionTemplate = questionTemplate.replace(/{{minLabel}}/g, optMin[1]);
         questionTemplate = questionTemplate.replace(/{{max}}/g, optMax[0]);
@@ -380,13 +420,13 @@ class SurveyHandler {
         //get text question template and compile it.
         if(question.questionTags.includes("NPS")) {
           questionTemplate = templates.question_nps;
-          questionTemplate = questionTemplate.replace("{{question}}", question.text);
+          questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
           questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
           questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
           questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
         } else {
           questionTemplate = templates.question_scale;
-          questionTemplate = questionTemplate.replace("{{question}}", question.text);
+          questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
           questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
           questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
           questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
@@ -414,16 +454,25 @@ class SurveyHandler {
       case "Text":
         //get text question template and compile it.
         questionTemplate = templates.question_text;
-        questionTemplate = questionTemplate.replace("{{question}}", question.text);
+        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
 
       break;
+      case "Number":
+      //get text question template and compile it.
+      questionTemplate = templates.question_number;
+      questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+      questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+      questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+      questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+
+    break;
       case "MultilineText":
         //get text question template and compile it.
         questionTemplate = templates.question_multi_line_text;
-        questionTemplate = questionTemplate.replace("{{question}}", question.text);
+        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
@@ -443,7 +492,7 @@ class SurveyHandler {
            acTemplate = templates.question_multi_select;
         }
         questionTemplate = acTemplate;
-        questionTemplate = questionTemplate.replace("{{question}}", question.text);
+        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
@@ -479,7 +528,7 @@ class SurveyHandler {
           }
 
         }
-        questionTemplate = questionTemplate.replace("{{question}}", question.text);
+        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
@@ -489,7 +538,7 @@ class SurveyHandler {
       case "Smile-5":
         //get text question template and compile it.
         questionTemplate = templates.question_smile_5;
-        questionTemplate = questionTemplate.replace("{{question}}", question.text);
+        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
@@ -497,7 +546,7 @@ class SurveyHandler {
       case "Star-5":
         //get text question template and compile it.
         questionTemplate = templates.question_star_5;
-        questionTemplate = questionTemplate.replace("{{question}}", question.text);
+        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
@@ -522,17 +571,26 @@ class SurveyHandler {
    * @returns
    * @memberof Survey
    */
-  filterQuestions(question : any) {
-    if(question.apiFill == true) {
-      return false;
+  filterQuestions() {
+    for(let question of this.questions) {
+      if(!question.isRetired) {
+        if(!this.isPrefillQuestion(question)) {
+          if(
+            question.conditionalFilter != null && 
+            ( question.conditionalFilter.filterquestions == null
+            || question.conditionalFilter.filterquestions.length == 0)
+          ) {
+            this.questionsToDisplay.push(question);
+          } else {
+            this.conditionalQuestions.push(question);
+          }
+        }
+      }
     }
-    if(question.staffFill == true) {
-      return false;
-    }
-    if(question.isRetired == true) {
-      return false;
-    }
-    return true;
+  }
+
+  getConditionalSurveyQuestions() : any {
+    return this.conditionalQuestions;
   }
 
   isPrefillQuestion(question : any) {
@@ -551,13 +609,14 @@ class SurveyHandler {
   }
 
   destroy(){
-    let surveyContainer = this.dom.getSurveyContainer(this.surveyToken);
-    let welcomeContainer = this.dom.getWelcomeContainer(this.surveyToken);
+    let surveyContainer = this.ccsdk.dom.getSurveyContainer(this.surveyToken);
+    let welcomeContainer = this.ccsdk.dom.getWelcomeContainer(this.surveyToken);
     this.util.remove(surveyContainer);
     this.util.remove(welcomeContainer);
     document.removeEventListener('ccclose', this.destroySurveyCb);
     document.removeEventListener('ccdone', this.displayThankYouCb);
     document.removeEventListener('q-answered', this.acceptAnswersCb);
+    (window as any).globalSurveyRunning = false;
   }
 }
 

@@ -91,6 +91,29 @@
             'surveyPopupAnimation' : 'right-left'
           }
         });
+
+        var ins = window.CCSDK("init", "WW-35080" ,{
+          // themeColor : "rgb(235, 28, 35)",
+          themeColor : color,
+          textDirection : 'ltr',
+          display : {
+            //write it accordring to screen corners
+            // top right or right top
+            // left top or top left 
+            // bottom right or right bottom
+            // bottom left or left bottom
+            'position' : 'bottom right',
+            // write it in fashion of from-to
+            // right-left
+            // left-right
+            // top-bottom
+            // bottom-top
+            'welcomePopupAnimation' : 'right-left',
+            'surveyPopupAnimation' : 'right-left'
+          }
+        });
+
+        window.CCSDK("trigger", "WW-35080", "page-time", "15");
         // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
 
     		//click trigger
@@ -108,7 +131,11 @@
       // console.log(e);
 			// console.log(ins);
       // e.detail.survey.trigger('launch');
+      console.log("ready");
       e.detail.survey.trigger('click', '#anywhere');
+      // e.detail.survey.trigger('page-count', 3);
+      e.detail.survey.trigger('page-time', 10);
+      e.detail.survey.trigger('site-time', 20);
       //  e.detail.survey.trigger('launch');
     });
 

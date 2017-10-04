@@ -2,6 +2,7 @@ import { DomUtilities } from './DomUtilities';
 // import { ScrollBar } from './ScrollBar';
 import { Select } from './Select';
 import { Theme } from './Theme';
+import { ConditionalFlowFilter } from "../filters/ConditionalFlowFilter";
 
 class DomSurvey{
 
@@ -11,22 +12,23 @@ class DomSurvey{
   select : Select;
   theme : Theme;
   qIndex : number;
+  currentQuestionId : string;
   $questionContainer : any;
+  $innerQuestionContainer : any;
   $popupContainer : any;
   $popupContainer2 : any;
   $body : any;
   qResponse : any;
   trackSelects : any = [];
   trackRadios : any = [];
-  answers : any = {};
+  ccsdk : any;
+  currentQuestionListeners : any = [];
+  
 
-  constructor(){
+  constructor(ccsdk : any){
     let self : DomSurvey = this;
     this.domListeners = [];
-  	let ccSDK = {
-  		qIndex : 0,
-  		totalQuestions : 0
-  	}
+    this.ccsdk = ccsdk;
   	this.qIndex = 0;
     this.qResponse = {};
     this.domSelectElements();
@@ -54,7 +56,7 @@ class DomSurvey{
 
   domSelectElements(){
     this.$questionContainer = document.
-     querySelectorAll(".cc-questions-container .cc-question-container");
+     querySelectorAll(".cc-questions-container");
   	this.$popupContainer = document.querySelectorAll(".cc-popup-container");
   	this.$popupContainer2 = document.querySelectorAll(".cc-popup-container-2");
   	this.$body = document.querySelectorAll("body")[0];
@@ -63,46 +65,36 @@ class DomSurvey{
   }
 
 
-  addListener(type : string, id : string, cb : any) {
-    let ref : any =  {
-      id : id,
-      type : type,
-      cb : cb,
-      internalHandler: undefined,
-    };
-    this.domListeners.push(ref);
-    return ref;
-  }
-
-  checkIfListenerExists(id : string) : boolean {
+ removePrevListener(id : string) : boolean {
     for(let listener of this.domListeners) {
       if(listener.id == id) {
-        return true;
+        console.log("removing listener", id);
+        this.util.removeListener(this.$body, listener.type, listener.internalHandler);
       }
     }
-    return false;
+    return true;
   }
 
   setupListeners(){
     let self = this;
-    let startSurvey = this.addListener("click",".act-cc-survey-start", function() {
+    let startSurvey = this.util.initListener("click",".act-cc-survey-start", function() {
       self.startSurvey();
     });
     startSurvey.internalHandler = this.util.listener(this.$body, startSurvey.type, startSurvey.id, startSurvey.cb);
 
-    let nextQue = this.addListener( "click",".act-cc-button-next", function(){
+    let nextQue = this.util.initListener( "click",".act-cc-button-next", function(){
       // alert("working");
       self.nextQuestion();
     });
     nextQue.internalHandler = this.util.listener(this.$body, nextQue.type, nextQue.id, nextQue.cb);
 
-    let prevQue = this.addListener( "click",".act-cc-button-prev", function(){
+    let prevQue = this.util.initListener( "click",".act-cc-button-prev", function(){
       self.prevQuestion();
     });
     prevQue.internalHandler = this.util.listener(this.$body, prevQue.type, prevQue.id, prevQue.cb);
 
-    let closeSurvey = this.addListener( "click",".act-cc-button-close", function(){
-      self.answers = {};
+    let closeSurvey = this.util.initListener( "click",".act-cc-button-close", function(){
+      self.ccsdk.survey.anwsers = {};
       self.trackSelects = [];
       self.destroyListeners();
       self.util.trigger(document, 'ccclose', undefined);
@@ -113,7 +105,7 @@ class DomSurvey{
 
     closeSurvey.internalHandler = this.util.listener(this.$body, closeSurvey.type, closeSurvey.id, closeSurvey.cb);
 
-    let minSurvey = this.addListener( "click",".act-cc-button-minimize", function(){
+    let minSurvey = this.util.initListener( "click",".act-cc-button-minimize", function(){
       self.minimizeSurvey();
     });
 
@@ -152,25 +144,28 @@ class DomSurvey{
 
   updateProgress(){
     let el = <HTMLElement>document.querySelectorAll("#progress-line")[0];
-		el.style.width = (this.qIndex/this.$questionContainer.length)*100 + '%';
+		el.style.width = (this.qIndex/this.ccsdk.survey.questionsToDisplay.length)*100 + '%';
 	}
 
 	loadFirstQuestion(){
 		// applyRuleToAllEl(this.$questionContainer, );
-		this.util.removeClassAll(this.$questionContainer, 'show-slide');
-		this.util.addClass(this.$questionContainer[0], 'show-slide');
-    this.loadQuestionSpecifics(this.$questionContainer[0], 0);
+		// this.util.removeClassAll(this.$questionContainer, 'show-slide');
+    // this.util.addClass(this.$questionContainer, 'show-slide');
+    this.loadQuestionSpecifics(this.$questionContainer, 0);
+    this.util.removeClassAll(this.$questionContainer[0].firstChild, 'show-slide');
+    this.util.addClass(this.$questionContainer[0].firstChild, 'show-slide');
     let leftIcon : any = this.util.get('.act-cc-button-prev');
     this.util.addClassAll(leftIcon , 'hide-slide');
 	}
 
 	nextQuestion(){
     //submit the current response
-    console.log('submit ',this.qResponse.type, this.qResponse);
+    // console.log('submit ',this.qResponse.type, this.qResponse);
     let isRequired : boolean = false;
-    let q : HTMLElement = this.$questionContainer[this.qIndex];
+    let q : HTMLElement = this.$questionContainer[0].firstChild;
+    // console.log(this.$questionContainer);
     isRequired = q.getAttribute('data-required').toLowerCase() == 'true' ? true : false;
-    let span : Element = this.$questionContainer[this.qIndex].querySelectorAll(".cc-question-container__required")[0]
+    let span : Element = this.$questionContainer[0].firstChild.querySelectorAll(".cc-question-container__required")[0]
     if(isRequired && Object.keys(this.qResponse).length === 0) {
       if(span) {
         this.util.addClass(span, "show");
@@ -182,32 +177,33 @@ class DomSurvey{
         this.util.removeClass(span, "show");
         this.util.addClass(span, "hide");
       }
-      console.log('qindex ' + this.qIndex);
-      if(typeof this.answers[this.qIndex] !== 'undefined' && this.qResponse !== 'undefined'
-        && this.qResponse.type == this.answers[this.qIndex].type
-        && this.qResponse.text == this.answers[this.qIndex].text
-        && this.qResponse.number == this.answers[this.qIndex].number
+      // console.log('qindex ' + this.qIndex);
+      if(typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined' && this.qResponse !== 'undefined'
+        && this.qResponse.type == this.ccsdk.survey.answers[this.currentQuestionId].type
+        && this.qResponse.text == this.ccsdk.survey.answers[this.currentQuestionId].text
+        && this.qResponse.number == this.ccsdk.survey.answers[this.currentQuestionId].number
       ) {
         //don't submit if already submitted.
       } else {
-      console.log('submitting ' + this.qIndex);
-      this.submitQuestion(this.qIndex, this.qResponse, this.qResponse.type);
+      // console.log('submitting ' + this.currentQuestionId);
+      let qId = this.qResponse.questionId?this.qResponse.questionId:this.currentQuestionId;
+      this.submitQuestion(this.qIndex, this.qResponse, this.qResponse.type, qId);
       }
-      //show error
-      this.answers[this.qIndex] = JSON.parse(JSON.stringify(this.qResponse));
+      //save response
+      this.ccsdk.survey.answers[this.currentQuestionId] = JSON.parse(JSON.stringify(this.qResponse));
     }
+    ConditionalFlowFilter.filterQuestion(this.ccsdk.survey, this.ccsdk.survey.questionsToDisplay[this.qIndex]);
 
     //go to next question
     this.qIndex++;
     //reset the post parameters
-    this.qResponse = typeof this.answers[this.qIndex] !== 'undefined' ? JSON.parse(JSON.stringify(this.answers[this.qIndex])) : {};
+    this.qResponse = typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined' ? JSON.parse(JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])) : {};
     // this.qResponse = {};
     let nextButtonState : string = 'initial';
     // console.log(this.$questionContainer);
-    let nextQ : HTMLElement = this.$questionContainer[this.qIndex];
+    let nextQ : HTMLElement = this.$questionContainer;
     // console.log(this.qIndex);
-		if( !nextQ &&
-      (this.qIndex == this.$questionContainer.length)){
+		if(this.qIndex == this.ccsdk.survey.questionsToDisplay.length){
       //Last run to show thank you message
       let leftIcon : any = this.util.get('.act-cc-button-prev');
       let rightIcon : any = this.util.get('.cc-icon-right');
@@ -216,20 +212,20 @@ class DomSurvey{
       this.util.addClassAll(rightIcon , 'hide');
       this.util.addClassAll(nextIcon , 'hide');
       this.util.trigger(document,'ccdone', undefined);
-      this.util.removeClassAll(this.$questionContainer, 'show-slide');
+      this.util.removeClass(this.$questionContainer[0].firstChild, 'show-slide');
       this.updateProgress();
 		}else{
-      if( !nextQ
-        && (this.qIndex > this.$questionContainer.length)){
+      if((this.qIndex > this.ccsdk.survey.questionsToDisplay.length)){
         //reset the counter to show first question
           this.qIndex = 0;
         }
         //repopulate qResponse based on answers.
-        this.qResponse = typeof this.answers[this.qIndex] !== 'undefined' ? JSON.parse(JSON.stringify(this.answers[this.qIndex])) : {};
-        this.util.removeClassAll(this.$questionContainer, 'show-slide');
-    		this.util.addClass(nextQ, 'show-slide');
-    		this.updateProgress();
+        this.qResponse = typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined' ? JSON.parse(JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])) : {};
+        // this.util.removeClassAll(this.$questionContainer[0].firstChild, 'show-slide');
+    		// this.util.addClass(nextQ, 'show-slide');
+        this.updateProgress();
         this.loadQuestionSpecifics(nextQ, this.qIndex);
+        this.util.addClass(this.$questionContainer[0].firstChild, 'show-slide');
         // if(nextButtonState === 'dirty'){
           // this.submitQuestion(this.qIndex, 'test', 'multiline');
         // }
@@ -239,23 +235,24 @@ class DomSurvey{
       this.util.addClassAll(leftIcon , 'hide-slide');
     } else {
       let leftIcon : any = this.util.get('.act-cc-button-prev');
-      this.util.addClassAll(leftIcon , 'show-slide');
+      this.util.addClass(leftIcon[0] , 'show-slide');
+      this.util.removeClass(leftIcon[0] , 'hide-slide');
     }
 	}
 
 	prevQuestion(){
     this.qIndex--;
-		if(!this.$questionContainer[this.qIndex]){
+		if(!this.ccsdk.survey.questionsToDisplay.length){
       this.qIndex = 0;
       return;
       // this.qIndex = this.$questionContainer.length - 1;
     }
     //re populate qResponse based on answers.
-    this.qResponse = typeof this.answers[this.qIndex] !== 'undefined' ? JSON.parse(JSON.stringify(this.answers[this.qIndex])) : {};
-		this.util.removeClassAll(this.$questionContainer,'show-slide');
-		this.util.addClass(this.$questionContainer[this.qIndex], 'show-slide');
+    // this.util.removeClassAll(this.$questionContainer,'show-slide');
+    this.loadQuestionSpecifics(null, this.qIndex);
+    this.qResponse = typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined' ? JSON.parse(JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])) : {};
+		this.util.addClass(this.$questionContainer[0].firstChild, 'show-slide');
     this.updateProgress();
-    //TODO : fix this, I have no clue why this isn't working
     if(this.qIndex == 0) {
       let leftIcon : any = this.util.get('.act-cc-button-prev');
       this.util.addClassAll(leftIcon , 'hide-slide');
@@ -267,12 +264,21 @@ class DomSurvey{
     document.querySelectorAll("body")[0].insertAdjacentHTML(
       'afterbegin', html
     );
+    //force update domSelect
+    this.domSelectElements();
+  }
+
+  replaceInQuestionsContainer(html) {
+    this.$questionContainer[0].innerHTML = html;
+    this.domSelectElements();
   }
 
   appendInQuestionsContainer(html){
     document.querySelectorAll(".cc-questions-container")[0].insertAdjacentHTML(
       'afterbegin', html
     );
+    //force update domSelect
+    this.domSelectElements();
   }
 
   showWelcomeContainer(){
@@ -297,14 +303,18 @@ class DomSurvey{
 
   loadQuestionSpecifics( q : HTMLElement, index : number){
     let self : DomSurvey = this;
-    let qType : string = q.getAttribute('data-type');
-    let qId : string = q.getAttribute('data-id');
-    // console.log(qType);
+    this.$questionContainer[0].innerHTML = "";
+    let compiledTemplate = this.ccsdk.survey.compileTemplate(this.ccsdk.survey.questionsToDisplay[index]);
+    this.$questionContainer[0].innerHTML += compiledTemplate;
+    let qType : string = this.$questionContainer[0].firstChild.getAttribute('data-type');
+    let qId : string = this.$questionContainer[0].firstChild.getAttribute('data-id');
+    // console.log("QTYIPE AND QID " , qType, qId);
+    this.currentQuestionId = qId.substring(2, qId.length);
     switch(qType){
         case 'scale':
           let allOptions1 : any = document.querySelectorAll('#' + qId + ' .option-number-item');
           let optionWidth1 = (100/allOptions1.length) - .6;
-          console.log("Option width", allOptions1, optionWidth1.toFixed(2));
+          // console.log("Option width", allOptions1, optionWidth1.toFixed(2));
           self.util.css(allOptions1 , 'width',  optionWidth1.toFixed(1) + '%');
           this.setupListenersQuestionScale(index, qId);
         break;
@@ -315,6 +325,9 @@ class DomSurvey{
           this.setupListenersQuestionMultiline(index, qId);
           break;
         case 'select':
+          if(typeof this.select !== 'undefined' ){
+            this.select.destroyListeners();
+          }
           this.setupListenersQuestionSelect(index, qId);
           break;
         case 'radio':
@@ -347,11 +360,11 @@ class DomSurvey{
   setupListenersQuestionScale( index : number, qId : string ){
     var self : DomSurvey = this;
     //add id too.
-    if(this.checkIfListenerExists('#' + qId + ' .option-number-item')) {
+    if(this.util.checkIfListenerExists('#' + qId + ' .option-number-item', this.domListeners)) {
       return;
     }
-    console.log(self.domListeners);
-    let ref = this.addListener('click', '#' + qId + ' .option-number-item', function(){
+
+    let ref = this.util.initListener('click', '#' + qId + ' .option-number-item', function(){
       let allOptions : any = document.querySelectorAll('#' + qId + ' .option-number-item');
       
       let rating : number = this.getAttribute('data-rating');
@@ -362,6 +375,7 @@ class DomSurvey{
       self.qResponse.type = 'scale';
       self.qResponse.text = null;
       self.qResponse.number = rating;
+      self.qResponse.questionId = qId;
       //move to next question automagically
       // alert('calling next questions inside scale');
       self.nextQuestion();
@@ -371,18 +385,40 @@ class DomSurvey{
       //   type : 'scale'
       // });
     });
+    this.domListeners.push(ref);    
+    
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 
   setupListenersQuestionNPS( index : number, qId : string ){
     var self : DomSurvey = this;
+    let selectedRating = <HTMLElement> document.querySelectorAll('#' + qId + ' .cc-nps-selected-rating')[0];
+    let allOptions : any = document.querySelectorAll('#' + qId + ' .option-number-item');
+    
     //add id too.
-    if(this.checkIfListenerExists('#' + qId + ' .option-number-item')) {
-      return;
+    if(this.util.checkIfListenerExists('#' + qId + ' .option-number-item', this.domListeners)) {
+      //remove listeners
+      console.log("nps question - previous listeners exists");
+      this.removePrevListener('#' + qId + ' .option-number-item');
+      
     }
-    console.log(self.domListeners);
-    let ref = this.addListener('click', '#' + qId + ' .option-number-item', function(){
-      let allOptions : any = document.querySelectorAll('#' + qId + ' .option-number-item');
+
+    //set previous value
+    let questionId : any ;
+    questionId = qId.substring(2, qId.length);
+    console.log('nps question',this.ccsdk.survey.answers[questionId]);
+    if(typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== ''){
+      let previousValue =  this.ccsdk.survey.answers[questionId].number;
+      let previousSelection = document.querySelectorAll('#' + qId + ' .option-number-item[data-rating="' + previousValue + '"]')[0];
+      console.log('nps previous selection', previousSelection);
+      if(typeof previousSelection !== 'undefined'){
+        this.util.addClass(previousSelection, "selected");
+      }
+      
+    }
+
+    // console.log(self.domListeners);
+    let ref = this.util.initListener('click', '#' + qId + ' .option-number-item', function(){
       let rating : number = this.getAttribute('data-rating');
       self.util.removeClassAll(allOptions, "selected");
       self.util.addClass(this, "selected");
@@ -391,7 +427,7 @@ class DomSurvey{
       self.qResponse.type = 'nps';
       self.qResponse.text = null;
       self.qResponse.number = rating;
-      let selectedRating = <HTMLElement> document.querySelectorAll('#' + qId + ' .cc-nps-selected-rating')[0];
+      self.qResponse.questionId = qId;
        selectedRating.innerHTML = ''+ rating;
       //move to next question automagically
       // alert('calling next questions inside scale');
@@ -402,15 +438,17 @@ class DomSurvey{
       //   type : 'scale'
       // });
     });
+    this.domListeners.push(ref);    
+    
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 
   setupListenersQuestionCheckbox( index : number, qId : string ){
     var self : DomSurvey = this;
-    if(this.checkIfListenerExists('#'+qId+' .cc-checkbox')) {
+    if(this.util.checkIfListenerExists('#'+qId+' .cc-checkbox', this.domListeners)) {
       return;
     }
-    let ref = this.addListener('click', '#'+qId+' .cc-checkbox', function(){
+    let ref = this.util.initListener('click', '#'+qId+' .cc-checkbox', function(){
       // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox input');
       // let rating : number = this.querySelectorAll('input')[0].value;
       let rating : string = [].filter.call(document.querySelectorAll('#'+qId+' .cc-checkbox input'), function(c) {
@@ -423,18 +461,20 @@ class DomSurvey{
       self.qResponse.type = 'checkbox';
       self.qResponse.text = rating;
       self.qResponse.number = null;
+      self.qResponse.questionId = qId;
       //move to next question automagically
       // self.nextQuestion();
     });
+    this.domListeners.push(ref);        
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 
   setupListenersQuestionRadio(index : number, qId : string ){
     var self : DomSurvey = this;
-    if(this.checkIfListenerExists('#'+qId+' .cc-checkbox input')) {
+    if(this.util.checkIfListenerExists('#'+qId+' .cc-checkbox input', this.domListeners)) {
       return;
     }
-    let ref = this.addListener('click', '#'+qId+' .cc-checkbox input', function(){
+    let ref = this.util.initListener('click', '#'+qId+' .cc-checkbox input', function(){
       // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox');
       let rating : number = this.value;
       // self.util.removeClassAll(allOptions, "selected");
@@ -444,18 +484,21 @@ class DomSurvey{
       self.qResponse.type = 'radio';
       self.qResponse.text = null;
       self.qResponse.number = rating;
+      self.qResponse.questionId = qId;
       //move to next question automagically
       self.nextQuestion();
     });
+    this.domListeners.push(ref);    
+    
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 
   setupListenersQuestionRadioImage(index : number, qId : string ){
     var self : DomSurvey = this;
-    if(this.checkIfListenerExists('#'+qId+' .cc-checkbox input')) {
+    if(this.util.checkIfListenerExists('#'+qId+' .cc-checkbox input', this.domListeners)) {
       return;
     }
-    let ref = this.addListener('click', '#'+qId+' .cc-checkbox input', function(){
+    let ref = this.util.initListener('click', '#'+qId+' .cc-checkbox input', function(){
       // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox');
       let rating : number = this.value;
       // self.util.removeClassAll(allOptions, "selected");
@@ -465,25 +508,44 @@ class DomSurvey{
       self.qResponse.type = 'radioImage';
       self.qResponse.text = rating;
       self.qResponse.number = null;
+      self.qResponse.questionId = qId;
       //move to next question automagically
       self.nextQuestion();
     });
+    this.domListeners.push(ref);    
+    
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 
   setupListenersQuestionStar(index : number, qId : string ){
     var self : DomSurvey = this;
-    if(this.checkIfListenerExists('#'+qId+' .option-star-box')) {
-      return;
+    if(this.util.checkIfListenerExists('#'+qId+' .option-star-box', this.domListeners)) {
+      //remove listeners
+      console.log("smile question - previous listeners exists");
+      this.removePrevListener('#'+qId+' .option-smile-box');
+         
     }
-    let ref = this.addListener('click', '#'+qId+' .option-star-box', function(){
+    //set previous value
+    let questionId : any ;
+    questionId = qId.substring(2, qId.length);
+    console.log('star question',this.ccsdk.survey.answers[questionId]);
+    if(typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== ''){
+      let previousValue =  this.ccsdk.survey.answers[questionId].number;
+      let previousSelection = document.querySelectorAll('#' + qId + ' .option-star-box[data-rating="' + previousValue + '"]')[0];
+      console.log('star previous selection', previousSelection);
+      if(typeof previousSelection !== 'undefined' && previousSelection != null){      
+        this.util.addClass(previousSelection, "selected");
+      }
+      
+    }
+    let ref = this.util.initListener('click', '#'+qId+' .option-star-box', function(){
       let allOptions : any = document.querySelectorAll('#'+qId+' .option-star-box');
       let rating : number = this.getAttribute('data-rating');
       self.util.removeClassAll(allOptions, "selected");
       self.util.addClass(this, "selected");
       let child : any = this.previousSibling;
       while( ( child = child.previousSibling) != null ){
-        console.log('questionstar', 'previousSiblings', child);
+        // console.log('questionstar', 'previousSiblings', child);
         self.util.addClass(child, "selected");
       }
       // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
@@ -491,25 +553,46 @@ class DomSurvey{
       self.qResponse.type = 'star';
       self.qResponse.text = null;
       self.qResponse.number = rating;
+      self.qResponse.questionId = qId;
       //move to next question automagically
       self.nextQuestion();
     });
+    this.domListeners.push(ref);    
+    
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 
   setupListenersQuestionSmile(index : number, qId : string ){
     var self : DomSurvey = this;
-    if(this.checkIfListenerExists('#'+qId+' .option-smile-box')) {
-      return;
+    if(this.util.checkIfListenerExists('#'+qId+' .option-smile-box', this.domListeners)) {
+      //remove listeners
+      console.log("smile question - previous listeners exists");
+      this.removePrevListener('#'+qId+' .option-smile-box');
+      
     }
-    let ref = this.addListener('click', '#'+qId+' .option-smile-box', function(){
+    //set previous value
+    let questionId : any ;
+    questionId = qId.substring(2, qId.length);
+    console.log('smile question',this.ccsdk.survey.answers[questionId]);
+    if(typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== ''){
+      let previousValue =  this.ccsdk.survey.answers[questionId].number;
+      let previousSelection = document.querySelectorAll('#' + qId + ' .option-smile-box[data-rating="' + previousValue + '"]')[0];
+      console.log('smile previous selection', previousSelection);
+      if(typeof previousSelection !== 'undefined' && previousSelection != null){
+        
+        this.util.addClass(previousSelection, "selected");
+      }
+      
+    }
+  
+    let ref = this.util.initListener('click', '#'+qId+' .option-smile-box', function(){
       let allOptions : any = document.querySelectorAll('#'+qId+' .option-smile-box');
       let rating : number = this.getAttribute('data-rating');
       self.util.removeClassAll(allOptions, "selected");
       self.util.addClass(this, "selected");
       let child : any = this.previousSibling;
       while( ( child = child.previousSibling) != null ){
-        console.log('questionscale', 'previousSiblings', child);
+        // console.log('questionscale', 'previousSiblings', child);
         self.util.addClass(child, "selected");
       }
       // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
@@ -517,79 +600,148 @@ class DomSurvey{
       self.qResponse.type = 'smile';
       self.qResponse.text = null;
       self.qResponse.number = rating;
+      self.qResponse.questionId = qId;
       //move to next question automagically
       self.nextQuestion();
     });
+    this.domListeners.push(ref);    
+    
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 
   setupListenersQuestionMultiline( index : number, qId : string ){
     let self : DomSurvey = this;
     let multilineRes : string = '';
-    if(this.checkIfListenerExists('#'+qId)) {
-      return;
-    }
-    let ref = this.addListener('change', '#'+qId,function(){
+    if(this.util.checkIfListenerExists('#'+qId, this.domListeners)) {
+          //remove listeners
+          console.log("multiine question - previous listeners exists");
+          this.removePrevListener('#'+qId);
+             
+        }
+        //set previous value
+        let questionId : any ;
+        questionId = qId.substring(2, qId.length);
+        console.log('multiine question',this.ccsdk.survey.answers[questionId]);
+        if(typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== ''){
+          let previousValue =  this.ccsdk.survey.answers[questionId].text;
+          console.log('multiine input box',document.querySelectorAll('#' + qId)[0]);
+          let previousSelection = <HTMLInputElement>document.querySelectorAll('#' + qId)[0];
+          console.log('multiine previous selection', previousSelection);
+          console.log('multiine previous value', previousValue);
+          if(typeof previousSelection !== 'undefined' && 
+           previousSelection != null &&
+           typeof previousValue !== 'undefined'){
+            previousSelection.value = previousValue ;      
+          }
+        }
+    let ref = this.util.initListener('change', '#'+qId,function(){
       multilineRes = this.value;
       self.qResponse.type = 'multiline';
       self.qResponse.text = multilineRes;
       self.qResponse.number = null;
+      self.qResponse.questionId = qId;
     });
+    this.domListeners.push(ref);    
+    
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 
   setupListenersQuestionSingleline( index : number, qId : string ){
     let self : DomSurvey = this;
     let singlelineRes : string = '';
-    if(this.checkIfListenerExists('#'+qId)) {
-      return;
+    if(this.util.checkIfListenerExists('#'+qId, this.domListeners)) {
+      //remove listeners
+      console.log("singleline question - previous listeners exists");
+      this.removePrevListener('#'+qId);
+         
     }
-    let ref = this.addListener('change', '#'+qId,function(){
+    //set previous value
+    let questionId : any ;
+    questionId = qId.substring(2, qId.length);
+    console.log('singleline question',this.ccsdk.survey.answers[questionId]);
+    if(typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== ''){
+      let previousValue =  this.ccsdk.survey.answers[questionId].text;
+      console.log('singleline input box',document.querySelectorAll('#' + qId)[0]);
+      let previousSelection = <HTMLInputElement>document.querySelectorAll('#' + qId)[0];
+      console.log('singleline previous selection', previousSelection);
+      console.log('singleline previous value', previousValue);
+      if(typeof previousSelection !== 'undefined' && 
+       previousSelection != null &&
+       typeof previousValue !== 'undefined'){
+        previousSelection.value = previousValue ;      
+      }
+    }
+    let ref = this.util.initListener('change', '#'+qId,function(){
       singlelineRes = this.value;
       self.qResponse.type = 'singleline';
       self.qResponse.text = singlelineRes;
       self.qResponse.number = null;
+      self.qResponse.questionId = qId;
     });
+    this.domListeners.push(ref);    
+    
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 
   setupListenersQuestionSlider( index : number, qId : string ){
     let self : DomSurvey = this;
     let sliderRes : string = '';
-    if(this.checkIfListenerExists('#' + qId + " input")) {
-      return;
+    if(this.util.checkIfListenerExists('#' + qId + " input", this.domListeners)) {
+      // return;
     }
-    let ref = this.addListener("change", '#' + qId + " input", function(){
+    let ref = this.util.initListener("change", '#' + qId + " input", function(){
       sliderRes = this.value;
       self.qResponse.type = 'slider';
       self.qResponse.number = sliderRes;
       self.qResponse.text = null;
+      self.qResponse.questionId = qId;
       //move to next question automagically
       // self.nextQuestion();
     });
+    this.domListeners.push(ref);    
+    
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 
   setupListenersQuestionSelect( index : number, qId : string ){
     let self : DomSurvey = this;
-    if(this.checkIfListenerExists('#'+qId+" .cc-select-options .cc-select-option")) {
-      return;
+    let questionId : any ;
+    console.log('select que');
+    questionId = qId.substring(2, qId.length);
+    // console.log(this.ccsdk.survey.answers[questionId]);
+    // console.log(this.ccsdk.survey.surveyAnswers[questionId]);
+    if(this.util.checkIfListenerExists('#'+qId+" .cc-select-options .cc-select-option", this.domListeners)) {
+      console.log('select que listner exists');
+      this.removePrevListener('#'+qId+" .cc-select-options .cc-select-option");
+      // return;
     }
-    if(!self.util.arrayContains.call(self.trackSelects, qId)){
+    console.log('select que');
+    
+    // if(!self.util.arrayContains.call(self.trackSelects, qId)){
+      console.log('select que initialize select');
+      
       self.select = new Select(qId);
       self.select.init(qId);
+      if(typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== ''){
+        self.select.setValue(this.ccsdk.survey.answers[questionId].text);
+      }
       self.trackSelects.push(qId);
-    }
+    // }
     let selectRes : string = '';
-    let ref = this.addListener('click', '#'+qId+" .cc-select-options .cc-select-option",function(){
+    let ref = this.util.initListener('click', '#'+qId+" .cc-select-options .cc-select-option",function(){
       selectRes = this.getAttribute('data-value');
       // console.log(selectRes);
       self.qResponse.type = 'select';
       self.qResponse.text = selectRes;
       self.qResponse.number = null;
+      self.qResponse.questionId = qId;
       //move to next question automagically
       // self.nextQuestion();
     });
+    
+    // this.util.removeListener(this.$body, ref.type, listener.internalHandler);    
+    this.domListeners.push(ref);    
+    
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
 
   }
@@ -616,15 +768,17 @@ class DomSurvey{
   //   ));
   // }
 
-  submitQuestion(index : number, data : any, type : string){
+  submitQuestion(index : number, data : any, type : string, qId : string){
       // console.log('type', type ,'res',data);
       this.util.trigger(document,'q-answered', {
         index : index,
         data : data,
-        type : type
+        type : type,
+        questionId : qId.substring(2, qId.length)
       });
   }
 
+  
 
 }
 

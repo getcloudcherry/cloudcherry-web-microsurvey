@@ -4,6 +4,8 @@ class Select{
   $body : any ;
   $html : any ;
   qId : any ;
+  select : any;
+  listeners : any = [];
   constructor(qId : string){
     this.qId = qId;
 	}
@@ -34,16 +36,19 @@ class Select{
   		});
       this.setupListeners();
   }
+
+  
   setupListeners(){
     var self = this;
     var qId = self.qId;
     this.util.listener(this.$body, "click", "#"+qId+" .cc-select-option", function(e) {
-      console.log(this);
+      console.log('click cc-select-option',this);
       let value = this.getAttribute('data-value');
       //select cc-select-wrapper
       //todo: write a function to directly select parent via selector
       let selectOptions = this.parentNode;
       let select = selectOptions.parentNode.parentNode;
+      this.select = select;
       let selectWrapper = select.parentNode;
       console.log(select);
       console.log(selectOptions);
@@ -57,22 +62,40 @@ class Select{
       select.querySelectorAll('.cc-select-trigger')[0].textContent = this.textContent;
 
     });
-
-    this.util.listener(this.$body, "click", "#"+qId+" .cc-select-trigger", function(e) {
+    let ref = this.util.initListener('click',  "#"+qId+" .cc-select-trigger", function(e){
       self.$html.addEventListener('click',function(){
         self.util.removeClassAll(document.querySelectorAll(".cc-select"), "opened");
         self.$html.removeEventListener('click', function(){
         });
       })
       var ccSelect = this.parentNode;
-      // console.log(ccSelect);
+      console.log('click cc-select-trigger',ccSelect);
       self.util.toggleClass(ccSelect, "opened");
       e.stopPropagation();
     });
+    this.listeners.push(ref);    
+    ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
+  
+  }
+
+  destroyListeners(){
+    for(let listener of this.listeners) {
+        this.util.removeListener(this.$body, listener.type, listener.internalHandler);
+    }
+    return true;
+  }
 
 
+  setValue(value : string){
+    let self = this;
+    let qId = self.qId;
+    let select :any;
 
-
+    select =  document.querySelectorAll("#"+qId+" select")[0];
+    select.value = value;
+    document.querySelectorAll("#"+qId+" .cc-select-trigger")[0].textContent = value;
+    
+    
   }
 
 }
