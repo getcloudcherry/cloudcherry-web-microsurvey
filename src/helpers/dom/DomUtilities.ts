@@ -122,6 +122,27 @@ class DomUtilities{
     return internalHandler;
   }
 
+
+
+  initListener(type : string, id : string, cb : any) {
+    let ref : any =  {
+      id : id,
+      type : type,
+      cb : cb,
+      internalHandler: undefined,
+    };
+    return ref;
+  }
+
+  checkIfListenerExists(id : string, ar : any) : boolean {
+    for(let listener of ar) {
+      if(listener.id == id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   on( evt : any, el : any, handler : any){
     el.addEventListener(evt, handler);
   }
