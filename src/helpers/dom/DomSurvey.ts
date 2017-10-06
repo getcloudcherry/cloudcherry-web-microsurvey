@@ -3,6 +3,7 @@ import { DomUtilities } from './DomUtilities';
 import { Select } from './Select';
 import { Theme } from './Theme';
 import { ConditionalFlowFilter } from "../filters/ConditionalFlowFilter";
+import { Slider } from "./Slider";
 
 class DomSurvey{
 
@@ -686,8 +687,27 @@ class DomSurvey{
   setupListenersQuestionSlider( index : number, qId : string ){
     let self : DomSurvey = this;
     let sliderRes : string = '';
+    let slider = new Slider();
+    
     if(this.util.checkIfListenerExists('#' + qId + " input", this.domListeners)) {
       // return;
+      
+    }
+    //set previous value
+    let questionId : any ;
+    questionId = qId.substring(2, qId.length);
+    console.log('slider question',this.ccsdk.survey.answers[questionId]);
+    if(typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== ''){
+      let previousValue =  this.ccsdk.survey.answers[questionId].text;
+      console.log('slider input box',document.querySelectorAll('#' + qId)[0]);
+      let previousSelection = <HTMLInputElement>document.querySelectorAll('#' + qId + " .act-slider-tip")[0];
+      console.log('slider previous selection', previousSelection);
+      console.log('slider previous value', previousValue);
+      if(typeof previousSelection !== 'undefined' && 
+       previousSelection != null &&
+       typeof previousValue !== 'undefined'){
+        previousSelection.innerHTML = previousValue ;      
+      }
     }
     let ref = this.util.initListener("change", '#' + qId + " input", function(){
       sliderRes = this.value;

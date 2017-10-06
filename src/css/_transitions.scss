@@ -75,7 +75,7 @@
   opacity: 0;
 }
 
-.show-slide{
+.show-slide, .show-thankyou-slide{
   -webkit-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
   -moz-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;
   -ms-transition: transform .3s ease,opacity .3s ease,visibility .3s ease;

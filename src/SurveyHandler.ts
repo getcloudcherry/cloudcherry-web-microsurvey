@@ -56,7 +56,7 @@ class SurveyHandler {
       //TODO : Fix this Add class not working???
       let thankyouContainer : any =  this.util.get("#cc-thankyou-container");
       console.log(thankyouContainer);
-      this.util.addClass(thankyouContainer[0], 'show-slide');
+      this.util.addClass(thankyouContainer[0], 'show-thankyou-slide');
     }
     this.destroySurveyCb = ( e : any ) => {
         let self : SurveyHandler = this;
@@ -409,9 +409,17 @@ class SurveyHandler {
         questionTemplate = templates.question_slider;
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
         questionTemplate = questionTemplate.replace(/{{min}}/g, optMin[0]);
-        questionTemplate = questionTemplate.replace(/{{minLabel}}/g, optMin[1]);
+        if(optMin[1]){
+          questionTemplate = questionTemplate.replace(/{{minLabel}}/g, optMin[1]+"-");
+        }else{
+          questionTemplate = questionTemplate.replace(/{{minLabel}}/g, "");
+        }
         questionTemplate = questionTemplate.replace(/{{max}}/g, optMax[0]);
-        questionTemplate = questionTemplate.replace(/{{maxLabel}}/g, optMax[1]);
+        if(optMax[1]){
+          questionTemplate = questionTemplate.replace(/{{maxLabel}}/g, optMax[1]+"-");
+        }else{
+          questionTemplate = questionTemplate.replace(/{{maxLabel}}/g, "");
+        }
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
