@@ -28,7 +28,7 @@
 #cc-thankyou-container .cc-question-container__text{
 		width:400px;
 		font-size: 20px;
-		max-width:auto;
+		max-width:initial;
 }
 
 .cc-message-box{
@@ -87,7 +87,7 @@
 	left: 0;
 }
 .cc-popup-container__back {
-	background-image: url(http://localhost:8080/images/Back_Icon_.svg);
+	background-image: url(https://cx.getcloudcherry.com/microsurvey-assets/Back_Icon_.svg);
 	display: inline-block;
     width: 21px;
     height: 21px;
@@ -223,7 +223,7 @@
 }
 
 .hl.dropdown{
-	background-image: url('http://localhost:8080/images/arrow-down.black.svg');
+	background-image: url('https://cx.getcloudcherry.com/microsurvey-assets/arrow-down.black.svg');
 	background-position: 97% center;
 	background-repeat: no-repeat;
 	border-bottom: 1px solid #6d6d6d;
@@ -490,7 +490,7 @@
 
 	}
 	.cc-popup-container__back {
-		background-image: url(http://localhost:8080/images/Back_Icon_.svg);
+		background-image: url(https://cx.getcloudcherry.com/microsurvey-assets/Back_Icon_.svg);
 		display: inline-block;
 		width: 27px;
 		height: 27px;

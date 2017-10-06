@@ -270,7 +270,7 @@ generateRadioImageOptions(arr : any, id : string){
        let optHtml : string = templates.option_radio_image;
        let opt : any = arr[i].split(';')
       //  optHtml = optHtml.replace(/{{image}}/g, Config.CDN_URL+opt[1] );
-       optHtml = optHtml.replace(/{{image}}/g, 'http://localhost:8080/images/'+opt[0]+'_selected.svg' );
+       optHtml = optHtml.replace(/{{image}}/g, 'https://cx.getcloudcherry.com/microsurvey-assets/'+opt[0]+'_selected.svg' );
        optHtml = optHtml.replace(/{{qId}}/g, "nm"+id );
        optHtml = optHtml.replace(/{{label}}/g, opt[0] );
        optHtml = optHtml.replace(/{{value}}/g, opt[0] );

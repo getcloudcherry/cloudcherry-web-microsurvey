@@ -36,7 +36,7 @@
 	z-index: 0;
 }
 .overlay.glass{
-	background-image: url(http://localhost:8080/images/ww.png);
+	background-image: url(https://cx.getcloudcherry.com/microsurvey-assets/ww.png);
 	background-repeat: no-repeat;
 	background-size: cover;
 }
@@ -93,7 +93,7 @@
 		right: auto;
 	}
 	.overlay.welcome-overlay{
-		/*background-image: url(http://localhost:8080/images/ww.png);*/
+		/*background-image: url(https://cx.getcloudcherry.com/microsurvey-assets/ww.png);*/
 		background: rgba(210, 42, 53, 0.87);
 	}
 	iframe, body.blurr > *:not(.cc-popup-container):not(.cc-survey){
