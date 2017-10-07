@@ -127,9 +127,7 @@ class Survey {
         this.triggers.enableScrollPixelsTrigger(parseInt(target));
         break;
       case 'launch':
-        self.initSurvey();
-        Scrollbar.initAll();
-        self.slider = new Slider();
+        SurveyManager.addSurvey(self.surveyToken);
         break;
       default:
         break;
