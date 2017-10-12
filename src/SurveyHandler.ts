@@ -601,15 +601,17 @@ class SurveyHandler {
     for(let question of this.questions) {
       if(!question.isRetired) {
         //filter out prefill question only if it is filled?.
-        if( !(this.isPrefillQuestion(question) && this.isPrefillQuestionFilled(question)) ) {
-          if(
-            question.conditionalFilter != null && 
-            ( question.conditionalFilter.filterquestions == null
-            || question.conditionalFilter.filterquestions.length == 0)
-          ) {
-            this.questionsToDisplay.push(question);
-          } else {
-            this.conditionalQuestions.push(question);
+        if(!this.isQuestionFilled(question)){
+          if( !(this.isPrefillQuestion(question))) {
+            if(
+              question.conditionalFilter != null && 
+              ( question.conditionalFilter.filterquestions == null
+              || question.conditionalFilter.filterquestions.length == 0)
+            ) {
+              this.questionsToDisplay.push(question);
+            } else {
+              this.conditionalQuestions.push(question);
+            }
           }
         }
       }
@@ -630,7 +632,7 @@ class SurveyHandler {
     return false;
   }
 
-  isPrefillQuestionFilled(question : any) {
+  isQuestionFilled(question : any) {
     for(let response of this.prefillResponses) {
       if(response.questionId == question.questionId) {
         return true;
