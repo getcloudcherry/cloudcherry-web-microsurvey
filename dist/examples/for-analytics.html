@@ -45,13 +45,11 @@
 
 	</script>
 </head>
-<body class="" style="height:3000px;">
+<body class="">
   <div class="container">
     <div id="brand">CloudCherry</div>
     <div class="button">
       <button type="button" id="anywhere">Launch Demo Survey</button>
-      <br>
-      <small>Survey will launch only when scrolling >= 1500px </small>
     </div>
   </div>
 	<script>
@@ -67,7 +65,7 @@
 				var s = document.createElement('script');
 				s.type = 'text/javascript';
 				s.async = true;
-				s.src = 'https://cx.getcloudcherry.com/cc.en.bundle.js';
+				s.src = 'http://localhost:8080/cc.en.bundle.js';
 				var x = document.getElementsByTagName('script')[0];
 				x.parentNode.insertBefore(s, x);
         // execute your script immediately here
@@ -93,7 +91,33 @@
             'surveyPopupAnimation' : 'right-left'
           }
         });
+
+        var ins = window.CCSDK("init", "WW-35080" ,{
+          // themeColor : "rgb(235, 28, 35)",
+          themeColor : color,
+          textDirection : 'ltr',
+          display : {
+            //write it accordring to screen corners
+            // top right or right top
+            // left top or top left 
+            // bottom right or right bottom
+            // bottom left or left bottom
+            'position' : 'bottom right',
+            // write it in fashion of from-to
+            // right-left
+            // left-right
+            // top-bottom
+            // bottom-top
+            'welcomePopupAnimation' : 'right-left',
+            'surveyPopupAnimation' : 'right-left'
+          }
+        });
+
+        // window.CCSDK("trigger", "WW-35080", "page-time", "15");
         // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
+          // window.CCSDK("on", "WW-35080", "onSurveyData", function(e) {
+          //   console.log("Inside OLD ON");
+          // });
 
     		//click trigger
     		//pass id or class...currently works on first element of class
@@ -110,7 +134,34 @@
       // console.log(e);
 			// console.log(ins);
       // e.detail.survey.trigger('launch');
-      e.detail.survey.trigger('scroll-pixels', 1500);
+      console.log("ready");
+      e.detail.survey.trigger('click', '#anywhere');
+      // e.detail.survey.trigger('page-count', 3);
+      // e.detail.survey.trigger('page-time', 10);
+      // e.detail.survey.trigger('site-time', 20);
+      e.detail.survey.on("onData", function(e) {
+        alert("Data");
+      });
+      e.detail.survey.on("onImpression", function(e) {
+        alert("Impression");
+      });
+      e.detail.survey.on("onQuestion", function(e) {
+        alert("Question");
+      });
+      e.detail.survey.on("onClose", function(e) {
+        alert("Closed");
+      });
+      e.detail.survey.on("onClick", function(e) {
+        alert("Click");
+      });
+      e.detail.survey.on("onAnswer", function(e) {
+        alert("Answer");
+        
+      })
+      e.detail.survey.on("onEnd", function(e) {
+        alert("Completed");
+        
+      })
       //  e.detail.survey.trigger('launch');
     });
 

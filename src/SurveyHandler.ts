@@ -6,6 +6,7 @@ import { templates } from "./helpers/Templates";
 import { DomUtilities } from "./helpers/dom/DomUtilities";
 import { DomSurvey } from "./helpers/dom/DomSurvey";
 import { ConditionalTextFilter } from "./helpers/filters/ConditionalTextFilter";
+import { Constants } from "./Constants";
 
 class SurveyHandler {
   surveyToken : string;
@@ -57,9 +58,14 @@ class SurveyHandler {
       let thankyouContainer : any =  this.util.get("#cc-thankyou-container");
       console.log(thankyouContainer);
       this.util.addClass(thankyouContainer[0], 'show-thankyou-slide');
+      let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyEndEvent);
     }
     this.destroySurveyCb = ( e : any ) => {
         let self : SurveyHandler = this;
+        //send end survey event.
+        let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
+        document.dispatchEvent(onSurveyEndEvent);
         self.destroy();
     }
 
@@ -281,6 +287,16 @@ class SurveyHandler {
     document.addEventListener('q-answered', this.acceptAnswersCb);
   }
 
+  fillPrefillQuestionObject(id : any, response : any) {
+    let question : any = this.getQuestionById(id);
+    let responseStored = this.getPrefillResponseById(id);
+    if(responseStored != null) {
+      this.updatePrefillResponseById(id, response);
+    } else {
+      this.prefillResponses.push(response)
+    }
+  }
+
   fillPrefillQuestion(id : any, value : any, valueType : string) {
     let question : any = this.getQuestionById(id);
     let response : any;
@@ -379,6 +395,8 @@ class SurveyHandler {
 
     data = [data];
     // let result = RequestHelper.post(surveyPartialUrl, "[" + JSON.stringify(data) + "]");
+    let onSurveyAnswerEvent = new CustomEvent(Constants.SURVEY_ANSWER_EVENT + "-" + this.surveyToken);
+    document.dispatchEvent(onSurveyAnswerEvent);
     return RequestHelper.post(surveyPartialUrl, data);
 
   }
@@ -582,7 +600,8 @@ class SurveyHandler {
   filterQuestions() {
     for(let question of this.questions) {
       if(!question.isRetired) {
-        if(!this.isPrefillQuestion(question)) {
+        //filter out prefill question only if it is filled?.
+        if( !(this.isPrefillQuestion(question) && this.isPrefillQuestionFilled(question)) ) {
           if(
             question.conditionalFilter != null && 
             ( question.conditionalFilter.filterquestions == null
@@ -607,6 +626,15 @@ class SurveyHandler {
     }
     if(question.staffFill == true) {
       return true;
+    }
+    return false;
+  }
+
+  isPrefillQuestionFilled(question : any) {
+    for(let response of this.prefillResponses) {
+      if(response.questionId == question.questionId) {
+        return true;
+      }
     }
     return false;
   }
