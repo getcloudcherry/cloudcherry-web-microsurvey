@@ -106,6 +106,11 @@ class Survey {
     this.survey.fillPrefillQuestionObject(questionId, answerObject);
   }
 
+  public fillPrefill(questionTag : string, answer : any) {
+    //save this in this.surveyHandler
+    this.survey.fillPrefill(questionTag, answer);
+  }
+
   public trigger(type : string, target : any) {
     let self : Survey = this;
     switch( type ){

@@ -113,11 +113,13 @@
           }
         });
 
-        window.CCSDK("trigger", "WW-35080", "page-time", "15");
-        // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
+        // window.CCSDK("trigger", "WW-35080", "page-time", "15");
+          // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
           // window.CCSDK("on", "WW-35080", "onSurveyData", function(e) {
           //   console.log("Inside OLD ON");
           // });
+          window.CCSDK("fillPrefill", "WW-35080", "Email", "abhishek.yagnik@wowlabz.com");
+          window.CCSDK("fillPrefill", "WW-35080", "Name", "Abhishek Yagnik");
 
     		//click trigger
     		//pass id or class...currently works on first element of class

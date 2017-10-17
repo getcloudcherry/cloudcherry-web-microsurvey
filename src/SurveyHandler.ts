@@ -18,6 +18,7 @@ class SurveyHandler {
   welcomeQuestion : any;
   welcomeQuestionButtonText : any;
   prefillResponses : any;
+  prefillWithTags : any;
   questionResponses : any;
   answers : any = {};
   surveyAnswers : any = {};
@@ -46,6 +47,8 @@ class SurveyHandler {
     this.questionsToDisplay = [];
     this.prefillQuestions = [];
     this.conditionalQuestions = [];
+    this.prefillResponses = [];
+    this.prefillWithTags = {};
     this.answers = {};
     this.util = new DomUtilities();
     this.dom = ccsdk.dom;
@@ -232,6 +235,7 @@ class SurveyHandler {
     this.ccsdk.dom.appendInBody(welcomeHtml);
     this.ccsdk.dom.showWelcomeContainer();
     this.acceptAnswers();
+    this.postPrefillPartialAnswer();
   }
 
   displayThankYou() {
@@ -297,6 +301,11 @@ class SurveyHandler {
     }
   }
 
+  fillPrefill(tag : any, value : object) {
+    this.prefillWithTags[tag.toLowerCase()] = value;
+    console.log('fillPrefill',this.prefillWithTags);
+  }
+
   fillPrefillQuestion(id : any, value : any, valueType : string) {
     let question : any = this.getQuestionById(id);
     let response : any;
@@ -330,6 +339,8 @@ class SurveyHandler {
     surveyPartialUrl = surveyPartialUrl.replace("{complete}", "false");
     surveyPartialUrl = surveyPartialUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyPartialUrl = Config.API_URL + surveyPartialUrl;
+    console.log("Posting Prefill Responses to Server");
+    console.log(this.prefillResponses);
     return RequestHelper.post(surveyPartialUrl, this.prefillResponses);
   }
 
@@ -603,6 +614,10 @@ class SurveyHandler {
         //filter out prefill question only if it is filled?.
         if(!this.isQuestionFilled(question)){
           if( !(this.isPrefillQuestion(question))) {
+            if(this.isPrefillTags(question)) {
+              console.log(this.prefillResponses);
+              continue;
+            }
             if(
               question.conditionalFilter != null && 
               ( question.conditionalFilter.filterquestions == null
@@ -612,7 +627,33 @@ class SurveyHandler {
             } else {
               this.conditionalQuestions.push(question);
             }
+          } else {
+            this.fillPrefillWithTags(question);
           }
+        }
+      }
+    }
+  }
+
+  isPrefillTags(question : any) {
+    if(typeof question.questionTags !== 'undefined' && question.questionTags.length > 0) {
+      for(let tag of question.questionTags) {
+        switch(tag.toLowerCase()) {
+          case "screensize":
+          //add size to prefill array
+          this.fillPrefillQuestion(question.id, "Width:" + window.innerWidth + "px / Height:" + window.innerHeight + "px" , "text");
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  fillPrefillWithTags(question : any) {
+    if(typeof question.questionTags !== 'undefined' && question.questionTags.length > 0) {
+      for(let tag of question.questionTags) {
+        if( typeof this.prefillWithTags[tag.toLowerCase()] !== 'undefined') {
+          this.fillPrefillQuestion(question.id, this.prefillWithTags[tag.toLowerCase()], "text");
         }
       }
     }
