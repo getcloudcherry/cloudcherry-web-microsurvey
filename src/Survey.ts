@@ -71,6 +71,9 @@ class Survey {
     data.then(function(surveyData) {
         console.log(surveyData);
         self.surveyData = surveyData;
+        //copy data.
+        let event = new CustomEvent(Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken , { detail : JSON.parse(JSON.stringify(surveyData)) });
+        document.dispatchEvent(event);
         self.initSurvey();
     });
   }
@@ -87,6 +90,20 @@ class Survey {
     self.survey.attachSurvey(this.surveyData);
     self.dom.setupListeners();
     self.survey.displayWelcomeQuestion();
+    //survey start event.
+    let onSurveyStartEvent = new CustomEvent(Constants.SURVEY_START_EVENT + "-" + this.surveyToken);
+    document.dispatchEvent(onSurveyStartEvent);
+  }
+
+  public on(type: string, callback : any) {
+    document.addEventListener(type + "-" + this.surveyToken, function(e : any) {
+      callback(e.detail);
+    });
+  }
+
+  public prefill(questionId : string, answerObject : any) {
+    //save this in this.surveyHandler
+    this.survey.fillPrefillQuestionObject(questionId, answerObject);
   }
 
   public trigger(type : string, target : any) {

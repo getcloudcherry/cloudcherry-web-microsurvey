@@ -20,7 +20,8 @@ let localCCSDK = {
   init : init,
   destroy : destroy,
   trigger : trigger,
-  // prefill : prefill,
+  on : on,
+  prefill : prefill
 };
 
 // let instances : any = {};
@@ -78,6 +79,15 @@ export function trigger(surveyToken : string, type : string, target : string) {
   SurveyManager.surveyInstances[surveyToken].trigger(type, target);
   //tell trigger manager to register trigger.
 }
+
+export function on(surveyToken : string, type : string, callback : any) {
+  SurveyManager.surveyInstances[surveyToken].on(type, callback);
+}
+
+export function prefill(surveyToken : string, questionId : string, answerObject : any) {
+  SurveyManager.surveyInstances[surveyToken].prefill(questionId, answerObject);
+}
+
 //
 // export function prefill(id : string, value : string, valueType : string) {
 //   SurveyManager.surveyInstances[this.surveyToken].prefill(id, value, valueType);

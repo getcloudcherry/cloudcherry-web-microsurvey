@@ -4,6 +4,7 @@ import { Select } from './Select';
 import { Theme } from './Theme';
 import { ConditionalFlowFilter } from "../filters/ConditionalFlowFilter";
 import { Slider } from "./Slider";
+import { Constants } from "../../Constants";
 
 class DomSurvey{
 
@@ -79,29 +80,40 @@ class DomSurvey{
   setupListeners(){
     let self = this;
     let startSurvey = this.util.initListener("click",".act-cc-survey-start", function() {
+      let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyClickEvent);
+      
       self.startSurvey();
     });
+
     startSurvey.internalHandler = this.util.listener(this.$body, startSurvey.type, startSurvey.id, startSurvey.cb);
 
     let nextQue = this.util.initListener( "click",".act-cc-button-next", function(){
       // alert("working");
+      let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyClickEvent);
       self.nextQuestion();
     });
     nextQue.internalHandler = this.util.listener(this.$body, nextQue.type, nextQue.id, nextQue.cb);
 
     let prevQue = this.util.initListener( "click",".act-cc-button-prev", function(){
+      let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyClickEvent);
       self.prevQuestion();
     });
     prevQue.internalHandler = this.util.listener(this.$body, prevQue.type, prevQue.id, prevQue.cb);
 
     let closeSurvey = this.util.initListener( "click",".act-cc-button-close", function(){
-      self.ccsdk.survey.anwsers = {};
+      let onSurveyCloseEvent = new CustomEvent(Constants.SURVEY_CLOSE_EVENT + "-" + self.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyCloseEvent);
+      self.ccsdk.survey.answers = {};
       self.trackSelects = [];
       self.destroyListeners();
       self.util.trigger(document, 'ccclose', undefined);
       let bodyElement = <HTMLElement>document.
       getElementsByTagName("body")[0];
         self.util.removeClass( bodyElement, "blurr" )
+      
     });
 
     closeSurvey.internalHandler = this.util.listener(this.$body, closeSurvey.type, closeSurvey.id, closeSurvey.cb);
@@ -152,14 +164,19 @@ class DomSurvey{
 		// applyRuleToAllEl(this.$questionContainer, );
 		// this.util.removeClassAll(this.$questionContainer, 'show-slide');
     // this.util.addClass(this.$questionContainer, 'show-slide');
+    
     this.loadQuestionSpecifics(this.$questionContainer, 0);
     this.util.removeClassAll(this.$questionContainer[0].firstChild, 'show-slide');
     this.util.addClass(this.$questionContainer[0].firstChild, 'show-slide');
     let leftIcon : any = this.util.get('.act-cc-button-prev');
     this.util.addClassAll(leftIcon , 'hide-slide');
+    let onSurveyQuestionEvent = new CustomEvent(Constants.SURVEY_QUESTION_EVENT + "-" + this.ccsdk.surveyToken);
+    document.dispatchEvent(onSurveyQuestionEvent);
 	}
 
 	nextQuestion(){
+    let onSurveyQuestionEvent = new CustomEvent(Constants.SURVEY_QUESTION_EVENT + "-" + this.ccsdk.surveyToken);
+    document.dispatchEvent(onSurveyQuestionEvent);
     //submit the current response
     // console.log('submit ',this.qResponse.type, this.qResponse);
     let isRequired : boolean = false;
@@ -248,6 +265,8 @@ class DomSurvey{
       return;
       // this.qIndex = this.$questionContainer.length - 1;
     }
+    let onSurveyQuestionEvent = new CustomEvent(Constants.SURVEY_QUESTION_EVENT + "-" + this.ccsdk.surveyToken);
+    document.dispatchEvent(onSurveyQuestionEvent);
     //re populate qResponse based on answers.
     // this.util.removeClassAll(this.$questionContainer,'show-slide');
     this.loadQuestionSpecifics(null, this.qIndex);
@@ -379,6 +398,8 @@ class DomSurvey{
       self.qResponse.questionId = qId;
       //move to next question automagically
       // alert('calling next questions inside scale');
+      let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyClickEvent);
       self.nextQuestion();
       // self.util.trigger(document,'q-answered', {
       //   index : index,
@@ -431,6 +452,10 @@ class DomSurvey{
       self.qResponse.questionId = qId;
        selectedRating.innerHTML = ''+ rating;
       //move to next question automagically
+
+      let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyClickEvent);
+      
       // alert('calling next questions inside scale');
       self.nextQuestion();
       // self.util.trigger(document,'q-answered', {
@@ -467,6 +492,8 @@ class DomSurvey{
       // self.nextQuestion();
     });
     this.domListeners.push(ref);        
+    let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+    document.dispatchEvent(onSurveyClickEvent);
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 
@@ -486,6 +513,8 @@ class DomSurvey{
       self.qResponse.text = null;
       self.qResponse.number = rating;
       self.qResponse.questionId = qId;
+      let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyClickEvent);
       //move to next question automagically
       self.nextQuestion();
     });
@@ -510,6 +539,8 @@ class DomSurvey{
       self.qResponse.text = rating;
       self.qResponse.number = null;
       self.qResponse.questionId = qId;
+      let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyClickEvent);
       //move to next question automagically
       self.nextQuestion();
     });
@@ -555,6 +586,9 @@ class DomSurvey{
       self.qResponse.text = null;
       self.qResponse.number = rating;
       self.qResponse.questionId = qId;
+
+      let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyClickEvent);
       //move to next question automagically
       self.nextQuestion();
     });
@@ -602,6 +636,9 @@ class DomSurvey{
       self.qResponse.text = null;
       self.qResponse.number = rating;
       self.qResponse.questionId = qId;
+
+      let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyClickEvent);
       //move to next question automagically
       self.nextQuestion();
     });
@@ -756,6 +793,10 @@ class DomSurvey{
       self.qResponse.number = null;
       self.qResponse.questionId = qId;
       //move to next question automagically
+
+      let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyClickEvent);
+      
       // self.nextQuestion();
     });
     
