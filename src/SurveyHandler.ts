@@ -612,7 +612,7 @@ class SurveyHandler {
     for(let question of this.questions) {
       if(!question.isRetired) {
         //filter out prefill question only if it is filled?.
-        if(!this.isQuestionFilled(question)){
+        // if(!this.isQuestionFilled(question)){
           if( !(this.isPrefillQuestion(question))) {
             if(this.isPrefillTags(question)) {
               console.log(this.prefillResponses);
@@ -630,7 +630,7 @@ class SurveyHandler {
           } else {
             this.fillPrefillWithTags(question);
           }
-        }
+        // }
       }
     }
   }
