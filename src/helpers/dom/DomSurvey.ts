@@ -72,6 +72,7 @@ class DomSurvey{
       if(listener.id == id) {
         console.log("removing listener", id);
         this.util.removeListener(this.$body, listener.type, listener.internalHandler);
+        console.log(this.domListeners);
       }
     }
     return true;
@@ -138,6 +139,7 @@ class DomSurvey{
     setTimeout(()=>{
       this.util.addClass(this.$popupContainer[0], 'show-slide');
     },200);
+    this.ccsdk.surveyStatus = 'minimized';
   }
 
   destroyListeners(){
@@ -148,11 +150,17 @@ class DomSurvey{
   }
 
   startSurvey(){
-      this.domSelectElements();
-      // console.log("click in setup listener survey start");
-      this.util.addClassAll(this.$popupContainer2, 'show-slide');
-      this.util.removeClass(this.$popupContainer[0], 'show-slide');
-      this.loadFirstQuestion();
+    this.domSelectElements();
+    // console.log("click in setup listener survey start");
+    this.util.addClassAll(this.$popupContainer2, 'show-slide');
+    this.util.removeClass(this.$popupContainer[0], 'show-slide');
+      if(this.ccsdk.surveyStatus == 'minimized'){
+        //resume survey
+      }else{
+        //start survey
+        this.loadFirstQuestion();
+      }
+   
   }
 
   updateProgress(){
@@ -175,6 +183,9 @@ class DomSurvey{
 	}
 
 	nextQuestion(){
+
+    //empty the domListner
+    // this.util.removeAllListeners(this.domListeners);
     let onSurveyQuestionEvent = new CustomEvent(Constants.SURVEY_QUESTION_EVENT + "-" + this.ccsdk.surveyToken);
     document.dispatchEvent(onSurveyQuestionEvent);
     //submit the current response
@@ -381,7 +392,23 @@ class DomSurvey{
     var self : DomSurvey = this;
     //add id too.
     if(this.util.checkIfListenerExists('#' + qId + ' .option-number-item', this.domListeners)) {
-      return;
+      // return;
+      console.log("scale question - previous listeners exists");
+      this.removePrevListener('#' + qId + ' .option-number-item');
+    }
+
+    //set previous value
+    let questionId : any ;
+    questionId = qId.substring(2, qId.length);
+    console.log('scale question',this.ccsdk.survey.answers[questionId]);
+    if(typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== ''){
+      let previousValue =  this.ccsdk.survey.answers[questionId].number;
+      let previousSelection = document.querySelectorAll('#' + qId + ' .option-number-item[data-rating="' + previousValue + '"]')[0];
+      console.log('scale previous selection', previousSelection);
+      if(typeof previousSelection !== 'undefined'){
+        this.util.addClass(previousSelection, "selected");
+      }
+      
     }
 
     let ref = this.util.initListener('click', '#' + qId + ' .option-number-item', function(){
@@ -763,13 +790,14 @@ class DomSurvey{
   setupListenersQuestionSelect( index : number, qId : string ){
     let self : DomSurvey = this;
     let questionId : any ;
-    console.log('select que');
+    console.log('select que', this.domListeners);
     questionId = qId.substring(2, qId.length);
     // console.log(this.ccsdk.survey.answers[questionId]);
     // console.log(this.ccsdk.survey.surveyAnswers[questionId]);
     if(this.util.checkIfListenerExists('#'+qId+" .cc-select-options .cc-select-option", this.domListeners)) {
       console.log('select que listner exists');
       this.removePrevListener('#'+qId+" .cc-select-options .cc-select-option");
+    
       // return;
     }
     console.log('select que');
@@ -778,15 +806,19 @@ class DomSurvey{
       console.log('select que initialize select');
       
       self.select = new Select(qId);
+      self.select.destroyListeners();
       self.select.init(qId);
+      
       if(typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== ''){
         self.select.setValue(this.ccsdk.survey.answers[questionId].text);
+        self.select.selectOptions(this.ccsdk.survey.answers[questionId].text);
       }
       self.trackSelects.push(qId);
     // }
     let selectRes : string = '';
     let ref = this.util.initListener('click', '#'+qId+" .cc-select-options .cc-select-option",function(){
-      selectRes = this.getAttribute('data-value');
+      // selectRes = this.getAttribute('data-value');
+      selectRes = document.querySelectorAll('#'+qId+" .cc-select-trigger")[0].innerHTML;
       // console.log(selectRes);
       self.qResponse.type = 'select';
       self.qResponse.text = selectRes;

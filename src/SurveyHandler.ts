@@ -471,10 +471,16 @@ class SurveyHandler {
           let startRange = 0.0;
           let endRange = 10.0;
           let options = "";
+          let startRangeLabel = "Very unlikely";
+          let endRangeLabel = "Very likely";
           if(question.multiSelect.length > 0) {
             startRange = parseFloat(question.multiSelect[0].split("-")[0]);
+            startRangeLabel = question.multiSelect[0].split("-")[0].split(";")[1];
             endRange = parseFloat(question.multiSelect[0].split("-")[1]);
+            endRangeLabel = question.multiSelect[0].split("-")[1].split(";")[1];
           }
+          startRangeLabel = startRangeLabel == null ? "Very unlikely" : startRangeLabel;
+          endRangeLabel = endRangeLabel == null ? "Very likely" : endRangeLabel;
           let divider : any = 1;            
           if(endRange < 11){
           }else{
@@ -485,6 +491,8 @@ class SurveyHandler {
             options += '<span data-rating="'+ initial + '" class="option-number-item option-scale">' + initial + '</span>';
           }
           questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
+          questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel);
+          questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel);
         }
 
       break;
@@ -518,7 +526,7 @@ class SurveyHandler {
       case "MultiSelect":
         let acTemplate : string ;
         //get text question template and compile it.
-        if(question.displayStyle == 'radiobutton/checkbox'){
+        if((question.displayStyle == 'radiobutton/checkbox') && (question.multiSelect.length < 7)){
           // console.log(question.displayStyle);
           let options3 : string = self.util.generateCheckboxOptions(question.multiSelect, question.id);
           // console.log(options2);
@@ -526,7 +534,16 @@ class SurveyHandler {
           questionTemplate = acTemplate.replace(/{{options}}/g, options3);
           acTemplate = questionTemplate;
         }else{
-           acTemplate = templates.question_multi_select;
+          // console.log('select type 3');
+          acTemplate = templates.question_multi_select;
+          
+          // acTemplate = templates.question_select;
+          let options3 = self.util.generateSelectOptions(question.multiSelect);
+          // questionTemplate = acTemplate;
+          console.log(options3);
+          questionTemplate = acTemplate.replace(/{{options}}/g, options3);
+          acTemplate = questionTemplate;
+          
         }
         questionTemplate = acTemplate;
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
@@ -541,7 +558,8 @@ class SurveyHandler {
         let options1 : string ;
         let options2 : string ;
         //get text question template and compile it.
-        if(question.displayStyle == 'radiobutton/checkbox'){
+        if((question.displayStyle == 'radiobutton/checkbox') && (question.multiSelect.length < 7)){
+          // if(question.displayStyle == 'radiobutton/checkbox'){
           // console.log('select type 1');
           // console.log(question.displayStyle);
           acTemplate1 = templates.question_radio;

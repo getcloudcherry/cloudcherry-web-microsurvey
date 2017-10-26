@@ -80,7 +80,13 @@ class DomUtilities{
 		}
 
 
-	}
+  }
+  hasClass(el:any, className:string){
+    if (el.classList)
+      return el.classList.contains(className);
+    else
+      return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+  }
 	ready(fn : any) : void {
 	  if ((<any>document).attachEvent ? document.readyState === "complete" : document.readyState !== "loading"){
 	    fn();
@@ -151,6 +157,12 @@ class DomUtilities{
   }
   removeListener(el : any, evt : any, handler : any ){
     el.removeEventListener(evt, handler);
+  }
+  removeAllListeners(ar:any) : boolean {
+    for(let listener of ar) {
+        this.removeListener(document.querySelectorAll("body")[0], listener.type, listener.internalHandler);
+    }
+    return true;
   }
 
   trigger(el : any, eventName : string, data : Object){
