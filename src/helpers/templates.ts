@@ -11,6 +11,7 @@ import  * as QuestionRadioImage from '../templates/QuestionRadioImage.html';
 import  * as QuestionScale from '../templates/QuestionScale.html';
 import  * as QuestionNPS from '../templates/QuestionNPS.html';
 import  * as QuestionSelect from '../templates/QuestionSelect.html';
+import  * as QuestionMultiSelect from '../templates/QuestionMultiSelect.html';
 import  * as QuestionSmile from '../templates/QuestionSmile.html';
 import  * as QuestionStar from '../templates/QuestionStar.html';
 import  * as QuestionSlider from '../templates/QuestionSlider.html';
@@ -59,7 +60,7 @@ templates.question_slider = QuestionSlider;
 templates.question_multi_line_text = QuestionMultiline;
 
 
-templates.question_multi_select = QuestionSelect;
+templates.question_multi_select = QuestionMultiSelect;
 
 
 templates.question_select = QuestionSelect;

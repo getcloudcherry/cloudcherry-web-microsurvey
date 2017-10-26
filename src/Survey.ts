@@ -23,9 +23,11 @@ class Survey {
   triggers : Triggers;
   surveyRunning : boolean;
   surveyDone : boolean;
+  surveyStatus : string;
 
   constructor(surveyToken : string, config : CCSDKConfig) {
     this.surveyDone = false;
+    this.surveyStatus = '';
     this.surveyToken = surveyToken;
     this.config = config;
     this.surveyRunning = false;
