@@ -26,14 +26,21 @@ if( individualPageViewCount == null) {
   Cookie.set(Constants.CCTriggerIndividualPageViewCount, individualPageViewCount, undefined, window.location.href);
 }
 
+(window as any).clickCount = 0;
+
 window.onscroll = function (e) {  
   // called when the window is scrolled.  
     let doc = document.documentElement;
     let left = (window.pageXOffset || doc.scrollLeft) - (doc.clientLeft || 0);
     let top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
-    console.log(top);
+    (window as any).ccsdkTopOffset = top;
     TriggerManager.processScrollTriggers(top);
-} 
+}
+
+
+document.onclick = function(e) {
+  (window as any).clickCount++;
+}
 
 
 //TriggerManager adds to survey Queue
@@ -75,6 +82,7 @@ class TriggerManager {
     //set cookies and call every process Interval Triggers.
     for(let trigger in TriggerManager.triggerInstances) {
       TriggerManager.triggerInstances[trigger].processIntervalTriggers();
+      TriggerManager.triggerInstances[trigger].processConditionalTriggers();
     }
   }
 

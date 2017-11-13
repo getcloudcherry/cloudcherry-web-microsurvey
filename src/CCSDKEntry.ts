@@ -93,6 +93,17 @@ export function fillPrefill(surveyToken : string, questionTag : string, answer :
   SurveyManager.surveyInstances[surveyToken].fillPrefill(questionTag, answer);
 }
 
+export function show(surveyToken : string) {
+  SurveyManager.surveyInstances[surveyToken].show();
+}
+
+export function hide(surveyToken : string) {
+  SurveyManager.surveyInstances[surveyToken].hide();
+}
+
+//on exit detect
+
+
 //
 // export function prefill(id : string, value : string, valueType : string) {
 //   SurveyManager.surveyInstances[this.surveyToken].prefill(id, value, valueType);

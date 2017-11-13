@@ -10,6 +10,10 @@ import { Slider } from "./helpers/dom/Slider";
 import { SurveyManager } from "./SurveyManager";
 import { TriggerManager } from "./TriggerManager";
 import { Triggers } from './Triggers';
+import { RequestHelper } from './helpers/Request';
+import { Config } from './Config';
+
+import { templates } from "./helpers/templates"
 
 class Survey {
   survey : SurveyHandler;
@@ -24,16 +28,21 @@ class Survey {
   surveyRunning : boolean;
   surveyDone : boolean;
   surveyStatus : string;
+  isThrottled : boolean;
+  thorttlingLogic : any;
+  loginData : any;
 
   constructor(surveyToken : string, config : CCSDKConfig) {
+    this.isThrottled = true;
     this.surveyDone = false;
     this.surveyStatus = '';
     this.surveyToken = surveyToken;
     this.config = config;
     this.surveyRunning = false;
+    this.thorttlingLogic = null;
     // this.setupSurvey();
     this.triggers = new Triggers(this);
-    TriggerManager.addSurvey(this.surveyToken, this.triggers);
+    // TriggerManager.addSurvey(this.surveyToken, this.triggers);
     this.survey = new SurveyHandler(this);
     this.util = new DomUtilities;
     //set themeColor of survey
@@ -43,6 +52,100 @@ class Survey {
     this.setHtmlTextDirection();
     this.setDisplayOptions();
     this.util.trigger(document, this.surveyToken + '-ready', {'survey' : this});
+    //do login
+    this.config.username = "test";
+    this.config.password = "test";
+    this.config.location = "location";
+    //check trigger conditions and add itself to 
+    //based on new config
+    //gotta and these.
+    // this.trigger("click", this.config.cssSelector);
+    // this.trigger("scroll-pixels", this.config.scrollPercent);
+    // this.trigger("page-time", this.config.waitSeconds);
+    // this.trigger("url-match", this.config.grepURL);
+    // this.trigger("url-not-match", this.config.grepInvertURL);
+    // this.config.scrollPercent = 10;
+    this.config.waitSeconds = 5;
+    this.triggers.setConditionalTriggers(this.config);
+    // this.login(function() {
+      //on login
+    // });
+  }
+
+  login(cb) {
+    let loginURL = Config.API_URL + Config.POST_LOGIN_TOKEN;
+    let loginResponse = RequestHelper.post(loginURL,  { grant_type : Constants.GRANT_TYPE, username : this.config.username, password : this.config.password });
+    let self = this;
+    console.log("login");
+    loginResponse.then(function(logindata) {
+      console.log(logindata);
+      self.loginData = logindata;
+      if(self.isThrottled) {
+        self.getSurveyThrottlingLogic(cb);
+      } else {
+        cb();
+        return;
+      }
+      
+    });
+  }
+
+  getSurveyThrottlingLogic(cb) {
+    let getThrottleUrl = Config.API_URL + Config.GET_SURVEY_THROTTLE_LOGIC.replace('{location}', this.config.location);
+    let headers = {};
+    headers[Constants.AUTHORIZATION] = Constants.AUTHORIZATION_BEARER + " " + this.loginData.access_token;
+    let getThrottleResponse = RequestHelper.getWithHeaders(getThrottleUrl, headers);
+    let self = this;
+    getThrottleResponse.then(function(data) {
+      self.thorttlingLogic = data;
+      self.checkThrottling(cb);
+    });
+  }
+
+  checkThrottling(cb) {
+    if(this.thorttlingLogic != null) {
+      if (this.thorttlingLogic.inputIds == null) {
+        this.thorttlingLogic.inputIds = [];
+      }
+      this.thorttlingLogic.inputIds.push(this.thorttlingLogic[this.thorttlingLogic.uniqueIDQuestionIdOrTag.toLowerCase()]);
+      if (this.thorttlingLogic.logics != null && this.thorttlingLogic.logics.length > 0 && this.config != null) {
+          this.thorttlingLogic.logics[0].filter.location = [];
+          this.thorttlingLogic.logics[0].filter.location.push(this.config.location);
+      }
+    }
+    let self = this;
+    let postThrottleUrl = Config.API_URL + Config.POST_THROTTLING;
+    let headers = {};
+    headers[Constants.AUTHORIZATION] = Constants.AUTHORIZATION + " " + this.loginData.access_token;
+    let postThrottleResponse = RequestHelper.postWithHeaders(postThrottleUrl, this.thorttlingLogic, headers);
+    postThrottleResponse.then(function(throttleResponse) {
+      
+      if(typeof throttleResponse[0][self.thorttlingLogic.uniqueIDQuestionIdOrTag.toLowerCase()] && throttleResponse[0].value) {
+        //get survey data?  
+        cb();
+      }
+    });
+  }
+
+  addThrottlingEntries(isOpen : boolean) {
+    let addThrottleUrl = Config.API_URL + Config.POST_THROTTLING_ADD_ENTRIES;
+    let headers = {};
+    this.loginData = { access_token : "help" };
+    headers[Constants.AUTHORIZATION] = Constants.AUTHORIZATION + " " + this.loginData.access_token;
+    //fill this from config and data.
+    let addThrottleUrlResponse = RequestHelper.postWithHeaders(addThrottleUrl, { 
+      user : "", 
+      mobile : "", 
+      emailId : "", 
+      customId : "", 
+      surveySentDate : "", 
+      surveyOpenDate : "", 
+      channel : "", 
+      isOpened : isOpen
+    }, headers);
+    addThrottleUrlResponse.then(function(throttleResponse) {
+      console.log(throttleResponse);
+    })
   }
 
   setupSurvey(){
@@ -87,11 +190,16 @@ class Survey {
     // if(!self.surveyRunning) {
     //   self.surveyRunning = true;
     // }
+    self.surveyRunning = true;
     self.dom = new DomSurvey(this);
     self.dom.setTheme(self.config.themeColor);
     self.survey.attachSurvey(this.surveyData);
     self.dom.setupListeners();
+    // self.config.language = "हिन्दी";
+    self.config.language = "default";
+    
     self.survey.displayWelcomeQuestion();
+    // self.survey.displayLanguageSelector();
     //survey start event.
     let onSurveyStartEvent = new CustomEvent(Constants.SURVEY_START_EVENT + "-" + this.surveyToken);
     document.dispatchEvent(onSurveyStartEvent);
@@ -102,6 +210,23 @@ class Survey {
       callback(e.detail);
     });
   }
+
+  public show() {
+    //do show and hide things.
+    SurveyManager.setSurveyRunning();
+    //show survey
+    this.setupSurvey();
+
+  }
+
+  public hide() {
+    SurveyManager.unsetSurveyRunning();
+  }
+
+  public destroy() {
+    //remove all listeners?
+  }
+  
 
   public prefill(questionId : string, answerObject : any) {
     //save this in this.surveyHandler
@@ -143,6 +268,9 @@ class Survey {
       break;
       case 'url-match':
         this.triggers.enablePopUpByURLPatternTrigger(target);
+      break;
+      case 'url-not-match':
+        this.triggers.enablePopUpByNotURLPatternTrigger(target);
       break;
       case 'utm-match':
         this.triggers.enablePopUpByUTMPatternTrigger(target);

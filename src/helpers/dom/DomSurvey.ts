@@ -158,7 +158,8 @@ class DomSurvey{
         //resume survey
       }else{
         //start survey
-        this.loadFirstQuestion();
+        // this.loadFirstQuestion();
+        this.ccsdk.survey.displayLanguageSelector();
       }
    
   }
@@ -321,7 +322,28 @@ class DomSurvey{
         this.util.addClass(startContainer, "show-slide");
         this.util.addClass( bodyElement, "blurr" );
     },200);
+  }
 
+  showLanguageSelector(){
+    setTimeout(() => {
+      let startContainer = <HTMLElement>document.
+      querySelectorAll(".cc-language-selector")[0];
+      let bodyElement = <HTMLElement>document.
+      getElementsByTagName("body")[0];
+        this.util.addClass(startContainer, "show-slide");
+        this.util.addClass( bodyElement, "blurr" );
+    },200);
+    let self = this;
+    let languageSelect = this.util.initListener("click",".cc-language-select", function() {
+      // let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+      // document.dispatchEvent(onSurveyClickEvent);
+      //select language show next question.
+      // self.startSurvey();
+      self.ccsdk.config.language = "default";
+      self.ccsdk.config.language = ""; //language selection from menu then show first question
+    });
+
+    languageSelect.internalHandler = this.util.listener(this.$body, languageSelect.type, languageSelect.id, languageSelect.cb);
   }
 
   getSurveyContainer( token : string){
