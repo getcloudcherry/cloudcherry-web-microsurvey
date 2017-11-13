@@ -40,6 +40,16 @@ function makeRequest (method : string, url : string, postParams : string, header
 
 class RequestHelper {
 
+  static getWithHeaders(url : string, headers : any) {
+    return makeRequest("GET", url, null, headers);
+  }
+
+  static postWithHeaders(url : string, data : Object, headers : any) {
+    headers["Content-Type"] = "application/json; charset=utf-8";
+    return makeRequest("POST", url, JSON.stringify(data), headers);
+    
+  }
+
   static get(url : string) {
     return makeRequest("GET", url, null, null);
     // let request : Request = new Request( (url as any) , new Object());

@@ -53,7 +53,11 @@ class SurveyManager {
   }
 
   public static setSurveyRunning() {
+    (window as any).globalSurveyRunning = true;
+  }
 
+  public static unsetSurveyRunning() {
+    (window as any).globalSurveyRunning = false;
   }
 }
 

@@ -1,6 +1,8 @@
 import { Cookie } from "./helpers/Cookie";
 import { Constants } from "./Constants";
 import { SurveyManager } from "./SurveyManager";
+import { TriggerUtils } from "./helpers/TriggerUtils";
+import { CCSDKConfig } from "./interfaces/CCSDKConfig";
 
 class Triggers {
 
@@ -10,6 +12,7 @@ class Triggers {
   siteCountTrigger : boolean;
   siteTimeTrigger : boolean;
   urlParamTrigger : boolean;
+  notUrlParamTrigger : boolean;
   utmParamTrigger : boolean;
   scrollPixelsTrigger : boolean;
   minPageCount : number;
@@ -19,13 +22,17 @@ class Triggers {
   minScrollPixels : number;
   utm : string;
   inUrl : RegExp;
+  notinUrl : RegExp;
   pageCountTriggerEnabled : boolean;
   siteCountTriggerEnabled : boolean;
   pageTimeTriggerEnabled : boolean;
   siteTimeTriggerEnabled : boolean;
   urlParamTriggerEnabled : boolean;
+  notUrlParamTriggerEnabled : boolean;
   utmParamTriggerEnabled : boolean;
   scrollPixelsTriggerEnabled : boolean;
+
+  conditionalTriggers : any;
 
   constructor(ccsdk) {
     this.ccsdk = ccsdk;
@@ -34,6 +41,7 @@ class Triggers {
     this.pageTimeTrigger = false;
     this.siteTimeTrigger = false;
     this.urlParamTrigger = false;
+    this.notUrlParamTrigger = false;
     this.utmParamTrigger = false;
     this.scrollPixelsTrigger = false;
 
@@ -43,13 +51,18 @@ class Triggers {
     this.pageTimeTriggerEnabled = false;
     this.siteTimeTriggerEnabled = false;
     this.urlParamTriggerEnabled = false;
+    this.notUrlParamTriggerEnabled = false;
     this.utmParamTriggerEnabled = false;
     this.scrollPixelsTriggerEnabled = false;
+    this.conditionalTriggers = {};
   }
 
 
   enableClickTrigger(target : string, cb : any) {
-    document.querySelectorAll(target)[0].addEventListener('click',cb);
+    let item = document.querySelectorAll(target)[0];
+    if(typeof item !== 'undefined') {
+      item.addEventListener('click',cb);
+    }
   }
 
   enablePageCountTrigger(minPageCount : number) {
@@ -82,6 +95,12 @@ class Triggers {
     this.TriggerPopUpByURLPattern();
   }
 
+  enablePopUpByNotURLPatternTrigger(urlPattern : RegExp) {
+    this.notinUrl = urlPattern;
+    this.notUrlParamTriggerEnabled = true;
+    this.TriggerPopUpByNotURLPattern();
+  }
+
   enablePopUpByUTMPatternTrigger(urlPattern : string) {
     this.utm = urlPattern;
     this.utmParamTriggerEnabled = true;
@@ -101,6 +120,64 @@ class Triggers {
     this.TriggerPopUpByTimeSpentOnSite();
   }
 
+  setConditionalTriggers(config : CCSDKConfig) {
+    //
+    this.conditionalTriggers.clickCount = config.clickCount;
+    this.conditionalTriggers.waitSeconds = config.waitSeconds;
+    this.conditionalTriggers.scrollPercent = config.scrollPercent;
+    this.conditionalTriggers.grepInvertURL = config.grepInvertURL;
+    this.conditionalTriggers.grepURL = config.grepURL;
+
+  }
+
+  processConditionalTriggers() {
+    //gather all conditional triggers and process them.
+    let isEnabled = true;
+    if( this.ccsdk.surveyRunning || this.ccsdk.surveyDone ) {
+      console.log('returning');
+      return;
+    }
+    if(typeof this.conditionalTriggers !== 'undefined') {
+      for(let conditionalTrigger in this.conditionalTriggers) {
+        if(this.conditionalTriggers[conditionalTrigger] != null) {
+          switch(conditionalTrigger) {
+            case "clickCount":
+              //find click count on screen
+              //calculate click count
+              if((window as any).clickCount > this.conditionalTriggers.clickCount) {
+                return SurveyManager.addSurvey(this.ccsdk.surveyToken);
+              }
+            break;
+            case "waitSeconds":
+              let pageStartTime = new Date(Cookie.get(Constants.CCTriggerPageStartTime)).getTime();
+              let pageTime = new Date(Cookie.get(Constants.CCTriggerPageElapsedTime)).getTime();
+              isEnabled = TriggerUtils.checkTimeCondition(pageTime, pageStartTime, this.conditionalTriggers[conditionalTrigger]);
+            break;
+            case "scrollPercent":
+              //fill it with current scroll position
+              isEnabled = isEnabled && TriggerUtils.checkScroll( (window as any).ccsdkTopOffset, this.conditionalTriggers[conditionalTrigger]);
+            break;
+            case "grepURL":
+              isEnabled = isEnabled && TriggerUtils.checkInUrl(this.conditionalTriggers[conditionalTrigger]);
+            break;
+            case "grepInvertURL":
+                isEnabled = isEnabled && !TriggerUtils.checkInUrl(this.conditionalTriggers[conditionalTrigger]);
+            break;
+          }
+        }
+      }
+      if(isEnabled) {
+        SurveyManager.addSurvey(this.ccsdk.surveyToken);
+      }
+    } else {
+      //do nothing.
+    }
+  }
+
+  processNonConditionalTriggers() {
+    //process all non conditional one shot triggers here?
+  }
+
   processScrollTriggers(scrollNow : number) {
     this.TriggerPopUpByScrollPixels(scrollNow);
   }
@@ -111,7 +188,7 @@ class Triggers {
       pageCount = 0;
     }
     //!(window as any).globalSurveyRunning && 
-    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyDone && !this.pageCountTrigger && pageCount >= this.minPageCount) {
+    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyDone && !this.pageCountTrigger && TriggerUtils.checkPageCount(pageCount, this.minPageCount)) {
       this.pageCountTrigger = true;
       //displayQuestion
       // this.ccsdk.initSurvey();
@@ -129,7 +206,7 @@ class Triggers {
     let pageTime = new Date(Cookie.get(Constants.CCTriggerPageElapsedTime)).getTime();
 
     //!(window as any).globalSurveyRunning && 
-    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyDone && !this.pageTimeTrigger && Math.round((pageTime - pageStartTime) / 1000) > this.minPageTime ) {
+    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyDone && !this.pageTimeTrigger && TriggerUtils.checkTimeCondition(pageTime, pageStartTime,this.minPageTime) ) {
       this.pageTimeTrigger = true;
       //displayQuestion
       // this.ccsdk.initSurvey();
@@ -144,7 +221,7 @@ class Triggers {
     let siteStartTime = new Date(Cookie.get(Constants.CCTriggerSiteStartTime)).getTime();
     let siteTime = new Date(Cookie.get(Constants.CCTriggerSiteElapsedTime)).getTime();
     //!(window as any).globalSurveyRunning && 
-    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyDone && !this.siteTimeTrigger && Math.round((siteTime - siteStartTime) / 1000) > this.minSiteTime ) {
+    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyDone && !this.siteTimeTrigger && TriggerUtils.checkTimeCondition(siteTime, siteStartTime, this.minSiteTime) ) {
       this.siteTimeTrigger = true;
       //displayQuestion
       // this.ccsdk.initSurvey();
@@ -160,9 +237,8 @@ class Triggers {
   }
 
   TriggerPopUpByScrollPixels(scrollNow : number) {
-    let scrollPercent = scrollNow;
     //!(window as any).globalSurveyRunning && 
-    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyDone && !this.scrollPixelsTrigger && scrollPercent > this.minScrollPixels) {
+    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyDone && !this.scrollPixelsTrigger && TriggerUtils.checkScroll(scrollNow, this.minScrollPixels) ) {
       this.scrollPixelsTrigger = true;
       // this.ccsdk.initSurvey();
       SurveyManager.addSurvey(this.ccsdk.surveyToken);
@@ -177,8 +253,19 @@ class Triggers {
   //run only once?
   TriggerPopUpByURLPattern() {
     //!(window as any).globalSurveyRunning && 
-    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyDone && !this.urlParamTrigger && window.location.href.match(this.inUrl)) {
+    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyDone && !this.urlParamTrigger && TriggerUtils.checkInUrl(this.inUrl)) {
       this.urlParamTrigger = true;
+      // this.ccsdk.initSurvey();
+      SurveyManager.addSurvey(this.ccsdk.surveyToken);
+    } else {
+
+    }
+  }
+
+  TriggerPopUpByNotURLPattern() {
+    //!(window as any).globalSurveyRunning && 
+    if(!this.ccsdk.surveyRunning && !this.ccsdk.surveyDone && !this.notUrlParamTrigger && !TriggerUtils.checkInUrl(this.inUrl)) {
+      this.notUrlParamTrigger = true;
       // this.ccsdk.initSurvey();
       SurveyManager.addSurvey(this.ccsdk.surveyToken);
     } else {

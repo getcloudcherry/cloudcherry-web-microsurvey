@@ -68,9 +68,14 @@ class Select{
       let selectedOptionText = select.querySelectorAll('.cc-select-trigger')[0].textContent;
       console.log('select type', self.type);
       if(self.type !== 'multiple'){
+        console.log('select type', self.type);
         selectedOptionText = selfOption.textContent;
-        self.util.removeClassAll(select, "opened");
+        console.log('selected option', selectedOptionText);
+        self.util.removeClassAll(document.querySelectorAll(".cc-select"), "opened");
         selectWrapper.querySelectorAll("select")[0].value = value;
+        select.querySelectorAll('.cc-select-trigger')[0].textContent = selectedOptionText;
+        self.util.removeClassAll(document.querySelectorAll("#" + qId + " .cc-select-option"), 'selection');
+        self.util.addClass(self, 'selection');
       
       }else{
         console.log(selectedOptionText);        

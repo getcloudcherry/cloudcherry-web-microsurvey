@@ -1,13 +1,13 @@
 
-
+import { LanguageTextFilter } from './LanguageTextFilter';
 class ConditionalTextFilter {
   public static filterText(surveyHandler : any, question : any) : string {
     let conditionaText : string = question.text;
     if (question.leadingDisplayTexts == null) {
-      conditionaText = question.text;
+      conditionaText = LanguageTextFilter.translateQuestionText(surveyHandler, question);
         return conditionaText;
     } else if (question.leadingDisplayTexts.length == 0) {
-        conditionaText = question.text;
+        conditionaText = LanguageTextFilter.translateQuestionText(surveyHandler, question);
         return conditionaText;
     } else {
         for (let fOption of question.leadingDisplayTexts) {

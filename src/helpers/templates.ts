@@ -9,6 +9,8 @@ import  * as QuestionRadio from '../templates/QuestionRadio.html';
 import  * as QuestionRadioMore from '../templates/QuestionRadioMore.html';
 import  * as QuestionRadioImage from '../templates/QuestionRadioImage.html';
 import  * as QuestionScale from '../templates/QuestionScale.html';
+import  * as QuestionCSATAgreement5 from '../templates/QuestionCSATAgreement5.html';
+import  * as QuestionCSATSatisfaction5 from '../templates/QuestionCSATSatisfaction5.html';
 import  * as QuestionNPS from '../templates/QuestionNPS.html';
 import  * as QuestionSelect from '../templates/QuestionSelect.html';
 import  * as QuestionMultiSelect from '../templates/QuestionMultiSelect.html';
@@ -19,12 +21,16 @@ import  * as OptionRadioImage from '../templates/OptionRadioImage.html';
 import  * as OptionCheckbox from '../templates/OptionCheckbox.html';
 import  * as ThankYou from '../templates/ThankYou.html';
 
+import  * as LanguageSelector from '../templates/LanguageSelector.html';
+
 let templates = {
   question_survey : "",
   question_start : "",
   question_text : "",
   question_number: "",
   question_scale : "",
+  question_csat_agreement_5 : "",
+  question_csat_satisfaction_5 : "",
   question_nps : "",
   question_multi_line_text : "",
   question_multi_select : "",
@@ -39,6 +45,7 @@ let templates = {
   option_radio_image : "",
   option_checkbox : "",
   thankyou : "",
+  language_selector : ""
 
 };
 
@@ -52,6 +59,8 @@ templates.question_number= QuestionNumber;
 
 
 templates.question_scale = QuestionScale;
+templates.question_csat_agreement_5 = QuestionCSATAgreement5;
+templates.question_csat_satisfaction_5 = QuestionCSATSatisfaction5;
 templates.question_nps = QuestionNPS;
 
 templates.question_slider = QuestionSlider;
@@ -81,6 +90,8 @@ templates.option_radio_image = OptionRadioImage;
 templates.option_checkbox = OptionCheckbox;
 
 templates.thankyou = ThankYou;
+
+templates.language_selector = LanguageSelector;
 
 
 export {templates};

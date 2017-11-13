@@ -12,6 +12,9 @@ class Constants {
   static SURVEY_QUESTION_EVENT = "onQuestion";
   static SURVEY_ANSWER_EVENT = "onAnswer";
   static SURVEY_CLICK_EVENT = "onClick";
+  static GRANT_TYPE = "password";
+  static AUTHORIZATION = "Authorization";
+  static AUTHORIZATION_BEARER = "Bearer";
 }
 
 export { Constants };

@@ -7,6 +7,9 @@ import { DomUtilities } from "./helpers/dom/DomUtilities";
 import { DomSurvey } from "./helpers/dom/DomSurvey";
 import { ConditionalTextFilter } from "./helpers/filters/ConditionalTextFilter";
 import { Constants } from "./Constants";
+import { LanguageTextFilter } from "./helpers/filters/LanguageTextFilter";
+import { Select } from './helpers/dom/Select';
+
 
 class SurveyHandler {
   surveyToken : string;
@@ -54,7 +57,8 @@ class SurveyHandler {
     this.dom = ccsdk.dom;
     this.displayThankYouCb = ( e : any) => {
       let thankyouHtml : any = templates.thankyou;
-      thankyouHtml = thankyouHtml.replace("{{question}}", this.surveyData.thankyouText);
+      // thankyouHtml = thankyouHtml.replace("{{question}}", this.surveyData.thankyouText);
+      thankyouHtml = thankyouHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "thankyouText"));
       thankyouHtml = thankyouHtml.replace("{{button}}", 'Start');
       this.ccsdk.dom.replaceInQuestionsContainer(thankyouHtml);
       //TODO : Fix this Add class not working???
@@ -224,10 +228,18 @@ class SurveyHandler {
     this.ccsdk.dom.appendInBody(surveyHtml);
   }
 
+  displayQuestionSelector() {
+
+  }
+
   displayWelcomeQuestion() {
+    //call this with true when welcome container is clicked.
+    this.ccsdk.addThrottlingEntries(false);
     let welcomeHtml : any = templates.question_start;
     welcomeHtml = welcomeHtml.replace("{{surveyToken}}", this.surveyToken);
-    welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
+    // welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
+    welcomeHtml = welcomeHtml.replace("{{question}}", this.ccsdk.config.welcomeText);
+    // welcomeHtml = welcomeHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "welcomeText"));
     welcomeHtml = welcomeHtml.replace("{{button}}", 'Start');
     welcomeHtml = welcomeHtml.replace("{{location}}", this.surveyDisplay.position );
     welcomeHtml = welcomeHtml.replace("{{animation}}", this.surveyDisplay.welcomePopupAnimation );
@@ -236,6 +248,57 @@ class SurveyHandler {
     this.ccsdk.dom.showWelcomeContainer();
     this.acceptAnswers();
     this.postPrefillPartialAnswer();
+    // self.survey.displayLanguageSelector();
+
+  }
+
+  displayLanguageSelector() {
+    let self = this;
+    let options1 : string ;
+    let qId = 'languageSelector';
+    let cTemplate1 = templates.language_selector;
+    options1 = this.util.generateSelectOptions(["default"].concat(Object.keys(this.surveyData.translated)));
+    cTemplate1 = cTemplate1.replace(/{{questionId}}/g, qId);
+    cTemplate1 = cTemplate1.replace("{{options}}", options1);
+    cTemplate1 = cTemplate1.replace("{{requiredLabel}}", true ? "*" : "");
+    this.ccsdk.dom.replaceInQuestionsContainer(cTemplate1);
+    let $questionContainer = document.
+      querySelectorAll(".cc-questions-container");
+    let $body = document.getElementsByTagName("body")[0];
+
+    this.util.addClass($questionContainer[0].firstChild, 'show-slide');
+    let select = new Select(qId);
+    let submitBtn = document.querySelectorAll('.submit-icon');
+    this.util.removeClassAll(submitBtn, 'act-cc-button-next');
+    this.util.addClassAll(submitBtn, 'act-cc-button-lang-next');
+    select.destroyListeners();
+    select.init(qId);
+    let selectRes = '';
+    let ref = this.util.initListener('click', '#' + qId + " .cc-select-options .cc-select-option", function () {
+      console.log('languageSelectOption');
+      selectRes = document.querySelectorAll('#' + qId + " .cc-select-trigger")[0].innerHTML;
+    });
+    ref.internalHandler = this.util.listener($body, ref.type, ref.id, ref.cb);
+
+
+    let languageSelect = this.util.initListener("click", ".act-cc-button-lang-next", function () {
+      console.log('languageNext');
+      self.ccsdk.config.language = "default";
+      self.ccsdk.config.language = selectRes; //language selection from menu then show first question
+      self.util.removeClassAll(submitBtn, 'act-cc-button-lang-next');
+      self.util.addClassAll(submitBtn, 'act-cc-button-next');
+      self.ccsdk.dom.loadFirstQuestion();        // this.loadFirstQuestion();
+
+    });
+    languageSelect.internalHandler = this.util.listener($body, languageSelect.type, languageSelect.id, languageSelect.cb);
+    
+
+    
+    // this.util.addClass(thankyouContainer[0], 'show-thankyou-slide');
+    
+    // this.ccsdk.dom.appendInBody(cTemplate1);
+    // this.ccsdk.dom.showLanguageSelector();
+    console.log(cTemplate1);
   }
 
   displayThankYou() {
@@ -455,12 +518,23 @@ class SurveyHandler {
       break;
       case "Scale":
         //get text question template and compile it.
+        console.log(question.questionTags);
         if(question.questionTags.includes("NPS")) {
           questionTemplate = templates.question_nps;
           questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
           questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
           questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
           questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+        } else if (question.questionTags.includes("CSAT")) {
+            if(question.questionTags.includes("csat_satisfaction_5")) {
+              questionTemplate = templates.question_csat_satisfaction_5;
+            } else if(question.questionTags.includes("csat_agreement_5")) {
+              questionTemplate = templates.question_csat_agreement_5;
+            }
+            questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+            questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+            questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+            questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
         } else {
           questionTemplate = templates.question_scale;
           questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
@@ -539,6 +613,14 @@ class SurveyHandler {
           
           // acTemplate = templates.question_select;
           let options3 = self.util.generateSelectOptions(question.multiSelect);
+          if(self.ccsdk.config.language !== 'default') {
+            if(typeof question.translated[self.ccsdk.config.language] !== 'undefined'
+              && question.translated[self.ccsdk.config.language].multiSelect !== 'undefined'
+              && question.translated[self.ccsdk.config.language].multiSelect.length > 0
+            ) {
+              options3 = self.util.generateSelectOptions(question.translated[self.ccsdk.config.language].multiSelect);
+            }
+          }
           // questionTemplate = acTemplate;
           console.log(options3);
           questionTemplate = acTemplate.replace(/{{options}}/g, options3);
@@ -553,7 +635,7 @@ class SurveyHandler {
 
       break;
       case "Select":
-      let acTemplate1 : string ;
+        let acTemplate1 : string ;
         let acTemplate2 : string ;
         let options1 : string ;
         let options2 : string ;
@@ -577,7 +659,15 @@ class SurveyHandler {
           }else{
             // console.log('select type 3');
             acTemplate1 = templates.question_select;
-            options1 = self.util.generateSelectOptions(question.multiSelect);
+            options1 = self.util.generateSelectOptions(question.multiSelect);            
+            if(self.ccsdk.config.language !== 'default') {
+              if(typeof question.translated[self.ccsdk.config.language] !== 'undefined'
+                && question.translated[self.ccsdk.config.language].multiSelect !== 'undefined'
+                && question.translated[self.ccsdk.config.language].multiSelect.length > 0
+              ) {
+                options1 = self.util.generateSelectOptions(question.translated[self.ccsdk.config.language].multiSelect);
+              }
+            }
             questionTemplate = acTemplate1;
             questionTemplate = questionTemplate.replace("{{options}}", options1);
           }
