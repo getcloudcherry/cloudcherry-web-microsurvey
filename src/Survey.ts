@@ -31,6 +31,7 @@ class Survey {
   isThrottled : boolean;
   thorttlingLogic : any;
   loginData : any;
+  debug : false;
 
   constructor(surveyToken : string, config : CCSDKConfig) {
     this.isThrottled = true;
@@ -46,8 +47,8 @@ class Survey {
     this.survey = new SurveyHandler(this);
     this.util = new DomUtilities;
     //set themeColor of survey
-    this.config.themeColor = ( this.config && this.config.themeColor )?
-    this.config.themeColor:"#db3c39";
+    this.config.brandColor = ( this.config && this.config.brandColor )?
+    this.config.brandColor:"#db3c39";
       //use config variable textDirection and set dir
     this.setHtmlTextDirection();
     this.setDisplayOptions();
@@ -59,13 +60,13 @@ class Survey {
     //check trigger conditions and add itself to 
     //based on new config
     //gotta and these.
-    // this.trigger("click", this.config.cssSelector);
+    this.trigger("click", this.config.cssSelector);
     // this.trigger("scroll-pixels", this.config.scrollPercent);
     // this.trigger("page-time", this.config.waitSeconds);
     // this.trigger("url-match", this.config.grepURL);
     // this.trigger("url-not-match", this.config.grepInvertURL);
     // this.config.scrollPercent = 10;
-    this.config.waitSeconds = 5;
+    // this.config.waitSeconds = 5;
     this.triggers.setConditionalTriggers(this.config);
     // this.login(function() {
       //on login
@@ -76,9 +77,9 @@ class Survey {
     let loginURL = Config.API_URL + Config.POST_LOGIN_TOKEN;
     let loginResponse = RequestHelper.post(loginURL,  { grant_type : Constants.GRANT_TYPE, username : this.config.username, password : this.config.password });
     let self = this;
-    console.log("login");
+    this.debug?console.log("login"):'';
     loginResponse.then(function(logindata) {
-      console.log(logindata);
+      self.debug?console.log(logindata):'';
       self.loginData = logindata;
       if(self.isThrottled) {
         self.getSurveyThrottlingLogic(cb);
@@ -144,12 +145,13 @@ class Survey {
       isOpened : isOpen
     }, headers);
     addThrottleUrlResponse.then(function(throttleResponse) {
-      console.log(throttleResponse);
+      this.debug?console.log(throttleResponse):'';
     })
   }
 
   setupSurvey(){
-    this.getSurveyData();
+    // this.getSurveyData();
+    this.initSurvey();
   }
 
   setHtmlTextDirection(){
@@ -174,12 +176,12 @@ class Survey {
     let data = this.survey.fetchQuestions();
     let self : Survey = this;
     data.then(function(surveyData) {
-        console.log(surveyData);
+        self.debug?console.log(surveyData):'';
         self.surveyData = surveyData;
         //copy data.
         let event = new CustomEvent(Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken , { detail : JSON.parse(JSON.stringify(surveyData)) });
         document.dispatchEvent(event);
-        self.initSurvey();
+        self.initSurveyQuestions();
     });
   }
 
@@ -192,15 +194,28 @@ class Survey {
     // }
     self.surveyRunning = true;
     self.dom = new DomSurvey(this);
-    self.dom.setTheme(self.config.themeColor);
-    self.survey.attachSurvey(this.surveyData);
-    self.dom.setupListeners();
+    self.dom.setTheme(self.config.brandColor, this.config.keepAlive ? this.config.keepAlive:0);
+    // self.survey.attachSurvey(this.surveyData);
     // self.config.language = "हिन्दी";
     self.config.language = "default";
     
     self.survey.displayWelcomeQuestion();
+    self.dom.setupListeners();
     // self.survey.displayLanguageSelector();
     //survey start event.
+    // let onSurveyStartEvent = new CustomEvent(Constants.SURVEY_START_EVENT + "-" + this.surveyToken);
+    // document.dispatchEvent(onSurveyStartEvent);
+  }
+
+  initSurveyQuestions(){
+    let self: Survey = this;
+    self.survey.attachSurvey(this.surveyData);
+    // self.dom.setupListeners();
+    // self.config.language = "हिन्दी";
+    self.config.language = "default";
+    // self.survey.displayLanguageSelector();
+    //survey start event.
+    this.dom.initSurveyDom();
     let onSurveyStartEvent = new CustomEvent(Constants.SURVEY_START_EVENT + "-" + this.surveyToken);
     document.dispatchEvent(onSurveyStartEvent);
   }

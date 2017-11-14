@@ -121,17 +121,29 @@ class Triggers {
   }
 
   setConditionalTriggers(config : CCSDKConfig) {
+    (window as any).ccsdkDebug?console.log(config.grepURL):'';
     //
     this.conditionalTriggers.clickCount = config.clickCount;
-    this.conditionalTriggers.waitSeconds = config.waitSeconds;
-    this.conditionalTriggers.scrollPercent = config.scrollPercent;
-    this.conditionalTriggers.grepInvertURL = config.grepInvertURL;
-    this.conditionalTriggers.grepURL = config.grepURL;
+    this.conditionalTriggers.onExitDetect = config.onExitDetect;
+    this.conditionalTriggers.cssSelector = config.cssSelector;
+    if ((typeof config.waitSeconds !== undefined) && (config.waitSeconds !== 0)) {
+      this.conditionalTriggers.waitSeconds = config.waitSeconds;
+    }
+    if ((typeof config.scrollPercent !== undefined) && (config.scrollPercent !== 0)) {
+      this.conditionalTriggers.scrollPercent = config.scrollPercent;
+    }
+    if ((typeof config.grepInvertURL !== undefined) && (config.grepInvertURL)){
+      this.conditionalTriggers.grepInvertURL = config.grepInvertURL;
+    }
+    if ((typeof config.grepURL !== undefined) && (config.grepURL)) {
+      this.conditionalTriggers.grepURL = config.grepURL;
+    }
 
   }
 
   processConditionalTriggers() {
     //gather all conditional triggers and process them.
+    let self = this;
     let isEnabled = true;
     if( this.ccsdk.surveyRunning || this.ccsdk.surveyDone ) {
       console.log('returning');
@@ -141,6 +153,15 @@ class Triggers {
       for(let conditionalTrigger in this.conditionalTriggers) {
         if(this.conditionalTriggers[conditionalTrigger] != null) {
           switch(conditionalTrigger) {
+            case "onExitDetect":
+              let onExitDetect = self.ccsdk.util.initListener("mouseout", document, function () {
+                console.log("Mouse out");
+
+              });
+
+              onExitDetect.internalHandler = self.ccsdk.util.listener(document, onExitDetect.type, onExitDetect.id, onExitDetect.cb);
+
+            break;
             case "clickCount":
               //find click count on screen
               //calculate click count
@@ -152,16 +173,21 @@ class Triggers {
               let pageStartTime = new Date(Cookie.get(Constants.CCTriggerPageStartTime)).getTime();
               let pageTime = new Date(Cookie.get(Constants.CCTriggerPageElapsedTime)).getTime();
               isEnabled = TriggerUtils.checkTimeCondition(pageTime, pageStartTime, this.conditionalTriggers[conditionalTrigger]);
+              console.log('waitSeconds enabled', isEnabled);
             break;
             case "scrollPercent":
               //fill it with current scroll position
               isEnabled = isEnabled && TriggerUtils.checkScroll( (window as any).ccsdkTopOffset, this.conditionalTriggers[conditionalTrigger]);
+              console.log('scrollPercent enabled', isEnabled);
+              
             break;
             case "grepURL":
               isEnabled = isEnabled && TriggerUtils.checkInUrl(this.conditionalTriggers[conditionalTrigger]);
+              console.log('grepURL enabled', isEnabled);
             break;
             case "grepInvertURL":
                 isEnabled = isEnabled && !TriggerUtils.checkInUrl(this.conditionalTriggers[conditionalTrigger]);
+                console.log('grepInvertURL enabled', isEnabled);
             break;
           }
         }

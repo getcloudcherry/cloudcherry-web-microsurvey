@@ -73,9 +73,23 @@
         //CH-88360
         var ins = window.CCSDK("init", token ,{
           // themeColor : "rgb(235, 28, 35)",
-          themeColor : color,
+          // themeColor : color,
           textDirection : 'ltr',
-          welcomeText : 'Welcome message',
+          isActive: false, //boolean,    // Whether a microsurvey is enabled or disabled, true for enabled
+          welcomeText: 'Welcome message', // Welcome message
+          thankyouText: 'Thank you for taking the survey', // Thank you message
+          brandColor: color, // Theme color
+          position: 'bottom right', // Position of the microsurvey, Top Left, Top Right, Bottom Left, Bottom Right
+          // keepAlive: 5, //number, // Hide the microsurvey after the specified seconds, 0 for no timer
+          cssSelector: "#anywhere", // Show the microsurvey when the user click's on the specified HTML element(s)
+          // scrollPercent: 0, // number, // Show the microsurvey when the user scrolls the page more than the specified percentage
+          // click: 0,  //number, // Show the microsurvey when the user clicks the specified number of times in the page
+          // waitSeconds: 0, //number, // Show the microsurvey when the user spends the specified number of seconds in the page
+          // grepURL: 'hello', // Show the microsurvey if the URL matches the given regular expression
+          // grepInvertURL: string, // Show the microsurvey if the URL doesn't match the given regular expression
+          onExitDetect: true, // Show the microsurvey when the user tries to leave the page or close the tab
+          startButtonText: 'Start Survey', // Use this text in the start button
+          resumeButtonText: 'Resume Survey', // Use this text in the resume button
           display : {
             //write it accordring to screen corners
             // top right or right top
@@ -93,34 +107,34 @@
           }
         });
 
-        var ins = window.CCSDK("init", "WW-35080" ,{
-          // themeColor : "rgb(235, 28, 35)",
-          themeColor : color,
-          textDirection : 'ltr',
-          display : {
-            //write it accordring to screen corners
-            // top right or right top
-            // left top or top left 
-            // bottom right or right bottom
-            // bottom left or left bottom
-            'position' : 'bottom right',
-            // write it in fashion of from-to
-            // right-left
-            // left-right
-            // top-bottom
-            // bottom-top
-            'welcomePopupAnimation' : 'right-left',
-            'surveyPopupAnimation' : 'right-left'
-          }
-        });
+        // var ins = window.CCSDK("init", "WW-35080" ,{
+        //   // themeColor : "rgb(235, 28, 35)",
+        //   themeColor : color,
+        //   textDirection : 'ltr',
+        //   display : {
+        //     //write it accordring to screen corners
+        //     // top right or right top
+        //     // left top or top left 
+        //     // bottom right or right bottom
+        //     // bottom left or left bottom
+        //     'position' : 'bottom right',
+        //     // write it in fashion of from-to
+        //     // right-left
+        //     // left-right
+        //     // top-bottom
+        //     // bottom-top
+        //     'welcomePopupAnimation' : 'right-left',
+        //     'surveyPopupAnimation' : 'right-left'
+        //   }
+        // });
 
         // window.CCSDK("trigger", "WW-35080", "page-time", "15");
           // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
           // window.CCSDK("on", "WW-35080", "onSurveyData", function(e) {
           //   console.log("Inside OLD ON");
           // });
-          window.CCSDK("fillPrefill", "WW-35080", "Email", "abhishek.yagnik@wowlabz.com");
-          window.CCSDK("fillPrefill", "WW-35080", "Name", "Abhishek Yagnik");
+          window.CCSDK("fillPrefill", "SR-72302", "Email", "abhishek.yagnik@wowlabz.com");
+          window.CCSDK("fillPrefill", "SR-72302", "Name", "Abhishek Yagnik");
 
     		//click trigger
     		//pass id or class...currently works on first element of class
@@ -133,17 +147,17 @@
     //   });
     // });
 
-    document.addEventListener(token+'-ready', function(e){
-      // console.log(e);
-			// console.log(ins);
-      // e.detail.survey.trigger('launch');
-      console.log("ready");
-      e.detail.survey.trigger('click', '#anywhere');
-      // e.detail.survey.trigger('page-count', 3);
-      // e.detail.survey.trigger('page-time', 10);
-      // e.detail.survey.trigger('site-time', 20);
-      //  e.detail.survey.trigger('launch');
-    });
+    // document.addEventListener(token+'-ready', function(e){
+    //   // console.log(e);
+		// 	// console.log(ins);
+    //   // e.detail.survey.trigger('launch');
+    //   console.log("ready");
+    //   e.detail.survey.trigger('click', '#anywhere');
+    //   // e.detail.survey.trigger('page-count', 3);
+    //   // e.detail.survey.trigger('page-time', 10);
+    //   // e.detail.survey.trigger('site-time', 20);
+    //   //  e.detail.survey.trigger('launch');
+    // });
 
     function getQueryString  ( field, url ) {
       var href = url ? url : window.location.href;

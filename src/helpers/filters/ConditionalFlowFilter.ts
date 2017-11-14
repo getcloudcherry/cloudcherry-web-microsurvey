@@ -44,7 +44,7 @@ class ConditionalFlowFilter {
         surveyHandler.getSurveyQuestions().sort(ConditionalFlowFilter.questionCompare);
         // surveyHandler.sendConditionalFLowQuestionsData(surveyHandler.getSurveyQuestions().size());
     }
-    console.log(surveyHandler.getSurveyQuestions());
+    (window as any).ccsdkDebug?console.log(surveyHandler.getSurveyQuestions()):'';
   }
 
   private static questionCompare(a : any, b : any) {

@@ -64,7 +64,7 @@ class RequestHelper {
     // }).then( (response : Response) => {
     //   return response.json();
     // }).catch( (error : Error) => {
-    //   console.log('Request failed ', error);
+    //   (window as any).ccsdkDebug?console.log('Request failed ', error):'';
     // });
   }
 
@@ -81,8 +81,8 @@ class RequestHelper {
    */
   static post(url : string, data : Object) {
     //consider, file upload?
-    // console.log("[" + JSON.stringify(data) + "]");
-    console.log("Sending : " + data);
+    // (window as any).ccsdkDebug?console.log("[" + JSON.stringify(data) + "]"):'';
+    (window as any).ccsdkDebug?console.log("Sending : " + data):'';
     return makeRequest("POST", url, JSON.stringify(data), { "Content-Type" : "application/json; charset=utf-8" });
     // let request : Request = new Request( (url as any), {
     //   method : "POST",
@@ -102,7 +102,7 @@ class RequestHelper {
     // }).then( (response : Response) => {
     //   return response.json();
     // }).catch( (error : Error) => {
-    //   console.log('Request failed ', error);
+    //   (window as any).ccsdkDebug?console.log('Request failed ', error):'';
     // });
   }
 

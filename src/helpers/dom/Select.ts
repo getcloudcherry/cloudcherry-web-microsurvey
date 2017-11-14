@@ -48,7 +48,7 @@ class Select{
     var qId = self.qId;
     let ref2 = this.util.initListener('click',  "#"+qId+" .cc-select-option", function(e){      
     // let ref2 = this.util.initListener(this.$body, "click", "#"+qId+" .cc-select-option", function(e) {
-      console.log('click cc-select-option',this);
+      (window as any).ccsdkDebug?console.log('click cc-select-option',this):'';
       let selfOption = this;
       let value = this.getAttribute('data-value');
       //select cc-select-wrapper
@@ -57,20 +57,20 @@ class Select{
       let select = selectOptions.parentNode.parentNode;
       this.select = select;
       let selectWrapper = select.parentNode;
-      console.log(select);
-      console.log(selectOptions);
-      console.log(selectWrapper);
+      (window as any).ccsdkDebug?console.log(select):'';
+      (window as any).ccsdkDebug?console.log(selectOptions):'';
+      (window as any).ccsdkDebug?console.log(selectWrapper):'';
       //select all cc-select-option and remove class selection
       // self.util.removeClassAll(selectOptions.querySelectorAll(".cc-select-option"), "selection");
       // this.parents(".cc-select-options").find(".cc-select-option").removeClass("selection");
 
       self.util.addClass(this,"selection");
       let selectedOptionText = select.querySelectorAll('.cc-select-trigger')[0].textContent;
-      console.log('select type', self.type);
+      (window as any).ccsdkDebug?console.log('select type', self.type):'';
       if(self.type !== 'multiple'){
-        console.log('select type', self.type);
+        (window as any).ccsdkDebug?console.log('select type', self.type):'';
         selectedOptionText = selfOption.textContent;
-        console.log('selected option', selectedOptionText);
+        (window as any).ccsdkDebug?console.log('selected option', selectedOptionText):'';
         self.util.removeClassAll(document.querySelectorAll(".cc-select"), "opened");
         selectWrapper.querySelectorAll("select")[0].value = value;
         select.querySelectorAll('.cc-select-trigger')[0].textContent = selectedOptionText;
@@ -78,7 +78,7 @@ class Select{
         self.util.addClass(self, 'selection');
       
       }else{
-        console.log(selectedOptionText);        
+        (window as any).ccsdkDebug?console.log(selectedOptionText):'' ;
         if(selectedOptionText != 'Select'){
           if(selectedOptionText.indexOf(selfOption.textContent) == 0){
             selectedOptionText = selectedOptionText.replace(selfOption.textContent + ',', '') ;   
@@ -92,7 +92,7 @@ class Select{
           }
         
         }else{
-          console.log(selfOption.textContent);
+          (window as any).ccsdkDebug?console.log(selfOption.textContent):'';
           selectedOptionText = selfOption.textContent;
         }
         selectWrapper.querySelectorAll("select")[0].value = selectedOptionText;
@@ -118,7 +118,7 @@ class Select{
         }
       })
       var ccSelect = this.parentNode;
-      console.log('click cc-select-trigger',ccSelect);
+      (window as any).ccsdkDebug?console.log('click cc-select-trigger',ccSelect):'';
       self.util.toggleClass(ccSelect, "opened");
       e.stopPropagation();
     });

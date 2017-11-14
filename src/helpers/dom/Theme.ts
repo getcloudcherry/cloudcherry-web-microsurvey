@@ -4,7 +4,7 @@ class Theme{
    util : DomUtilities;
    brandColorDark : string;
    brandColorWhite : string;
-	 constructor(brandColor){
+	 constructor(brandColor, time){
 	 this.util = new DomUtilities();
 	 this.brandColorDark = this.util.shadeBlendConvert(-0.3, brandColor, undefined);
 	 this.brandColorWhite= this.util.shadeBlendConvert(0.1, brandColor, undefined);
@@ -71,6 +71,10 @@ class Theme{
 		   input[type="range"]::-moz-range-thumb {\
 			border: 1px solid '+brandColor+' ;\
 			background-color: #fff;\
+		   }\
+		   svg.timer circle {\
+			animation: countdown '+time+'s linear 1 forwards;\
+			stroke: '+brandColor+';\
 		   }\
 		 @media (max-width: 767px){\
 	 			.overlay.glass{\

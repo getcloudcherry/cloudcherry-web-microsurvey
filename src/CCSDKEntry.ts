@@ -28,6 +28,7 @@ let localCCSDK = {
 // let instances : any = {};
 
 (window as any).globalSurveyRunning = false;
+(window as any).ccsdkDebug = true;
 
 if(typeof (window as any).CCSDK !== 'undefined') {
   var queue = (window as any).CCSDK.q;

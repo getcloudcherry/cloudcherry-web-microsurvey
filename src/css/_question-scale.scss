@@ -199,19 +199,61 @@
 	background:url('https://cx.getcloudcherry.com/microsurvey-assets/Smilie_5_Selected.svg') no-repeat;	
 	background-size:100%;
 }
-
+.cc-csat.cc-question-container__content.rating-color{
+	margin-left:45px;
+}
 .option-csat.option-smile-box.selected,
 .option-csat.option-smile-box:hover,
 .option-csat.option-smile-box{
-	background-size: 30px;
-    background-position: center;
+	background-size: 25px;
+	// background-position: center;
+	background-position: 18px center;
+
 }
+.option-csat.option-smile-box.selected,
+.option-csat.option-smile-box:hover{
+}
+
 .option-csat{
 	height: 30px;
     margin-right: 68px;
     width: 30px;
     padding-left: 50px;
     font-size: 14px;
+}
+.option-csat{
+	height: 45px;
+    margin-right: 0px;
+    width: auto;
+    padding-left: 0px;
+    font-size: 14px;
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 13px;
+}
+
+.option-csat span {
+    display: inline-block;
+    vertical-align: top;
+    font-size: 12px;
+    padding-left: 51px;
+    position: relative;
+    top: -10px;
+    text-align: left;
+    /* min-height: 32px; */
+    width: 100%;
+}
+
+.option-csat .cc-checkbox{
+	    top: 8px;
+}
+.option-csat .cc-checkbox input[type="radio"]:checked + label:after{
+	height: 15px;
+    width: 15px;
+}
+.option-csat .cc-checkbox.cc-radio label:before{
+	height: 15px;
+    width: 15px;
 }
 
 .option-star-box{

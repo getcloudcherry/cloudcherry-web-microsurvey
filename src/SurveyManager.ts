@@ -15,7 +15,7 @@ class SurveyManager {
   }
 
   static addSurvey(surveyId) {
-    console.log("Adding survey ID : " + surveyId);
+    (window as any).ccsdkDebug?console.log("Adding survey ID : " + surveyId):'';
     SurveyManager.surveyQueue.push(surveyId);
     if(SurveyManager.processQueueInterval == null) {
       SurveyManager.processQueueInterval = setInterval(SurveyManager.processQueueIntervalCB, 100);
@@ -41,7 +41,7 @@ class SurveyManager {
       return;
     } else {
       let surveyId = SurveyManager.surveyQueue.pop();
-      console.log("Processing survey ID " + surveyId);
+      (window as any).ccsdkDebug?console.log("Processing survey ID " + surveyId):'';
       if(surveyId == undefined) {
         clearInterval(SurveyManager.processQueueInterval);
         SurveyManager.processQueueInterval = null;
