@@ -1,3 +1,4 @@
+
 // import 'whatwg-fetch';
 import { Config } from "./Config";
 import { DisplayConfig } from "./interfaces/DisplayConfig";
@@ -34,6 +35,8 @@ class SurveyHandler {
   currentQuestion : any;
   conditionalQuestions : any;
   ccsdk : any;
+  welcomeInterval : any;
+  welcomeQuestionDisplayTime : any;
   // isPartialAvailable : Boolean;
 
   constructor(ccsdk) {
@@ -58,12 +61,13 @@ class SurveyHandler {
     this.displayThankYouCb = ( e : any) => {
       let thankyouHtml : any = templates.thankyou;
       // thankyouHtml = thankyouHtml.replace("{{question}}", this.surveyData.thankyouText);
-      thankyouHtml = thankyouHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "thankyouText"));
-      thankyouHtml = thankyouHtml.replace("{{button}}", 'Start');
+      // thankyouHtml = thankyouHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "thankyouText"));
+      thankyouHtml = thankyouHtml.replace("{{question}}", this.ccsdk.config.thankyouText);
+      thankyouHtml = thankyouHtml.replace("{{button}}", this.ccsdk.config.startButtonText);
       this.ccsdk.dom.replaceInQuestionsContainer(thankyouHtml);
       //TODO : Fix this Add class not working???
       let thankyouContainer : any =  this.util.get("#cc-thankyou-container");
-      console.log(thankyouContainer);
+      (window as any).ccsdkDebug?console.log(thankyouContainer):'';
       this.util.addClass(thankyouContainer[0], 'show-thankyou-slide');
       let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyEndEvent);
@@ -78,8 +82,8 @@ class SurveyHandler {
 
     this.acceptAnswersCb = ( e : any ) => {
         let self : SurveyHandler = this;
-        // console.log(self);
-        // console.log('question answered',e)
+        // (window as any).ccsdkDebug?console.log(self):'';
+        // (window as any).ccsdkDebug?console.log('question answered',e:'')
           let data : any = <any>e.detail;
           let response : any = {};
           response.questionId = data.questionId;
@@ -129,7 +133,7 @@ class SurveyHandler {
             case 'multiline':
               response.text = data.data.text;
               response.number = null;
-              // console.log(data);
+              // (window as any).ccsdkDebug?console.log(data):'';
               self.postPartialAnswer( data.index, response);
               self.ccsdk.dom.domSelectElements();
               self.ccsdk.dom.setQIndex(data.index);
@@ -138,7 +142,7 @@ class SurveyHandler {
             case 'singleline':
               response.text = data.data.text;
               response.number = null;
-              // console.log(data);
+              // (window as any).ccsdkDebug?console.log(data):'';
               self.postPartialAnswer( data.index, response);
               self.ccsdk.dom.domSelectElements();
               self.ccsdk.dom.setQIndex(data.index);
@@ -147,7 +151,7 @@ class SurveyHandler {
             case 'number':
             response.text = null;
             response.number = Number(data.data.number);
-            // console.log(data);
+            // (window as any).ccsdkDebug?console.log(data):'';
             self.postPartialAnswer( data.index, response);
             self.ccsdk.dom.domSelectElements();
             self.ccsdk.dom.setQIndex(data.index);
@@ -156,7 +160,7 @@ class SurveyHandler {
             case 'checkbox':
               response.text = data.data.text;
               response.number = null;
-              // console.log(data);
+              // (window as any).ccsdkDebug?console.log(data):'';
               self.postPartialAnswer( data.index, response);
               self.ccsdk.dom.domSelectElements();
               self.ccsdk.dom.setQIndex(data.index);
@@ -165,7 +169,7 @@ class SurveyHandler {
             case 'select':
               response.text = data.data.text;
               response.number = null;
-              // console.log(data);
+              // (window as any).ccsdkDebug?console.log(data):'';
               self.postPartialAnswer( data.index, response);
               self.ccsdk.dom.domSelectElements();
               self.ccsdk.dom.setQIndex(data.index);
@@ -174,7 +178,7 @@ class SurveyHandler {
             case 'slider':
               response.text = data.data.text;
               response.number = Number(data.data.number);
-              // console.log(data);
+              // (window as any).ccsdkDebug?console.log(data):'';
               self.postPartialAnswer( data.index, response);
               self.ccsdk.dom.domSelectElements();
               self.ccsdk.dom.setQIndex(data.index);
@@ -192,10 +196,10 @@ class SurveyHandler {
     surveyUrl = surveyUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyUrl = Config.API_URL + surveyUrl;
     let data = RequestHelper.get(surveyUrl);
-    // console.log(data);
+    // (window as any).ccsdkDebug?console.log(data):'';
     return data;
     // this.surveyData = data.then(function();
-    // console.log(this.surveyData);
+    // (window as any).ccsdkDebug?console.log(this.surveyData):'';
   }
 
   removeAnswer(questionId) {
@@ -234,22 +238,50 @@ class SurveyHandler {
 
   displayWelcomeQuestion() {
     //call this with true when welcome container is clicked.
-    this.ccsdk.addThrottlingEntries(false);
+    // this.ccsdk.addThrottlingEntries(false);
+    let self = this;
     let welcomeHtml : any = templates.question_start;
     welcomeHtml = welcomeHtml.replace("{{surveyToken}}", this.surveyToken);
     // welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
     welcomeHtml = welcomeHtml.replace("{{question}}", this.ccsdk.config.welcomeText);
     // welcomeHtml = welcomeHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "welcomeText"));
-    welcomeHtml = welcomeHtml.replace("{{button}}", 'Start');
+    welcomeHtml = welcomeHtml.replace("{{button}}", this.ccsdk.config.startButtonText);
     welcomeHtml = welcomeHtml.replace("{{location}}", this.surveyDisplay.position );
     welcomeHtml = welcomeHtml.replace("{{animation}}", this.surveyDisplay.welcomePopupAnimation );
-    // console.log("Appending in body");
+    // (window as any).ccsdkDebug?console.log("Appending in body"):'';
     this.ccsdk.dom.appendInBody(welcomeHtml);
     this.ccsdk.dom.showWelcomeContainer();
+    if( (typeof this.ccsdk.config.keepAlive != undefined) && (this.ccsdk.config.keepAlive > 0) ){
+      this.welcomeQuestionDisplayTime = new Date();
+      this.welcomeInterval = setInterval(() =>
+       { self.checkWelcomeQuestionDisplay(self.ccsdk.config.keepAlive)}
+      , 1000);
+    }
+
     this.acceptAnswers();
     this.postPrefillPartialAnswer();
     // self.survey.displayLanguageSelector();
 
+  }
+
+  checkWelcomeQuestionDisplay(keepAlive){
+    let self = this;
+    console.log("asd");
+    let now = new Date();
+    if(keepAlive){
+      console.log((now.getTime() - this.welcomeQuestionDisplayTime.getTime()) / 1000);
+      if(keepAlive <= (now.getTime() - this.welcomeQuestionDisplayTime.getTime())/1000 ){
+        self.killWelcomeQuestion();
+      }
+    }
+  }
+
+  killWelcomeQuestion(){
+    this.destroy();
+    clearInterval(this.welcomeInterval);
+  }
+  cancelKillWelcomeQuestion(){
+    clearInterval(this.welcomeInterval);
   }
 
   displayLanguageSelector() {
@@ -275,14 +307,14 @@ class SurveyHandler {
     select.init(qId);
     let selectRes = '';
     let ref = this.util.initListener('click', '#' + qId + " .cc-select-options .cc-select-option", function () {
-      console.log('languageSelectOption');
+      self.ccsdk.debug?console.log('languageSelectOption'):'';
       selectRes = document.querySelectorAll('#' + qId + " .cc-select-trigger")[0].innerHTML;
     });
     ref.internalHandler = this.util.listener($body, ref.type, ref.id, ref.cb);
 
 
     let languageSelect = this.util.initListener("click", ".act-cc-button-lang-next", function () {
-      console.log('languageNext');
+      self.ccsdk.debug?console.log('languageNext'):'';
       self.ccsdk.config.language = "default";
       self.ccsdk.config.language = selectRes; //language selection from menu then show first question
       self.util.removeClassAll(submitBtn, 'act-cc-button-lang-next');
@@ -298,7 +330,7 @@ class SurveyHandler {
     
     // this.ccsdk.dom.appendInBody(cTemplate1);
     // this.ccsdk.dom.showLanguageSelector();
-    console.log(cTemplate1);
+    (window as any).ccsdkDebug?console.log(cTemplate1):'';
   }
 
   displayThankYou() {
@@ -319,7 +351,7 @@ class SurveyHandler {
     ccSurvey = document.getElementsByClassName("cc-questions-container");
     // ccSurvey = ccSurvey[0];
     let surveyObject = ccSurvey[0];
-    // console.log(this.questionsToDisplay);
+    // (window as any).ccsdkDebug?console.log(this.questionsToDisplay):'';
     //chec
     //for now just do 1st question.
     for(let question of this.questionsToDisplay) {
@@ -335,7 +367,7 @@ class SurveyHandler {
       }
       //else don't display it.
     }
-    // console.log(surveyObject.innerHTML);
+    // (window as any).ccsdkDebug?console.log(surveyObject.innerHTML):'';
     // this.postPartialAnswer(this.questionsToDisplay[0], "test");
 
   }
@@ -350,7 +382,7 @@ class SurveyHandler {
 
   acceptAnswers(){
     let self : SurveyHandler = this;
-    // console.log('add question answered listener')
+    // (window as any).ccsdkDebug?console.log('add question answered listener':'')
     document.addEventListener('q-answered', this.acceptAnswersCb);
   }
 
@@ -366,7 +398,7 @@ class SurveyHandler {
 
   fillPrefill(tag : any, value : object) {
     this.prefillWithTags[tag.toLowerCase()] = value;
-    console.log('fillPrefill',this.prefillWithTags);
+    (window as any).ccsdkDebug?console.log('fillPrefill',this.prefillWithTags):'';
   }
 
   fillPrefillQuestion(id : any, value : any, valueType : string) {
@@ -402,8 +434,8 @@ class SurveyHandler {
     surveyPartialUrl = surveyPartialUrl.replace("{complete}", "false");
     surveyPartialUrl = surveyPartialUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyPartialUrl = Config.API_URL + surveyPartialUrl;
-    console.log("Posting Prefill Responses to Server");
-    console.log(this.prefillResponses);
+    (window as any).ccsdkDebug?console.log("Posting Prefill Responses to Server"):'';
+    (window as any).ccsdkDebug?console.log(this.prefillResponses):'';
     return RequestHelper.post(surveyPartialUrl, this.prefillResponses);
   }
 
@@ -440,7 +472,7 @@ class SurveyHandler {
     let question : any = this.questionsToDisplay[index];
     if(typeof question === 'undefined') {
       //now?
-      // return console.log("No Partial Remaining");
+      // return (window as any).ccsdkDebug?console.log("No Partial Remaining"):'';
     }
     let data : any = {
       comparator : 0,
@@ -453,10 +485,10 @@ class SurveyHandler {
     //   this.answers.push(data);
     //   return;
     // }
-    // console.log("Submitting for : " + index);
+    // (window as any).ccsdkDebug?console.log("Submitting for : " + index):'';
     let surveyPartialUrl = Config.SURVEY_PARTIAL_RESPONSE.replace("{id}", this.surveyData.partialResponseId);
     //if this is the last of displayed question
-    console.log("partial response",question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id);
+    (window as any).ccsdkDebug?console.log("partial response",question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id):'';
     if(question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id) {
       surveyPartialUrl = surveyPartialUrl.replace("{complete}", "true");
     } else {
@@ -490,7 +522,7 @@ class SurveyHandler {
     let self : SurveyHandler = this;
     //get question type
     let questionTemplate;
-    // console.log(question);
+    // (window as any).ccsdkDebug?console.log(question):'';
 
     switch(question.displayType) {
       case "Slider":
@@ -518,7 +550,7 @@ class SurveyHandler {
       break;
       case "Scale":
         //get text question template and compile it.
-        console.log(question.questionTags);
+        (window as any).ccsdkDebug?console.log(question.questionTags):'';
         if(question.questionTags.includes("NPS")) {
           questionTemplate = templates.question_nps;
           questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
@@ -601,14 +633,14 @@ class SurveyHandler {
         let acTemplate : string ;
         //get text question template and compile it.
         if((question.displayStyle == 'radiobutton/checkbox') && (question.multiSelect.length < 7)){
-          // console.log(question.displayStyle);
+          // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
           let options3 : string = self.util.generateCheckboxOptions(question.multiSelect, question.id);
-          // console.log(options2);
+          // (window as any).ccsdkDebug?console.log(options2):'';
           acTemplate = templates.question_checkbox;
           questionTemplate = acTemplate.replace(/{{options}}/g, options3);
           acTemplate = questionTemplate;
         }else{
-          // console.log('select type 3');
+          // (window as any).ccsdkDebug?console.log('select type 3'):'';
           acTemplate = templates.question_multi_select;
           
           // acTemplate = templates.question_select;
@@ -622,7 +654,7 @@ class SurveyHandler {
             }
           }
           // questionTemplate = acTemplate;
-          console.log(options3);
+          self.ccsdk.debug?console.log(options3):'';
           questionTemplate = acTemplate.replace(/{{options}}/g, options3);
           acTemplate = questionTemplate;
           
@@ -642,22 +674,22 @@ class SurveyHandler {
         //get text question template and compile it.
         if((question.displayStyle == 'radiobutton/checkbox') && (question.multiSelect.length < 7)){
           // if(question.displayStyle == 'radiobutton/checkbox'){
-          // console.log('select type 1');
-          // console.log(question.displayStyle);
+          // (window as any).ccsdkDebug?console.log('select type 1'):'';
+          // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
           acTemplate1 = templates.question_radio;
           questionTemplate = acTemplate1;
         }else{
           let checkOptionContainsImage : boolean = self.util.checkOptionContainsImage(question.multiSelect);
-          // console.log('select radio image',checkOptionContainsImage);
+          // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
           if(checkOptionContainsImage){
-            // console.log('select type 2');
+            // (window as any).ccsdkDebug?console.log('select type 2'):'';
             acTemplate2 = templates.question_radio_image;
             options2 = self.util.generateRadioImageOptions(question.multiSelect, question.id);
-            // console.log(options2);
+            // (window as any).ccsdkDebug?console.log(options2):'';
             questionTemplate = acTemplate2;
             questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
           }else{
-            // console.log('select type 3');
+            // (window as any).ccsdkDebug?console.log('select type 3'):'';
             acTemplate1 = templates.question_select;
             options1 = self.util.generateSelectOptions(question.multiSelect);            
             if(self.ccsdk.config.language !== 'default') {
@@ -677,7 +709,7 @@ class SurveyHandler {
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-        // console.log(questionTemplate);
+        // (window as any).ccsdkDebug?console.log(questionTemplate):'';
 
       break;
       case "Smile-5":
@@ -717,13 +749,14 @@ class SurveyHandler {
    * @memberof Survey
    */
   filterQuestions() {
+    let self = this;
     for(let question of this.questions) {
       if(!question.isRetired) {
         //filter out prefill question only if it is filled?.
         // if(!this.isQuestionFilled(question)){
           if( !(this.isPrefillQuestion(question))) {
             if(this.isPrefillTags(question)) {
-              console.log(this.prefillResponses);
+              self.ccsdk.debug?console.log(this.prefillResponses):'';
               continue;
             }
             if(
@@ -798,8 +831,12 @@ class SurveyHandler {
   destroy(){
     let surveyContainer = this.ccsdk.dom.getSurveyContainer(this.surveyToken);
     let welcomeContainer = this.ccsdk.dom.getWelcomeContainer(this.surveyToken);
-    this.util.remove(surveyContainer);
-    this.util.remove(welcomeContainer);
+    if(typeof surveyContainer != 'undefined'){
+      this.util.remove(surveyContainer);
+    }
+    if (typeof welcomeContainer != 'undefined') {    
+      this.util.remove(welcomeContainer);
+    }
     document.removeEventListener('ccclose', this.destroySurveyCb);
     document.removeEventListener('ccdone', this.displayThankYouCb);
     document.removeEventListener('q-answered', this.acceptAnswersCb);
