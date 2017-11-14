@@ -3,7 +3,7 @@ import { DisplayConfig } from "./interfaces/DisplayConfig";
 import { SurveyHandler } from "./SurveyHandler";
 import { DomSurvey } from "./helpers/dom/DomSurvey";
 import { DomUtilities } from "./helpers/dom/DomUtilities";
-import { Scrollbar } from "./helpers/dom/Scrollbar";
+import { Scrollbar } from "./helpers/dom/ScrollBar";
 import { Cookie } from './helpers/Cookie';
 import { Constants } from './Constants';
 import { Slider } from "./helpers/dom/Slider";

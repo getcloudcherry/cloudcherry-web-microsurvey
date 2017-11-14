@@ -1,4 +1,4 @@
-import { templates } from '../Templates';
+import { templates } from '../templates';
 import { Config } from '../../Config';
 
 class DomUtilities{
