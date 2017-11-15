@@ -37,6 +37,8 @@ class SurveyHandler {
   ccsdk : any;
   welcomeInterval : any;
   welcomeQuestionDisplayTime : any;
+  domListeners : any;
+  languageSelect : any;
   // isPartialAvailable : Boolean;
 
   constructor(ccsdk) {
@@ -49,6 +51,7 @@ class SurveyHandler {
       'surveyPopupAnimation' : '',
     };
     this.ccsdk = ccsdk;
+    this.domListeners = [];
     this.questions = [];
     this.questionsToDisplay = [];
     this.prefillQuestions = [];
@@ -62,8 +65,10 @@ class SurveyHandler {
       let thankyouHtml : any = templates.thankyou;
       // thankyouHtml = thankyouHtml.replace("{{question}}", this.surveyData.thankyouText);
       // thankyouHtml = thankyouHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "thankyouText"));
-      thankyouHtml = thankyouHtml.replace("{{question}}", this.ccsdk.config.thankyouText);
-      thankyouHtml = thankyouHtml.replace("{{button}}", this.ccsdk.config.startButtonText);
+      let thankyouText = this.ccsdk.config.thankyouText ? this.ccsdk.config.thankyouText : (this.surveyData.thankyouText ? this.surveyData.thankyouText : 'Thank You');
+      let startText = this.ccsdk.config.startButtonText ? this.ccsdk.config.startButtonText : 'Start';
+      thankyouHtml = thankyouHtml.replace("{{question}}", thankyouText);
+      thankyouHtml = thankyouHtml.replace("{{button}}", startText );
       this.ccsdk.dom.replaceInQuestionsContainer(thankyouHtml);
       //TODO : Fix this Add class not working???
       let thankyouContainer : any =  this.util.get("#cc-thankyou-container");
@@ -71,6 +76,9 @@ class SurveyHandler {
       this.util.addClass(thankyouContainer[0], 'show-thankyou-slide');
       let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyEndEvent);
+      setTimeout(()=>{
+        this.destroy();
+      },2000);
     }
     this.destroySurveyCb = ( e : any ) => {
         let self : SurveyHandler = this;
@@ -243,9 +251,11 @@ class SurveyHandler {
     let welcomeHtml : any = templates.question_start;
     welcomeHtml = welcomeHtml.replace("{{surveyToken}}", this.surveyToken);
     // welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
-    welcomeHtml = welcomeHtml.replace("{{question}}", this.ccsdk.config.welcomeText);
+    let welcomeText = this.ccsdk.config.welcomeText ? this.ccsdk.config.welcomeText : 'Welcome';
+    welcomeHtml = welcomeHtml.replace("{{question}}", welcomeText);
     // welcomeHtml = welcomeHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "welcomeText"));
-    welcomeHtml = welcomeHtml.replace("{{button}}", this.ccsdk.config.startButtonText);
+    let startText = this.ccsdk.config.startButtonText ? this.ccsdk.config.startButtonText : 'Start' ;
+    welcomeHtml = welcomeHtml.replace("{{button}}", startText);
     welcomeHtml = welcomeHtml.replace("{{location}}", this.surveyDisplay.position );
     welcomeHtml = welcomeHtml.replace("{{animation}}", this.surveyDisplay.welcomePopupAnimation );
     // (window as any).ccsdkDebug?console.log("Appending in body"):'';
@@ -299,17 +309,17 @@ class SurveyHandler {
     let $body = document.getElementsByTagName("body")[0];
 
     this.util.addClass($questionContainer[0].firstChild, 'show-slide');
-    let select = new Select(qId);
+    this.languageSelect = new Select(qId);
     let submitBtn = document.querySelectorAll('.submit-icon');
     this.util.removeClassAll(submitBtn, 'act-cc-button-next');
     this.util.addClassAll(submitBtn, 'act-cc-button-lang-next');
-    select.destroyListeners();
-    select.init(qId);
+    this.languageSelect.init(qId);
     let selectRes = '';
     let ref = this.util.initListener('click', '#' + qId + " .cc-select-options .cc-select-option", function () {
       self.ccsdk.debug?console.log('languageSelectOption'):'';
       selectRes = document.querySelectorAll('#' + qId + " .cc-select-trigger")[0].innerHTML;
     });
+    this.domListeners.push(ref);
     ref.internalHandler = this.util.listener($body, ref.type, ref.id, ref.cb);
 
 
@@ -322,6 +332,8 @@ class SurveyHandler {
       self.ccsdk.dom.loadFirstQuestion();        // this.loadFirstQuestion();
 
     });
+    this.domListeners.push(languageSelect);
+    
     languageSelect.internalHandler = this.util.listener($body, languageSelect.type, languageSelect.id, languageSelect.cb);
     
 
@@ -568,7 +580,26 @@ class SurveyHandler {
             questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
             questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
         } else {
+          let tileColor = '';
+          let style= '';
+          if (question.presentationMode.includes("Color")) {
+            tileColor = question.presentationMode.split(':')[1];
+            let tileColorDark = this.util.shadeBlendConvert(-0.3, tileColor, undefined);
+            style = '\
+              <style>\
+              #id'+ question.id + ' .option-number-item.option-scale{\
+                background-color : '+ tileColor +';\
+              }\
+              #id'+ question.id + ' .option-number-item.option-scale:hover,\
+              #id'+ question.id + ' .option-number-item.option-scale.selected{\
+                background-color : '+ tileColorDark +';\
+              }\
+              </style>\
+            ';
+          }
+          
           questionTemplate = templates.question_scale;
+          questionTemplate = questionTemplate.replace(/{{style}}/g,style);
           questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
           questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
           questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
@@ -631,26 +662,51 @@ class SurveyHandler {
       break;
       case "MultiSelect":
         let acTemplate : string ;
+        let multiSelect1;
         //get text question template and compile it.
-        if((question.displayStyle == 'radiobutton/checkbox') && (question.multiSelect.length < 7)){
+        multiSelect1 = Array.prototype.slice.call(question.multiSelect);
+        if (question.presentationMode == 'Invert') {
+          console.log('selection option before reverse', multiSelect1);
+          multiSelect1.reverse();
+          console.log('selection option after reverse', multiSelect1);
+          console.log('selection api option', question.multiSelect);
+        }
+        //get text question template and compile it.
+        if (((question.displayStyle == 'radiobutton/checkbox') || (question.displayStyle == 'icon')) && (question.multiSelect.length < 7)){
           // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
-          let options3 : string = self.util.generateCheckboxOptions(question.multiSelect, question.id);
-          // (window as any).ccsdkDebug?console.log(options2):'';
-          acTemplate = templates.question_checkbox;
-          questionTemplate = acTemplate.replace(/{{options}}/g, options3);
-          acTemplate = questionTemplate;
+          let checkOptionContainsImage: boolean = self.util.checkOptionContainsImage(multiSelect1);
+          // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
+          if (checkOptionContainsImage) {
+            // (window as any).ccsdkDebug?console.log('select type 2'):'';
+            acTemplate= templates.question_checkbox;
+            let options2 = self.util.generateCheckboxImageOptions(multiSelect1, question.id);
+            // (window as any).ccsdkDebug?console.log(options2):'';
+            questionTemplate = acTemplate;
+            questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
+            acTemplate = questionTemplate;
+          } else {
+            let options3 : string = self.util.generateCheckboxOptions(multiSelect1, question.id);
+            // (window as any).ccsdkDebug?console.log(options2):'';
+            acTemplate = templates.question_checkbox;
+            questionTemplate = acTemplate.replace(/{{options}}/g, options3);
+            acTemplate = questionTemplate;
+          }
         }else{
           // (window as any).ccsdkDebug?console.log('select type 3'):'';
           acTemplate = templates.question_multi_select;
           
           // acTemplate = templates.question_select;
-          let options3 = self.util.generateSelectOptions(question.multiSelect);
+          let options3 = self.util.generateSelectOptions(multiSelect1);
           if(self.ccsdk.config.language !== 'default') {
             if(typeof question.translated[self.ccsdk.config.language] !== 'undefined'
               && question.translated[self.ccsdk.config.language].multiSelect !== 'undefined'
               && question.translated[self.ccsdk.config.language].multiSelect.length > 0
             ) {
-              options3 = self.util.generateSelectOptions(question.translated[self.ccsdk.config.language].multiSelect);
+              multiSelect1 = Array.prototype.slice.call(question.translated[self.ccsdk.config.language].multiSelect);
+              if (question.presentationMode == 'Invert') {
+                multiSelect1.reverse();
+              }
+              options3 = self.util.generateSelectOptions(multiSelect1);
             }
           }
           // questionTemplate = acTemplate;
@@ -671,38 +727,62 @@ class SurveyHandler {
         let acTemplate2 : string ;
         let options1 : string ;
         let options2 : string ;
+        let multiSelect;
         //get text question template and compile it.
-        if((question.displayStyle == 'radiobutton/checkbox') && (question.multiSelect.length < 7)){
+        multiSelect = Array.prototype.slice.call(question.multiSelect);
+        if (question.presentationMode == 'Invert'){
+          console.log('selection option before reverse', multiSelect);
+          multiSelect.reverse();
+          console.log('selection option after reverse', multiSelect);
+          console.log('selection api option',question.multiSelect);
+        }
+        if((question.displayStyle == 'radiobutton/checkbox') && (multiSelect.length < 7)){
           // if(question.displayStyle == 'radiobutton/checkbox'){
           // (window as any).ccsdkDebug?console.log('select type 1'):'';
           // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
-          acTemplate1 = templates.question_radio;
-          questionTemplate = acTemplate1;
-        }else{
-          let checkOptionContainsImage : boolean = self.util.checkOptionContainsImage(question.multiSelect);
+          // acTemplate1 = templates.question_radio;
+          // questionTemplate = acTemplate1;
+          let checkOptionContainsImage: boolean = self.util.checkOptionContainsImage(multiSelect);
           // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
-          if(checkOptionContainsImage){
+          if (checkOptionContainsImage) {
             // (window as any).ccsdkDebug?console.log('select type 2'):'';
             acTemplate2 = templates.question_radio_image;
-            options2 = self.util.generateRadioImageOptions(question.multiSelect, question.id);
+            options2 = self.util.generateRadioImageOptions(multiSelect, question.id);
             // (window as any).ccsdkDebug?console.log(options2):'';
             questionTemplate = acTemplate2;
             questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
           }else{
+            acTemplate1 = templates.question_radio;
+            questionTemplate = acTemplate1;
+            options1 = self.util.generateRadioOptions(multiSelect, question.id);
+            questionTemplate = questionTemplate.replace("{{options}}", options1);   
+          }
+        } else if ((question.displayStyle == 'icon') && (multiSelect.length < 7)){
+          acTemplate1 = templates.question_radio;
+          questionTemplate = acTemplate1;
+          options1 = self.util.generateRadioOptions(multiSelect, question.id);
+          questionTemplate = questionTemplate.replace("{{options}}", options1);
+          
+        }else{
+          
             // (window as any).ccsdkDebug?console.log('select type 3'):'';
             acTemplate1 = templates.question_select;
-            options1 = self.util.generateSelectOptions(question.multiSelect);            
+            options1 = self.util.generateSelectOptions(multiSelect);            
             if(self.ccsdk.config.language !== 'default') {
               if(typeof question.translated[self.ccsdk.config.language] !== 'undefined'
                 && question.translated[self.ccsdk.config.language].multiSelect !== 'undefined'
                 && question.translated[self.ccsdk.config.language].multiSelect.length > 0
               ) {
-                options1 = self.util.generateSelectOptions(question.translated[self.ccsdk.config.language].multiSelect);
+                multiSelect = Array.prototype.slice.call(question.translated[self.ccsdk.config.language].multiSelect);
+                if (question.presentationMode == 'Invert') {
+                  multiSelect.reverse();
+                }
+                options1 = self.util.generateSelectOptions(multiSelect);
               }
             }
             questionTemplate = acTemplate1;
             questionTemplate = questionTemplate.replace("{{options}}", options1);
-          }
+        
 
         }
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
@@ -714,7 +794,13 @@ class SurveyHandler {
       break;
       case "Smile-5":
         //get text question template and compile it.
-        questionTemplate = templates.question_smile_5;
+        if (question.presentationMode == "Invert"){
+          questionTemplate = templates.question_smile_5_inverted;
+
+        }else{
+
+          questionTemplate = templates.question_smile_5;
+        }
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");

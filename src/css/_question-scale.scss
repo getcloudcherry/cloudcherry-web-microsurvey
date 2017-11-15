@@ -307,6 +307,10 @@
 		padding-right: 5px;
 		margin-right: 0;
 	}
+
+	.cc-question-container[data-type="nps"] .cc-question-container__content{
+		width:100%!important;
+	}
 }
 
 @media (max-width: 381px){

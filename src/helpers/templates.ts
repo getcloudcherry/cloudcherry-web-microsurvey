@@ -14,11 +14,14 @@ import  * as QuestionCSATSatisfaction5 from '../templates/QuestionCSATSatisfacti
 import  * as QuestionNPS from '../templates/QuestionNPS.html';
 import  * as QuestionSelect from '../templates/QuestionSelect.html';
 import  * as QuestionMultiSelect from '../templates/QuestionMultiSelect.html';
-import  * as QuestionSmile from '../templates/QuestionSmile.html';
+import * as QuestionSmile from '../templates/QuestionSmile.html';
+import  * as QuestionSmileInverted from '../templates/QuestionSmileInverted.html';
 import  * as QuestionStar from '../templates/QuestionStar.html';
 import  * as QuestionSlider from '../templates/QuestionSlider.html';
-import  * as OptionRadioImage from '../templates/OptionRadioImage.html';
-import  * as OptionCheckbox from '../templates/OptionCheckbox.html';
+import * as OptionRadioImage from '../templates/OptionRadioImage.html';
+import  * as OptionRadio from '../templates/OptionRadio.html';
+import * as OptionCheckbox from '../templates/OptionCheckbox.html';
+import  * as OptionCheckboxImage from '../templates/OptionCheckboxImage.html';
 import  * as ThankYou from '../templates/ThankYou.html';
 
 import  * as LanguageSelector from '../templates/LanguageSelector.html';
@@ -39,11 +42,14 @@ let templates = {
   question_radio_image : "",
   question_checkbox : "",
   question_select : "",
-  question_smile_5 : "",
+  question_smile_5: "",
+  question_smile_5_inverted : "",
   question_star_5 : "",
   question_slider : "",
-  option_radio_image : "",
-  option_checkbox : "",
+  option_radio_image: "",
+  option_radio : "",
+  option_checkbox: "",
+  option_checkbox_image : "",
   thankyou : "",
   language_selector : ""
 
@@ -76,6 +82,7 @@ templates.question_select = QuestionSelect;
 
 
 templates.question_smile_5 = QuestionSmile;
+templates.question_smile_5_inverted = QuestionSmileInverted;
 
 templates.question_star_5 = QuestionStar;
 
@@ -87,7 +94,9 @@ templates.question_radio_more = QuestionRadioMore;
 
 templates.question_radio_image = QuestionRadioImage;
 templates.option_radio_image = OptionRadioImage;
+templates.option_radio = OptionRadio;
 templates.option_checkbox = OptionCheckbox;
+templates.option_checkbox_image = OptionCheckboxImage;
 
 templates.thankyou = ThankYou;
 
