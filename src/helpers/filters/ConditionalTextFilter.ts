@@ -2,7 +2,7 @@
 import { LanguageTextFilter } from './LanguageTextFilter';
 class ConditionalTextFilter {
   public static filterText(surveyHandler : any, question : any) : string {
-    let conditionaText : string = question.text;
+    let conditionaText : string = question.text.split(':').join(': ');
     if (question.leadingDisplayTexts == null) {
       conditionaText = LanguageTextFilter.translateQuestionText(surveyHandler, question);
         return conditionaText;

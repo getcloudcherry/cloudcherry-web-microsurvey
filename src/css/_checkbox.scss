@@ -10,6 +10,8 @@
 }
 .cc-checkbox + span label img{
   width:40px;
+      display: inline-block;
+    vertical-align: middle;
 }
 .cc-checkbox label:before, .cc-checkbox label:after {
     bottom: 0;
