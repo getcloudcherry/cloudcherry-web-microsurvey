@@ -3,7 +3,7 @@
 import { Config } from "./Config";
 import { DisplayConfig } from "./interfaces/DisplayConfig";
 import { RequestHelper } from './helpers/Request';
-import { templates } from "./helpers/Templates";
+import { templates } from "./helpers/templates";
 import { DomUtilities } from "./helpers/dom/DomUtilities";
 import { DomSurvey } from "./helpers/dom/DomSurvey";
 import { ConditionalTextFilter } from "./helpers/filters/ConditionalTextFilter";
