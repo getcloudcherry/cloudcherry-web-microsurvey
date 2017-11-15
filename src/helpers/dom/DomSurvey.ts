@@ -25,6 +25,8 @@ class DomSurvey{
   trackRadios : any = [];
   ccsdk : any;
   currentQuestionListeners : any = [];
+  trackSetupListeners:any;
+  $startBtn : any;
   
 
   constructor(ccsdk : any){
@@ -81,11 +83,17 @@ class DomSurvey{
   setupListeners(){
     let self = this;
     let startSurvey = this.util.initListener("click",".act-cc-survey-start", function() {
-      let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
-      document.dispatchEvent(onSurveyClickEvent);
-      
-      self.startSurvey();
+      if((!self.util.hasClass(self.$startBtn, 'disabled')) && ( self.ccsdk.surveyStatus != 'minimized')){
+        let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
+        document.dispatchEvent(onSurveyClickEvent);
+        self.util.addClass(self.$startBtn, 'disabled');
+        self.startSurvey();
+      }else{
+        self.initSurveyDom();
+      }
     });
+    this.domListeners.push(startSurvey);    
+    
 
     startSurvey.internalHandler = this.util.listener(this.$body, startSurvey.type, startSurvey.id, startSurvey.cb);
 
@@ -95,6 +103,8 @@ class DomSurvey{
       document.dispatchEvent(onSurveyClickEvent);
       self.nextQuestion();
     });
+    this.domListeners.push(nextQue);    
+    
     nextQue.internalHandler = this.util.listener(this.$body, nextQue.type, nextQue.id, nextQue.cb);
 
     let prevQue = this.util.initListener( "click",".act-cc-button-prev", function(){
@@ -102,6 +112,8 @@ class DomSurvey{
       document.dispatchEvent(onSurveyClickEvent);
       self.prevQuestion();
     });
+    this.domListeners.push(prevQue);    
+    
     prevQue.internalHandler = this.util.listener(this.$body, prevQue.type, prevQue.id, prevQue.cb);
 
     let closeSurvey = this.util.initListener( "click",".act-cc-button-close", function(){
@@ -117,12 +129,16 @@ class DomSurvey{
       self.ccsdk.survey.destroy();
       
     });
+    this.domListeners.push(closeSurvey);    
+    
 
     closeSurvey.internalHandler = this.util.listener(this.$body, closeSurvey.type, closeSurvey.id, closeSurvey.cb);
 
     let minSurvey = this.util.initListener( "click",".act-cc-button-minimize", function(){
       self.minimizeSurvey();
     });
+    this.domListeners.push(minSurvey);    
+    
 
     minSurvey.internalHandler = this.util.listener(self.$body, minSurvey.type, minSurvey.id, minSurvey.cb);
   }
@@ -141,6 +157,15 @@ class DomSurvey{
       this.util.addClass(this.$popupContainer[0], 'show-slide');
     },200);
     this.ccsdk.surveyStatus = 'minimized';
+    let resumeText = this.ccsdk.config.resumeButtonText ? this.ccsdk.config.resumeButtonText : 'Resume' ;
+    this.$startBtn.innerHTML = resumeText;
+    this.util.removeClass(this.$startBtn, 'disabled');
+    
+    //update all start btns
+    // Array.prototype.forEach.call($startBtn, (el, i) => {
+    //   el.innerHTML = resumeText;
+    // });
+
   }
 
   destroyListeners(){
@@ -148,6 +173,16 @@ class DomSurvey{
     for(let listener of this.domListeners) {
       this.util.removeListener(this.$body, listener.type, listener.internalHandler);
     }
+    for (let listener of this.ccsdk.survey.domListeners) {
+      this.util.removeListener(this.$body, listener.type, listener.internalHandler);
+    }
+    if (this.ccsdk.survey.languageSelect) {
+      this.ccsdk.survey.languageSelect.destroyListeners();
+    }
+    if(this.select){
+      this.select.destroyListeners();
+    }
+    
   }
 
   startSurvey(){
@@ -193,7 +228,7 @@ class DomSurvey{
 	}
 
 	nextQuestion(){
-
+  console.log('next question q response',this.qResponse);
     //empty the domListner
     // this.util.removeAllListeners(this.domListeners);
     let onSurveyQuestionEvent = new CustomEvent(Constants.SURVEY_QUESTION_EVENT + "-" + this.ccsdk.surveyToken);
@@ -236,8 +271,8 @@ class DomSurvey{
     //go to next question
     this.qIndex++;
     //reset the post parameters
-    this.qResponse = typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined' ? JSON.parse(JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])) : {};
-    // this.qResponse = {};
+    // this.qResponse = typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined' ? JSON.parse(JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])) : {};
+    this.qResponse = {};
     let nextButtonState : string = 'initial';
     // (window as any).ccsdkDebug?console.log(this.$questionContainer):'';
     let nextQ : HTMLElement = this.$questionContainer;
@@ -277,6 +312,9 @@ class DomSurvey{
       this.util.addClass(leftIcon[0] , 'show-slide');
       this.util.removeClass(leftIcon[0] , 'hide-slide');
     }
+    this.qResponse = {};
+    console.log('next question q response', this.qResponse);
+    
 	}
 
 	prevQuestion(){
@@ -332,6 +370,8 @@ class DomSurvey{
         this.util.addClass(startContainer, "show-slide");
         this.util.addClass( bodyElement, "blurr" );
     },200);
+    this.$startBtn = document.querySelectorAll(".act-cc-survey-start")[0];
+    
   }
 
   showLanguageSelector(){
@@ -497,6 +537,8 @@ class DomSurvey{
       (window as any).ccsdkDebug?console.log('nps previous selection', previousSelection):'';
       if(typeof previousSelection !== 'undefined'){
         this.util.addClass(previousSelection, "selected");
+        let $mobileRating = document.querySelectorAll(".act-cc-nps-selected-rating")[0];
+        $mobileRating.innerHTML = previousValue;
       }
       
     }
@@ -544,13 +586,16 @@ class DomSurvey{
     questionId = qId.substring(2, qId.length);
     (window as any).ccsdkDebug?console.log('radio question', this.ccsdk.survey.answers[questionId]):'';
     if (typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== '') {
-      let previousValues = this.ccsdk.survey.answers[questionId].text.split(',');
-      for(let previousValue of previousValues){
-        let previousSelection = document.querySelectorAll('#' + qId + ' input[value="' + previousValue + '"]')[0];
-        (window as any).ccsdkDebug?console.log('radio previous selection', previousSelection):'';
-        if (typeof previousSelection !== 'undefined') {
-          this.util.addClass(previousSelection, "selected");
-          previousSelection.setAttribute('checked', 'checked');
+      let previousValues = this.ccsdk.survey.answers[questionId].text;
+      if(previousValues){
+        previousValues = previousValues.split(',');
+        for(let previousValue of previousValues){
+          let previousSelection = document.querySelectorAll('#' + qId + ' input[value="' + previousValue + '"]')[0];
+          (window as any).ccsdkDebug?console.log('radio previous selection', previousSelection):'';
+          if (typeof previousSelection !== 'undefined') {
+            this.util.addClass(previousSelection, "selected");
+            previousSelection.setAttribute('checked', 'checked');
+          }
         }
       }
 
@@ -629,11 +674,28 @@ class DomSurvey{
   setupListenersQuestionRadioImage(index : number, qId : string ){
     var self : DomSurvey = this;
     if(this.util.checkIfListenerExists('#'+qId+' .cc-checkbox input', this.domListeners)) {
-      return;
+      (window as any).ccsdkDebug ? console.log("radio image question - previous listeners exists") : '';
+      this.removePrevListener('#' + qId + ' .cc-checkbox input');
     }
+
+    //set previous value
+    let questionId: any;
+    questionId = qId.substring(2, qId.length);
+    (window as any).ccsdkDebug ? console.log('radio image question', this.ccsdk.survey.answers[questionId]) : '';
+    if (typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== '') {
+      let previousValue = this.ccsdk.survey.answers[questionId].text;
+      let previousSelection = document.querySelectorAll('#' + qId + ' input[value="' + previousValue + '"]')[0];
+      (window as any).ccsdkDebug ? console.log('radio image previous selection', previousSelection) : '';
+      if (typeof previousSelection !== 'undefined') {
+        this.util.addClass(previousSelection, "selected");
+        previousSelection.setAttribute('checked', 'checked');
+      }
+
+    }
+
     let ref = this.util.initListener('click', '#'+qId+' .cc-checkbox input', function(){
       // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox');
-      let rating : number = this.value;
+      let rating : string = this.value;
       // self.util.removeClassAll(allOptions, "selected");
       // self.util.addClass(this, "selected");
       // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
@@ -942,8 +1004,10 @@ class DomSurvey{
       self.select.init(qId);
       
       if(typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== ''){
-        self.select.setValue(this.ccsdk.survey.answers[questionId].text);
-        self.select.selectOptions(this.ccsdk.survey.answers[questionId].text);
+        if (this.ccsdk.survey.answers[questionId].text){
+          self.select.setValue(this.ccsdk.survey.answers[questionId].text);
+          self.select.selectOptions(this.ccsdk.survey.answers[questionId].text);
+        }
       }
       self.trackSelects.push(qId);
     // }
