@@ -5,10 +5,10 @@ class LanguageTextFilter {
             if(typeof question.translated[surveyHandler.ccsdk.config.language] !== 'undefined') {
                 return question.translated[surveyHandler.ccsdk.config.language].text;
             } else {
-                return question.text;
+                return question.text.split(':').join(': ');
             }
         } else {
-            return question.text;
+            return question.text.split(':').join(': ');
         }
     }
 
