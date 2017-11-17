@@ -76,9 +76,9 @@ class SurveyHandler {
       this.util.addClass(thankyouContainer[0], 'show-thankyou-slide');
       let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyEndEvent);
-      setTimeout(()=>{
-        this.destroy();
-      },2000);
+      // setTimeout(()=>{
+      //   this.destroy();
+      // },2000);
     }
     this.destroySurveyCb = ( e : any ) => {
         let self : SurveyHandler = this;
@@ -299,7 +299,7 @@ class SurveyHandler {
     let options1 : string ;
     let qId = 'languageSelector';
     let cTemplate1 = templates.language_selector;
-    options1 = this.util.generateSelectOptions(["default"].concat(Object.keys(this.surveyData.translated)));
+    options1 = this.util.generateLanguageSelectOptions(["default"].concat(Object.keys(this.surveyData.translated)));
     cTemplate1 = cTemplate1.replace(/{{questionId}}/g, qId);
     cTemplate1 = cTemplate1.replace("{{options}}", options1);
     cTemplate1 = cTemplate1.replace("{{requiredLabel}}", true ? "*" : "");
@@ -610,11 +610,21 @@ class SurveyHandler {
           let options = "";
           let startRangeLabel = "Very unlikely";
           let endRangeLabel = "Very likely";
+          if(question.displayLegend){
+            if (question.displayLegend.length > 0){
+              startRangeLabel = question.displayLegend[0] ? question.displayLegend[0]:null;
+              endRangeLabel = question.displayLegend[1] ? question.displayLegend[1] : null;
+            }
+          }
           if(question.multiSelect.length > 0) {
             startRange = parseFloat(question.multiSelect[0].split("-")[0]);
-            startRangeLabel = question.multiSelect[0].split("-")[0].split(";")[1];
+            if(startRangeLabel==null){
+              startRangeLabel = question.multiSelect[0].split("-")[0].split(";")[1];
+            }
             endRange = parseFloat(question.multiSelect[0].split("-")[1]);
-            endRangeLabel = question.multiSelect[0].split("-")[1].split(";")[1];
+            if (endRangeLabel == null) {
+              endRangeLabel = question.multiSelect[0].split("-")[1].split(";")[1];
+            }
           }
           startRangeLabel = startRangeLabel == null ? "Very unlikely" : startRangeLabel;
           endRangeLabel = endRangeLabel == null ? "Very likely" : endRangeLabel;

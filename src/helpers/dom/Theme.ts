@@ -76,6 +76,15 @@ class Theme{
 			animation: countdown '+time+'s linear 1 forwards;\
 			stroke: '+brandColor+';\
 		   }\
+		   input[type=range].selected::-webkit-slider-thumb {\
+				background-color: '+brandColor+';\
+			}\
+			input[type = range].selected::-moz - range - thumb {\
+				background-color: '+brandColor+';\
+			}\
+			.cc-checkbox label:hover:before{\
+				border: solid 1px '+ brandColor + ';\
+			}\
 		 @media (max-width: 767px){\
 	 			.overlay.glass{\
 	 			background-color:rgba(255,255,255,.85);\

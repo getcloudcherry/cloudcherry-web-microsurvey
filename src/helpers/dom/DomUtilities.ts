@@ -262,6 +262,20 @@ generateSelectOptions(arr : any){
     return res;
   }
 }
+  generateLanguageSelectOptions(arr: any) {
+    if (Array.isArray(arr)) {
+      let i: number = 0;
+      let res: string = '';
+      for (i = 0; i < arr.length; i++) {
+        if (arr[i] == 'default'){
+          res += '<option value="' + arr[i] + '">English (Default)</option>';
+        }else{
+          res += '<option value="' + arr[i] + '">' + arr[i] + '</option>';
+        }
+      }
+      return res;
+    }
+  }
 checkOptionContainsImage(arr : any){
   if(Array.isArray(arr)){
     let i : number = 0;

@@ -1,3 +1,4 @@
+import { DomUtilities } from './DomUtilities';
 class Slider{
   inputRange : any;
   rangeTip : any;
@@ -6,11 +7,12 @@ class Slider{
   currValue : number;
   rafID : any;
   timeout : any;
+  util : any
 
   constructor(){
    this.inputRange = document.getElementsByClassName('range')[0];
    this.rangeTip = this.inputRange.parentNode.querySelectorAll(".act-slider-tip")[0];
-   
+   this.util = new DomUtilities();
   //  this.maxValue = 100; // the higher the smoother when dragging
    this.speed = 5;
    
@@ -33,10 +35,11 @@ class Slider{
     // this.inputRange.addEventListener('mousestart', this.unlockStartHandler, false);
     // this.inputRange.addEventListener('mouseup', this.unlockEndHandler, false);
     // this.inputRange.addEventListener('touchend', this.unlockEndHandler, false);
-
     // move gradient
     this.inputRange.addEventListener('input', function() {
       self.updateRangeTip();
+      self.util.addClass(this, 'selected');
+      
     //Change slide thumb color on way up
     if (this.value > 20) {
        self.inputRange.classList.add('ltpurple');
@@ -86,12 +89,12 @@ class Slider{
     //   this.rangeTip.style.left = " calc( "+ this.rangeTip.style.left +" - "+ this.rangeTip.getBoundingClientRect().width + "px )";
     // }
     // console.log(this.rangeTip.style.left);
-    if(this.timeout){
-      clearTimeout(this.timeout);
-    }
-    this.timeout = setTimeout(function(){
-      self.rangeTip.style.display = 'none' ;
-    },300)
+    // if(this.timeout){
+    //   clearTimeout(this.timeout);
+    // }
+    // this.timeout = setTimeout(function(){
+    //   self.rangeTip.style.display = 'none' ;
+    // },300)
     
   }
 
