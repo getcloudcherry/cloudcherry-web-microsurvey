@@ -81,14 +81,14 @@ class Select{
         (window as any).ccsdkDebug?console.log(selectedOptionText):'' ;
         if(selectedOptionText != 'Select'){
           if(selectedOptionText.indexOf(selfOption.textContent) == 0){
-            selectedOptionText = selectedOptionText.replace(selfOption.textContent + ',', '') ;   
+            selectedOptionText = selectedOptionText.replace(selfOption.textContent + ', ', '') ;   
             selectedOptionText = selectedOptionText.replace(selfOption.textContent, '') ;   
             self.util.removeClass(this,"selection");
           }else if(selectedOptionText.indexOf(selfOption.textContent) > 0){
-            selectedOptionText = selectedOptionText.replace(',' + selfOption.textContent, '') ;    
+            selectedOptionText = selectedOptionText.replace(', ' + selfOption.textContent, '') ;    
             self.util.removeClass(this,"selection");
           }else{
-            selectedOptionText = selectedOptionText + ',' + selfOption.textContent;
+            selectedOptionText = selectedOptionText + ', ' + selfOption.textContent;
           }
         
         }else{

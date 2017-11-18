@@ -35,11 +35,11 @@ input[type=range]::-webkit-slider-thumb {
  -webkit-appearance: none;
  border: 1px solid #ff403d ;
  border-radius: 50%;
- height:50px;
- width:50px;
+ height:32px;
+ width:32px;
  max-width: 80px;
  position: relative;
- bottom: 25px;
+ bottom: 16px;
  background-color: #fff;
  cursor: -webkit-grab;
  
@@ -50,14 +50,15 @@ input[type=range]::-moz-range-thumb {
  -moz-appearance: none;
  border: 1px solid #ff403d ;
  border-radius: 50%;
- height: 50px;
- width: 50px;
+ height: 32px;
+ width: 32px;
  max-width: 80px;
  position: relative;
- bottom: 25px;
+ bottom: 16px;
  background-color: #fff;
  cursor: -moz-grab;
 }
+
 input[type=range]::-moz-range-thumb:before{
     content:'asd';
 }
