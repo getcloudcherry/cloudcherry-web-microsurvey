@@ -14,6 +14,13 @@
 	padding:10px;
 
 }
+.cc-popup-container.bottom{
+		margin-bottom:9px;
+}
+.cc-popup-container.top{
+		margin-top:9px;
+
+}
 .cc-popup-container{
 
 }
@@ -27,8 +34,10 @@
 #cc-thankyou-container .cc-question-container__text p,
 #cc-thankyou-container .cc-question-container__text{
 		width:400px;
-		font-size: 20px;
+		// font-size: 20px;
 		max-width:initial;
+		font-size: 17px;
+    	color: #424242;
 }
 
 .cc-message-box{
@@ -176,6 +185,21 @@
 	height: 100%;
 }
 
+p.cc-thankyou-powered{
+	font-size: 13px!important;
+    color: #404040!important;
+    font-style: italic;
+    margin-top: 4px;
+}
+.cc-thankyou-powered .cc-thankyou-logo{
+	// background:url('https://cx.getcloudcherry.com/microsurvey-assets/cc-thankyou-logo.svg');
+	background:url('http://localhost:8080/images/cc-thankyou-logo.svg');
+	background-size: cover;
+	margin-right:8px;
+	display: inline-block;
+	width:16px;
+	height: 16px;
+}
 
 .multiline-box{
 	background: #fff;
@@ -372,7 +396,7 @@
 		bottom: 75px;
 		height: auto;
 		left: 0;
-		padding: 40px 25px;
+		padding: 40px 20px;
 		position: absolute;
 		text-align: left;
 		top: auto;
@@ -419,6 +443,9 @@
 	.cc-question-container__content.rating-color {
 	    margin-left: 0!important;
 	}
+	.cc-question-container[data-type="nps"] .cc-question-container__content, .cc-question-container[data-type="scale"] .cc-question-container__content{
+		width:100%!important;
+	}
 	.multiline-box{
 		height: 150px;
 		margin: 0;
@@ -451,7 +478,7 @@
 
 	.submit-icon {
 	    position: absolute;
-	    left: 25px;
+	    left: 20px;
 	    top: auto;
 	    bottom: 30px;
 	    padding-right: 0;

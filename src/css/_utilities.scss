@@ -45,7 +45,9 @@
 	clear: both;
 	display: block;
 }
-
+.text-normal{
+	font-weight: 400;
+}
 .form-control::-webkit-input-placeholder { /* Chrome/Opera/Safari */
 	color: $color-1;
 	font-family: 'Open Sans';

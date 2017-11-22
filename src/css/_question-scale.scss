@@ -106,6 +106,15 @@
 .option-number-item.option-ten:hover{
 	background: #285e40;
 }
+.cc-question-container[data-type="nps"] .option-number-item{
+	width:8.4%;
+}
+.cc-question-container[data-type="nps"] .option-number-item.option-seven{
+	margin-left:4px;
+}
+.cc-question-container[data-type="nps"] .option-number-item.option-nine{
+	margin-left:4px;
+}
 
 .cc-question-container__content.rating-color{
 	margin-left: 74px;
@@ -118,9 +127,17 @@
 	left: 0;
 	position: absolute;
 }
+.cc-question-container[data-type="smile"] .option-left-rating-text,
+.cc-question-container[data-type="star"] .option-left-rating-text{
+	left:7px;
+}
 .option-right-rating-text{
 	left: auto;
 	right: 5px;
+}
+.cc-question-container[data-type="smile"] .option-right-rating-text,
+.cc-question-container[data-type="star"] .option-right-rating-text{
+	right:36px;
 }
 .rating-color{
 	position: relative;
@@ -279,6 +296,33 @@
 		// width: 18%;
 		margin-right: 3px;
 		
+	}
+	.option-csat.option-smile-box.selected,
+	.option-csat.option-smile-box:hover,
+	.option-csat.option-smile-box{
+			display: block;
+			background-size: 40px;
+    		background-position: 29px center;
+	}
+	.option-csat.option-smile-box {
+		height: 65px;
+		width: 100%;
+	}
+	.option-csat.option-smile-box span{
+		font-size: 15px;
+		padding-left: 74px;
+		top:0
+	}
+	.option-csat.option-smile-box .cc-checkbox {
+    	top: 19px;
+	}
+	.option-csat.option-smile-box .cc-checkbox.cc-radio label:before{
+		width:25px;
+		height:25px;
+	}
+	.option-csat.option-smile-box .cc-checkbox input[type="radio"]:checked + label:after{
+		width:25px;
+		height:25px;
 	}
 	.option-number-item {
 		color: #fff;

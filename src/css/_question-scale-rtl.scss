@@ -17,6 +17,10 @@ html[dir="rtl"] .option-right-rating-text{
 	left: 0;
 	right: auto;
 }
+html[dir="rtl"] .option-left-rating-text{
+	    right: 36px;
+    left: initial!important;
+}
 html[dir="rtl"] .rating-color{
 	position: relative;
 }
@@ -27,6 +31,15 @@ html[dir="rtl"] .option-smile-box img,.option-star-box img{
 html[dir="rtl"] .option-star-box img{
 	margin-left: 19px;
 	margin-right: 0px;
+}
+html[dir="rtl"] .option-csat.option-smile-box span{
+	padding-right: 74px;
+    text-align: right;
+}
+html[dir="rtl"] .option-csat.option-smile-box.selected, 
+html[dir="rtl"] .option-csat.option-smile-box:hover, 
+html[dir="rtl"] .option-csat.option-smile-box{
+	background-position: calc( 100% - 30px) center;
 }
 
 @media (min-width: 767px) and (max-width: 992px){

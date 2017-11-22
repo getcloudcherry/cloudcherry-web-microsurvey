@@ -69,6 +69,9 @@ html[dir="rtl"] .detail-box .cc-question-container__content{
     padding-right: 0;
     padding-left:0;
 }
+html[dir="rtl"] .cc-nps-image{
+    left:31px;
+}
 
 @media (min-width: 767px) and (max-width: 1024px){
     html[dir="rtl"] .cc-big-list-container .cc-question-container__list,
