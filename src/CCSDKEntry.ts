@@ -20,6 +20,8 @@ let localCCSDK = {
   init : init,
   destroy : destroy,
   trigger : trigger,
+  hide : hide,
+  show : show,
   on : on,
   prefill : prefill,
   fillPrefill : fillPrefill

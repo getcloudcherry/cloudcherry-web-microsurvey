@@ -27,6 +27,7 @@ class DomSurvey{
   currentQuestionListeners : any = [];
   trackSetupListeners:any;
   $startBtn : any;
+  bodyElement : any;
   
 
   constructor(ccsdk : any){
@@ -67,6 +68,7 @@ class DomSurvey{
     // this.select = new Select();
 
   }
+
 
 
  removePrevListener(id : string) : boolean {
@@ -123,9 +125,9 @@ class DomSurvey{
       self.trackSelects = [];
       self.destroyListeners();
       self.util.trigger(document, 'ccclose', undefined);
-      let bodyElement = <HTMLElement>document.
+      self.bodyElement = <HTMLElement>document.
       getElementsByTagName("body")[0];
-        self.util.removeClass( bodyElement, "blurr" )
+        self.util.removeClass( self.bodyElement, "blurr" )
       self.ccsdk.survey.destroy();
       
     });

@@ -1,8 +1,14 @@
 
+html[dir="rtl"] ul{
+    padding-right:0;
+}
 html[dir="rtl"] .cc-popup-container .cc-popup-container__close{
     right: initial;
     left:0;
 	top: 0;
+}
+html[dir="rtl"] .cc-popup-container .cc-message-box .cc-message-box__text{
+    text-align: right;
 }
 html[dir="rtl"]  .cc-popup-container__back {
     background-image: url(https://cx.getcloudcherry.com/microsurvey-assets/Back_Icon_rtl_.svg);
@@ -25,8 +31,8 @@ html[dir="rtl"] .cc-question-container{
 }
 
 html[dir="rtl"] .cc-question-container__required{
-    left: 1%;
-    right:initial;
+    right: 0%;
+    left:initial;
 }
 html[dir="rtl"] .cc-question-container__required-label {
     top: -2px;
@@ -36,8 +42,9 @@ html[dir="rtl"] .cc-question-container__required-label {
 html[dir="rtl"] .cc-question-container__list li{
 	display: inline-block;
     // padding-right: 29px;
-    padding-right: 25px;
-    padding-left: 0;
+    padding-right: 25px!important;
+    // padding-left: 0;
+        padding-left: 15px!important;
 	vertical-align: middle;
 }
 
@@ -68,6 +75,13 @@ html[dir="rtl"] .drop-cc-question-container .cc-question-container__text{
 html[dir="rtl"] .detail-box .cc-question-container__content{
     padding-right: 0;
     padding-left:0;
+}
+html[dir="rtl"] .cc-nps-image{
+    left:31px;
+}
+
+html[dir="rtl"] .cc-question-container__content{
+    text-align: right;
 }
 
 @media (min-width: 767px) and (max-width: 1024px){
@@ -112,8 +126,15 @@ html[dir="rtl"] .detail-box .cc-question-container__content{
             left: initial;
             right: 0;
         }
+    html[dir="rtl"] .multiline-box{
+	    margin: 0 ;
+    }
+
     html[dir="rtl"]	.cc-question-container__text{
             text-align: right;
+                width: 100%;
+            margin-right: 5px;
+            max-width:100%;
         }
     html[dir="rtl"]	.cc-question-container__list li span{
             padding-right: 15px;

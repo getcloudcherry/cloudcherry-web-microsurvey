@@ -76,9 +76,9 @@ class SurveyHandler {
       this.util.addClass(thankyouContainer[0], 'show-thankyou-slide');
       let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyEndEvent);
-      // setTimeout(()=>{
-      //   this.destroy();
-      // },2000);
+      setTimeout(()=>{
+        this.destroy();
+      },2000);
     }
     this.destroySurveyCb = ( e : any ) => {
         let self : SurveyHandler = this;
@@ -811,18 +811,42 @@ class SurveyHandler {
 
           questionTemplate = templates.question_smile_5;
         }
+        let startRangeLabel = "Very unlikely";
+        let endRangeLabel = "Very likely";
+        if (question.displayLegend) {
+          if (question.displayLegend.length > 0) {
+            startRangeLabel = question.displayLegend[0] ? question.displayLegend[0] : null;
+            endRangeLabel = question.displayLegend[1] ? question.displayLegend[1] : null;
+          }
+        }
+        startRangeLabel = startRangeLabel == null ? "Very unlikely" : startRangeLabel;
+        endRangeLabel = endRangeLabel == null ? "Very likely" : endRangeLabel;
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+        questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel);
+        questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel);
       break;
       case "Star-5":
         //get text question template and compile it.
+        let startRangeLabel1 = "Very unlikely";
+        let endRangeLabel1 = "Very likely";
+        if (question.displayLegend) {
+          if (question.displayLegend.length > 0) {
+            startRangeLabel1 = question.displayLegend[0] ? question.displayLegend[0] : null;
+            endRangeLabel1 = question.displayLegend[1] ? question.displayLegend[1] : null;
+          }
+        }
+        startRangeLabel1 = startRangeLabel1 == null ? "Very unlikely" : startRangeLabel1;
+        endRangeLabel1 = endRangeLabel1 == null ? "Very likely" : endRangeLabel1;
         questionTemplate = templates.question_star_5;
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
         questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+        questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel1);
+        questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel1);
       break;
     }
     return questionTemplate;
@@ -937,6 +961,10 @@ class SurveyHandler {
     document.removeEventListener('ccdone', this.displayThankYouCb);
     document.removeEventListener('q-answered', this.acceptAnswersCb);
     (window as any).globalSurveyRunning = false;
+    let bodyElement = <HTMLElement>document.
+      getElementsByTagName("body")[0];
+    this.util.removeClass(bodyElement, "blurr");
+
   }
 }
 

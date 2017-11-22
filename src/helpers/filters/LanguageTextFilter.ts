@@ -5,10 +5,18 @@ class LanguageTextFilter {
             if(typeof question.translated[surveyHandler.ccsdk.config.language] !== 'undefined') {
                 return question.translated[surveyHandler.ccsdk.config.language].text;
             } else {
-                return question.text.split(':').join(': ');
+                let qText = question.text.split(':');
+                if (question.text.includes(":")) {
+                    qText = qText[0] + ': <br><span class="text-normal">' + qText[1] + '</span>';
+                }
+                return qText ;
             }
         } else {
-            return question.text.split(':').join(': ');
+            let qText = question.text.split(':');
+            if (question.text.includes(":")) {
+                qText = qText[0] + ': <br><span class="text-normal">' + qText[1] + '</span>';
+            }
+            return qText;
         }
     }
 

@@ -74,7 +74,7 @@
         var ins = window.CCSDK("init", token ,{
           // themeColor : "rgb(235, 28, 35)",
           // themeColor : color,
-          textDirection : 'ltr',
+          textDirection : 'rtl',
           isActive: false, //boolean,    // Whether a microsurvey is enabled or disabled, true for enabled
           welcomeText: 'Hey There! Help us improve :)', // Welcome message
           thankyouText: 'Thank you for taking the survey', // Thank you message
@@ -133,19 +133,20 @@
           // window.CCSDK("on", "WW-35080", "onSurveyData", function(e) {
           //   console.log("Inside OLD ON");
           // });
-          window.CCSDK("fillPrefill", "SR-72302", "Email", "abhishek.yagnik@wowlabz.com");
-          window.CCSDK("fillPrefill", "SR-72302", "Name", "Abhishek Yagnik");
+          // window.CCSDK("fillPrefill", "SR-72302", "Email", "abhishek.yagnik@wowlabz.com");
+          // window.CCSDK("fillPrefill", "SR-72302", "Name", "Abhishek Yagnik");
 
     		//click trigger
     		//pass id or class...currently works on first element of class
 
 		})();
 
-    // document.addEventListener('ccready',function(){
-    //   ccSurvey = window.CCSDK("init", "WW-02872",{
-    //     themeColor : "#220033"
-    //   });
-    // });
+
+    document.addEventListener(token+'-ready', function(e){
+      setTimeout(function(){
+       // e.detail.survey.show(token);
+      },5000);
+    });
 
     // document.addEventListener(token+'-ready', function(e){
     //   // console.log(e);

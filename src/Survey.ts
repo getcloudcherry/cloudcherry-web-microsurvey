@@ -162,8 +162,8 @@ class Survey {
   }
 
   setDisplayOptions(){
-    this.survey.surveyDisplay.position =  this.config && this.config.display && this.config.display.position ?
-    this.config.display.position : "bottom right";
+    this.survey.surveyDisplay.position =  this.config && this.config.position ?
+    this.config.position : "bottom right";
     this.survey.surveyDisplay.welcomePopupAnimation =  this.config && this.config.display && this.config.display.welcomePopupAnimation ?
     "hide-"+ this.config.display.welcomePopupAnimation : "hide-right-left";
     this.survey.surveyDisplay.surveyPopupAnimation =  this.config && this.config.display && this.config.display.surveyPopupAnimation ?
@@ -236,10 +236,13 @@ class Survey {
 
   public hide() {
     SurveyManager.unsetSurveyRunning();
+    this.survey.destroy();
   }
 
   public destroy() {
     //remove all listeners?
+    SurveyManager.unsetSurveyRunning();
+    this.survey.destroy();
   }
   
 

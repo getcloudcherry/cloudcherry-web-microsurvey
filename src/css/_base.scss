@@ -25,6 +25,12 @@ map area {
 	outline:0;
 	cursor: pointer;
 }
+map area.selected{
+	outline: 5px;
+    outline-color: #0a2135;
+    outline-width: 3px;
+    outline-style: solid;
+}
 
 map area:hover{
 	outline:1;
