@@ -5,6 +5,8 @@ class ConditionalTextFilter {
     let conditionaText : string = question.text.split(':');
     if(question.text.includes(":")){
         conditionaText = conditionaText[0] + ': <br><span class="text-normal">'+conditionaText[1]+'</span>';
+    } else {
+        conditionaText = conditionaText[0];
     }
     if (question.leadingDisplayTexts == null) {
       conditionaText = LanguageTextFilter.translateQuestionText(surveyHandler, question);
@@ -18,15 +20,15 @@ class ConditionalTextFilter {
                 let iSatisfied : boolean = false;
                 let iFailed : boolean = false;
                 for (let filterByQuestion of fOption.filter.filterquestions) {
-                    if (ConditionalTextFilter.isAnd(conditionaText)) {
-                        if (ConditionalTextFilter.doesSatisfy(surveyHandler, conditionaText) && !iFailed) {
+                    if (ConditionalTextFilter.isAnd(filterByQuestion)) {
+                        if (ConditionalTextFilter.doesSatisfy(surveyHandler, filterByQuestion) && !iFailed) {
                             iSatisfied = true;
                         } else {
                             iFailed = true;
                             break;
                         }
-                    } else if (ConditionalTextFilter.isOr(conditionaText)) {
-                        if (ConditionalTextFilter.doesSatisfy(surveyHandler, conditionaText)) {
+                    } else if (ConditionalTextFilter.isOr(filterByQuestion)) {
+                        if (ConditionalTextFilter.doesSatisfy(surveyHandler, filterByQuestion)) {
                             iSatisfied = true;
                             break;
                         }

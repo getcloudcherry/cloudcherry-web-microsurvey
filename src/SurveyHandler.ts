@@ -3,7 +3,7 @@
 import { Config } from "./Config";
 import { DisplayConfig } from "./interfaces/DisplayConfig";
 import { RequestHelper } from './helpers/Request';
-import { templates } from "./helpers/Templates";
+import { templates } from "./helpers/templates";
 import { DomUtilities } from "./helpers/dom/DomUtilities";
 import { DomSurvey } from "./helpers/dom/DomSurvey";
 import { ConditionalTextFilter } from "./helpers/filters/ConditionalTextFilter";
@@ -515,7 +515,24 @@ class SurveyHandler {
     // let result = RequestHelper.post(surveyPartialUrl, "[" + JSON.stringify(data) + "]");
     let onSurveyAnswerEvent = new CustomEvent(Constants.SURVEY_ANSWER_EVENT + "-" + this.surveyToken);
     document.dispatchEvent(onSurveyAnswerEvent);
-    return RequestHelper.post(surveyPartialUrl, data);
+    if(question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id) {
+      //last question
+      let postSurveyFinalUrl = Config.POST_SURVEY_FINAL.replace("{tokenId}", this.ccsdk.surveyToken);
+      postSurveyFinalUrl = Config.API_URL + postSurveyFinalUrl;
+      RequestHelper.post(surveyPartialUrl, data);
+      let finalData = {
+        id : this.ccsdk.surveyToken,
+        user : this.ccsdk.config.username,
+        locationId : null,
+        responses : this.surveyAnswers,
+        nps : 0,
+        surveyClient : "JS-Web",
+        responseDuration : 0
+      };
+      return RequestHelper.post(postSurveyFinalUrl, finalData);
+    } else {
+      return RequestHelper.post(surveyPartialUrl, data);
+    }
 
   }
 

@@ -202,7 +202,8 @@ class DomSurvey{
     } else {
       //start survey
       //check if only one language is configured
-      if(typeof this.ccsdk.surveyData.translated == undefined || this.ccsdk.surveyData.translated.length < 1){
+      console.log(this.ccsdk.surveyData);
+      if(typeof this.ccsdk.surveyData.translated == undefined || Object.keys(this.ccsdk.surveyData.translated).length <= 1){
         this.loadFirstQuestion(); 
       }else{
         this.ccsdk.survey.displayLanguageSelector();
