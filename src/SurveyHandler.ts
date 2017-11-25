@@ -13,42 +13,42 @@ import { Select } from './helpers/dom/Select';
 
 
 class SurveyHandler {
-  surveyToken : string;
-  surveyData : any;
-  questions : any;
-  prefillQuestions : any;
-  questionsToDisplay : any;
-  randomNumber : Number;
-  welcomeQuestion : any;
-  welcomeQuestionButtonText : any;
-  prefillResponses : any;
-  prefillWithTags : any;
-  questionResponses : any;
-  answers : any = {};
-  surveyAnswers : any = {};
-  util : DomUtilities;
-  dom : DomSurvey;
-  displayThankYouCb : any;
-  destroySurveyCb : any;
-  acceptAnswersCb : any;
-  surveyDisplay : DisplayConfig; 
-  currentQuestion : any;
-  conditionalQuestions : any;
-  ccsdk : any;
-  welcomeInterval : any;
-  welcomeQuestionDisplayTime : any;
-  domListeners : any;
-  languageSelect : any;
+  surveyToken: string;
+  surveyData: any;
+  questions: any;
+  prefillQuestions: any;
+  questionsToDisplay: any;
+  randomNumber: Number;
+  welcomeQuestion: any;
+  welcomeQuestionButtonText: any;
+  prefillResponses: any;
+  prefillWithTags: any;
+  questionResponses: any;
+  answers: any = {};
+  surveyAnswers: any = {};
+  util: DomUtilities;
+  dom: DomSurvey;
+  displayThankYouCb: any;
+  destroySurveyCb: any;
+  acceptAnswersCb: any;
+  surveyDisplay: DisplayConfig;
+  currentQuestion: any;
+  conditionalQuestions: any;
+  ccsdk: any;
+  welcomeInterval: any;
+  welcomeQuestionDisplayTime: any;
+  domListeners: any;
+  languageSelect: any;
   // isPartialAvailable : Boolean;
 
   constructor(ccsdk) {
     this.surveyToken = ccsdk.surveyToken;
     this.surveyData = {};
     this.surveyDisplay = {
-      'position' : '',
-      'surveyPosition' : '',
-      'welcomePopupAnimation' : '',
-      'surveyPopupAnimation' : '',
+      'position': '',
+      'surveyPosition': '',
+      'welcomePopupAnimation': '',
+      'surveyPopupAnimation': '',
     };
     this.ccsdk = ccsdk;
     this.domListeners = [];
@@ -61,141 +61,141 @@ class SurveyHandler {
     this.answers = {};
     this.util = new DomUtilities();
     this.dom = ccsdk.dom;
-    this.displayThankYouCb = ( e : any) => {
-      let thankyouHtml : any = templates.thankyou;
+    this.displayThankYouCb = (e: any) => {
+      let thankyouHtml: any = templates.thankyou;
       // thankyouHtml = thankyouHtml.replace("{{question}}", this.surveyData.thankyouText);
       // thankyouHtml = thankyouHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "thankyouText"));
       let thankyouText = this.ccsdk.config.thankyouText ? this.ccsdk.config.thankyouText : (this.surveyData.thankyouText ? this.surveyData.thankyouText : 'Thank You');
       let startText = this.ccsdk.config.startButtonText ? this.ccsdk.config.startButtonText : 'Start';
       thankyouHtml = thankyouHtml.replace("{{question}}", thankyouText);
-      thankyouHtml = thankyouHtml.replace("{{button}}", startText );
+      thankyouHtml = thankyouHtml.replace("{{button}}", startText);
       this.ccsdk.dom.replaceInQuestionsContainer(thankyouHtml);
       //TODO : Fix this Add class not working???
-      let thankyouContainer : any =  this.util.get("#cc-thankyou-container");
-      (window as any).ccsdkDebug?console.log(thankyouContainer):'';
+      let thankyouContainer: any = this.util.get("#cc-thankyou-container");
+      (window as any).ccsdkDebug ? console.log(thankyouContainer) : '';
       this.util.addClass(thankyouContainer[0], 'show-thankyou-slide');
       let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyEndEvent);
-      setTimeout(()=>{
+      setTimeout(() => {
         this.destroy();
-      },2000);
+      }, 2000);
     }
-    this.destroySurveyCb = ( e : any ) => {
-        let self : SurveyHandler = this;
-        //send end survey event.
-        let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
-        document.dispatchEvent(onSurveyEndEvent);
-        self.destroy();
+    this.destroySurveyCb = (e: any) => {
+      let self: SurveyHandler = this;
+      //send end survey event.
+      let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
+      document.dispatchEvent(onSurveyEndEvent);
+      self.destroy();
     }
 
-    this.acceptAnswersCb = ( e : any ) => {
-        let self : SurveyHandler = this;
-        // (window as any).ccsdkDebug?console.log(self):'';
-        // (window as any).ccsdkDebug?console.log('question answered',e:'')
-          let data : any = <any>e.detail;
-          let response : any = {};
-          response.questionId = data.questionId;
-          switch(data.type){
-            case 'scale':
-              response.text = null;
-              response.number = Number(data.data.number);
-              self.postPartialAnswer( data.index, response);
-              self.ccsdk.dom.domSelectElements();
-              // self.ccsdk.dom.nextQuestion();
-            break;
-            case 'nps':
-            response.text = null;
-            response.number = Number(data.data.number);
-            self.postPartialAnswer( data.index, response);
-            self.ccsdk.dom.domSelectElements();
-            // self.ccsdk.dom.nextQuestion();
-            break;
-            case 'radio':
-            response.text = null;
-            response.number = Number(data.data.number);
-            self.postPartialAnswer( data.index, response);
-            self.ccsdk.dom.domSelectElements();
-            // self.ccsdk.dom.nextQuestion();
-            break;
-            case 'radioImage':
-            response.text = data.data.text;
-            response.number = null;
-            self.postPartialAnswer( data.index, response);
-            self.ccsdk.dom.domSelectElements();
-            // self.ccsdk.dom.nextQuestion();
-            break;
-            case 'smile':
-              response.text = null;
-              response.number = Number(data.data.number);
-              self.postPartialAnswer( data.index, response);
-              self.ccsdk.dom.domSelectElements();
-              // self.ccsdk.dom.nextQuestion();
-            break;
-            case 'star':
-              response.text = null;
-              response.number = Number(data.data.number);
-              self.postPartialAnswer( data.index, response);
-              self.ccsdk.dom.domSelectElements();
-              // self.ccsdk.dom.nextQuestion();
-            break;
-            case 'multiline':
-              response.text = data.data.text;
-              response.number = null;
-              // (window as any).ccsdkDebug?console.log(data):'';
-              self.postPartialAnswer( data.index, response);
-              self.ccsdk.dom.domSelectElements();
-              self.ccsdk.dom.setQIndex(data.index);
-              // self.ccsdk.dom.nextQuestion();
-            break;
-            case 'singleline':
-              response.text = data.data.text;
-              response.number = null;
-              // (window as any).ccsdkDebug?console.log(data):'';
-              self.postPartialAnswer( data.index, response);
-              self.ccsdk.dom.domSelectElements();
-              self.ccsdk.dom.setQIndex(data.index);
-              // self.ccsdk.dom.nextQuestion();
-            break;
-            case 'number':
-            response.text = null;
-            response.number = Number(data.data.number);
-            // (window as any).ccsdkDebug?console.log(data):'';
-            self.postPartialAnswer( data.index, response);
-            self.ccsdk.dom.domSelectElements();
-            self.ccsdk.dom.setQIndex(data.index);
-            // self.ccsdk.dom.nextQuestion();
+    this.acceptAnswersCb = (e: any) => {
+      let self: SurveyHandler = this;
+      // (window as any).ccsdkDebug?console.log(self):'';
+      // (window as any).ccsdkDebug?console.log('question answered',e:'')
+      let data: any = <any>e.detail;
+      let response: any = {};
+      response.questionId = data.questionId;
+      switch (data.type) {
+        case 'scale':
+          response.text = null;
+          response.number = Number(data.data.number);
+          self.postPartialAnswer(data.index, response);
+          self.ccsdk.dom.domSelectElements();
+          // self.ccsdk.dom.nextQuestion();
           break;
-            case 'checkbox':
-              response.text = data.data.text;
-              response.number = null;
-              // (window as any).ccsdkDebug?console.log(data):'';
-              self.postPartialAnswer( data.index, response);
-              self.ccsdk.dom.domSelectElements();
-              self.ccsdk.dom.setQIndex(data.index);
-              // self.ccsdk.dom.nextQuestion();
-            break;
-            case 'select':
-              response.text = data.data.text;
-              response.number = null;
-              // (window as any).ccsdkDebug?console.log(data):'';
-              self.postPartialAnswer( data.index, response);
-              self.ccsdk.dom.domSelectElements();
-              self.ccsdk.dom.setQIndex(data.index);
-              // self.ccsdk.dom.nextQuestion();
-            break;
-            case 'slider':
-              response.text = data.data.text;
-              response.number = Number(data.data.number);
-              // (window as any).ccsdkDebug?console.log(data):'';
-              self.postPartialAnswer( data.index, response);
-              self.ccsdk.dom.domSelectElements();
-              self.ccsdk.dom.setQIndex(data.index);
-              // self.ccsdk.dom.nextQuestion();
-            break;
-            default:
-            break;
-          }
+        case 'nps':
+          response.text = null;
+          response.number = Number(data.data.number);
+          self.postPartialAnswer(data.index, response);
+          self.ccsdk.dom.domSelectElements();
+          // self.ccsdk.dom.nextQuestion();
+          break;
+        case 'radio':
+          response.text = null;
+          response.number = Number(data.data.number);
+          self.postPartialAnswer(data.index, response);
+          self.ccsdk.dom.domSelectElements();
+          // self.ccsdk.dom.nextQuestion();
+          break;
+        case 'radioImage':
+          response.text = data.data.text;
+          response.number = null;
+          self.postPartialAnswer(data.index, response);
+          self.ccsdk.dom.domSelectElements();
+          // self.ccsdk.dom.nextQuestion();
+          break;
+        case 'smile':
+          response.text = null;
+          response.number = Number(data.data.number);
+          self.postPartialAnswer(data.index, response);
+          self.ccsdk.dom.domSelectElements();
+          // self.ccsdk.dom.nextQuestion();
+          break;
+        case 'star':
+          response.text = null;
+          response.number = Number(data.data.number);
+          self.postPartialAnswer(data.index, response);
+          self.ccsdk.dom.domSelectElements();
+          // self.ccsdk.dom.nextQuestion();
+          break;
+        case 'multiline':
+          response.text = data.data.text;
+          response.number = null;
+          // (window as any).ccsdkDebug?console.log(data):'';
+          self.postPartialAnswer(data.index, response);
+          self.ccsdk.dom.domSelectElements();
+          self.ccsdk.dom.setQIndex(data.index);
+          // self.ccsdk.dom.nextQuestion();
+          break;
+        case 'singleline':
+          response.text = data.data.text;
+          response.number = null;
+          // (window as any).ccsdkDebug?console.log(data):'';
+          self.postPartialAnswer(data.index, response);
+          self.ccsdk.dom.domSelectElements();
+          self.ccsdk.dom.setQIndex(data.index);
+          // self.ccsdk.dom.nextQuestion();
+          break;
+        case 'number':
+          response.text = null;
+          response.number = Number(data.data.number);
+          // (window as any).ccsdkDebug?console.log(data):'';
+          self.postPartialAnswer(data.index, response);
+          self.ccsdk.dom.domSelectElements();
+          self.ccsdk.dom.setQIndex(data.index);
+          // self.ccsdk.dom.nextQuestion();
+          break;
+        case 'checkbox':
+          response.text = data.data.text;
+          response.number = null;
+          // (window as any).ccsdkDebug?console.log(data):'';
+          self.postPartialAnswer(data.index, response);
+          self.ccsdk.dom.domSelectElements();
+          self.ccsdk.dom.setQIndex(data.index);
+          // self.ccsdk.dom.nextQuestion();
+          break;
+        case 'select':
+          response.text = data.data.text;
+          response.number = null;
+          // (window as any).ccsdkDebug?console.log(data):'';
+          self.postPartialAnswer(data.index, response);
+          self.ccsdk.dom.domSelectElements();
+          self.ccsdk.dom.setQIndex(data.index);
+          // self.ccsdk.dom.nextQuestion();
+          break;
+        case 'slider':
+          response.text = data.data.text;
+          response.number = Number(data.data.number);
+          // (window as any).ccsdkDebug?console.log(data):'';
+          self.postPartialAnswer(data.index, response);
+          self.ccsdk.dom.domSelectElements();
+          self.ccsdk.dom.setQIndex(data.index);
+          // self.ccsdk.dom.nextQuestion();
+          break;
+        default:
+          break;
       }
+    }
   }
 
   fetchQuestions() {
@@ -215,7 +215,7 @@ class SurveyHandler {
     delete this.surveyAnswers[questionId];
   }
 
-  attachSurvey(surveyData : any){
+  attachSurvey(surveyData: any) {
     this.surveyData = surveyData;
     this.setupSurveyContainer();
     //clean survey
@@ -232,8 +232,8 @@ class SurveyHandler {
     this.conditionalQuestions = [];
   }
 
-  setupSurveyContainer(){
-    let surveyHtml : any = templates.question_survey;
+  setupSurveyContainer() {
+    let surveyHtml: any = templates.question_survey;
     surveyHtml = surveyHtml.replace("{{surveyToken}}", this.surveyToken);
     surveyHtml = surveyHtml.replace("{{animation}}", this.surveyDisplay.surveyPopupAnimation);
     surveyHtml = surveyHtml.replace(/{{location}}/g, this.surveyDisplay.surveyPosition);
@@ -248,24 +248,23 @@ class SurveyHandler {
     //call this with true when welcome container is clicked.
     // this.ccsdk.addThrottlingEntries(false);
     let self = this;
-    let welcomeHtml : any = templates.question_start;
+    let welcomeHtml: any = templates.question_start;
     welcomeHtml = welcomeHtml.replace("{{surveyToken}}", this.surveyToken);
     // welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
     let welcomeText = this.ccsdk.config.welcomeText ? this.ccsdk.config.welcomeText : 'Welcome';
     welcomeHtml = welcomeHtml.replace("{{question}}", welcomeText);
     // welcomeHtml = welcomeHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "welcomeText"));
-    let startText = this.ccsdk.config.startButtonText ? this.ccsdk.config.startButtonText : 'Start' ;
+    let startText = this.ccsdk.config.startButtonText ? this.ccsdk.config.startButtonText : 'Start';
     welcomeHtml = welcomeHtml.replace("{{button}}", startText);
-    welcomeHtml = welcomeHtml.replace("{{location}}", this.surveyDisplay.position );
-    welcomeHtml = welcomeHtml.replace("{{animation}}", this.surveyDisplay.welcomePopupAnimation );
+    welcomeHtml = welcomeHtml.replace("{{location}}", this.surveyDisplay.position);
+    welcomeHtml = welcomeHtml.replace("{{animation}}", this.surveyDisplay.welcomePopupAnimation);
     // (window as any).ccsdkDebug?console.log("Appending in body"):'';
     this.ccsdk.dom.appendInBody(welcomeHtml);
     this.ccsdk.dom.showWelcomeContainer();
-    if( (typeof this.ccsdk.config.keepAlive != undefined) && (this.ccsdk.config.keepAlive > 0) ){
+    if ((typeof this.ccsdk.config.keepAlive != undefined) && (this.ccsdk.config.keepAlive > 0)) {
       this.welcomeQuestionDisplayTime = new Date();
-      this.welcomeInterval = setInterval(() =>
-       { self.checkWelcomeQuestionDisplay(self.ccsdk.config.keepAlive)}
-      , 1000);
+      this.welcomeInterval = setInterval(() => { self.checkWelcomeQuestionDisplay(self.ccsdk.config.keepAlive) }
+        , 1000);
     }
 
     this.acceptAnswers();
@@ -274,29 +273,29 @@ class SurveyHandler {
 
   }
 
-  checkWelcomeQuestionDisplay(keepAlive){
+  checkWelcomeQuestionDisplay(keepAlive) {
     let self = this;
     console.log("asd");
     let now = new Date();
-    if(keepAlive){
+    if (keepAlive) {
       console.log((now.getTime() - this.welcomeQuestionDisplayTime.getTime()) / 1000);
-      if(keepAlive <= (now.getTime() - this.welcomeQuestionDisplayTime.getTime())/1000 ){
+      if (keepAlive <= (now.getTime() - this.welcomeQuestionDisplayTime.getTime()) / 1000) {
         self.killWelcomeQuestion();
       }
     }
   }
 
-  killWelcomeQuestion(){
+  killWelcomeQuestion() {
     this.destroy();
     clearInterval(this.welcomeInterval);
   }
-  cancelKillWelcomeQuestion(){
+  cancelKillWelcomeQuestion() {
     clearInterval(this.welcomeInterval);
   }
 
   displayLanguageSelector() {
     let self = this;
-    let options1 : string ;
+    let options1: string;
     let qId = 'languageSelector';
     let cTemplate1 = templates.language_selector;
     options1 = this.util.generateLanguageSelectOptions(["default"].concat(Object.keys(this.surveyData.translated)));
@@ -316,7 +315,7 @@ class SurveyHandler {
     this.languageSelect.init(qId);
     let selectRes = '';
     let ref = this.util.initListener('click', '#' + qId + " .cc-select-options .cc-select-option", function () {
-      self.ccsdk.debug?console.log('languageSelectOption'):'';
+      self.ccsdk.debug ? console.log('languageSelectOption') : '';
       selectRes = document.querySelectorAll('#' + qId + " .cc-select-trigger")[0].innerHTML;
     });
     this.domListeners.push(ref);
@@ -324,29 +323,33 @@ class SurveyHandler {
 
 
     let languageSelect = this.util.initListener("click", ".act-cc-button-lang-next", function () {
-      self.ccsdk.debug?console.log('languageNext'):'';
+      self.ccsdk.debug ? console.log('languageNext') : '';
       self.ccsdk.config.language = "default";
       self.ccsdk.config.language = selectRes; //language selection from menu then show first question
+      //set config rtl or ltr
+      let isRTL = /[\u0600-\u06FF]/.test(selectRes);
+      self.ccsdk.config.textDirection = isRTL?'rtl':'ltr';
+      self.ccsdk.setHtmlTextDirection();
       self.util.removeClassAll(submitBtn, 'act-cc-button-lang-next');
       self.util.addClassAll(submitBtn, 'act-cc-button-next');
       self.ccsdk.dom.loadFirstQuestion();        // this.loadFirstQuestion();
 
     });
     this.domListeners.push(languageSelect);
-    
-    languageSelect.internalHandler = this.util.listener($body, languageSelect.type, languageSelect.id, languageSelect.cb);
-    
 
-    
+    languageSelect.internalHandler = this.util.listener($body, languageSelect.type, languageSelect.id, languageSelect.cb);
+
+
+
     // this.util.addClass(thankyouContainer[0], 'show-thankyou-slide');
-    
+
     // this.ccsdk.dom.appendInBody(cTemplate1);
     // this.ccsdk.dom.showLanguageSelector();
-    (window as any).ccsdkDebug?console.log(cTemplate1):'';
+    (window as any).ccsdkDebug ? console.log(cTemplate1) : '';
   }
 
   displayThankYou() {
-    let self : SurveyHandler = this;
+    let self: SurveyHandler = this;
     document.addEventListener('ccdone', this.displayThankYouCb);
   }
 
@@ -359,21 +362,21 @@ class SurveyHandler {
     this.filterQuestions();
     //sort questions and display them?
     this.questionsToDisplay = this.questionsToDisplay.sort(this.questionCompare);
-    let ccSurvey : any;
+    let ccSurvey: any;
     ccSurvey = document.getElementsByClassName("cc-questions-container");
     // ccSurvey = ccSurvey[0];
     let surveyObject = ccSurvey[0];
     // (window as any).ccsdkDebug?console.log(this.questionsToDisplay):'';
     //chec
     //for now just do 1st question.
-    for(let question of this.questionsToDisplay) {
-      if(this.checkConditionals(question)) {
+    for (let question of this.questionsToDisplay) {
+      if (this.checkConditionals(question)) {
         let compiledTemplate = this.compileTemplate(question);
         question.compiledTemplate = compiledTemplate;
         // surveyObject.innerHTML += compiledTemplate;
         //register handlers for onclick?
       } else {
-        if(this.isPrefillQuestion(question)) {
+        if (this.isPrefillQuestion(question)) {
           this.prefillQuestions.push(question);
         }
       }
@@ -384,56 +387,56 @@ class SurveyHandler {
 
   }
 
-  getSurveyQuestions() : any {
+  getSurveyQuestions(): any {
     return this.questionsToDisplay;
   }
 
-  getAnswerForQuestionId(questionId : string) {
+  getAnswerForQuestionId(questionId: string) {
     return this.surveyAnswers[questionId];
   }
 
-  acceptAnswers(){
-    let self : SurveyHandler = this;
+  acceptAnswers() {
+    let self: SurveyHandler = this;
     // (window as any).ccsdkDebug?console.log('add question answered listener':'')
     document.addEventListener('q-answered', this.acceptAnswersCb);
   }
 
-  fillPrefillQuestionObject(id : any, response : any) {
-    let question : any = this.getQuestionById(id);
+  fillPrefillQuestionObject(id: any, response: any) {
+    let question: any = this.getQuestionById(id);
     let responseStored = this.getPrefillResponseById(id);
-    if(responseStored != null) {
+    if (responseStored != null) {
       this.updatePrefillResponseById(id, response);
     } else {
       this.prefillResponses.push(response)
     }
   }
 
-  fillPrefill(tag : any, value : object) {
+  fillPrefill(tag: any, value: object) {
     this.prefillWithTags[tag.toLowerCase()] = value;
-    (window as any).ccsdkDebug?console.log('fillPrefill',this.prefillWithTags):'';
+    (window as any).ccsdkDebug ? console.log('fillPrefill', this.prefillWithTags) : '';
   }
 
-  fillPrefillQuestion(id : any, value : any, valueType : string) {
-    let question : any = this.getQuestionById(id);
-    let response : any;
+  fillPrefillQuestion(id: any, value: any, valueType: string) {
+    let question: any = this.getQuestionById(id);
+    let response: any;
     let responseStored = this.getPrefillResponseById(id);
-    if(responseStored != null) {
+    if (responseStored != null) {
       response = responseStored;
     } else {
       response = {
-        questionId : question.id,
-        questionText : question.text,
-        textInput : null,
-        numberInput : null
+        questionId: question.id,
+        questionText: question.text,
+        textInput: null,
+        numberInput: null
       };
     }
-    if(valueType.toLowerCase() == "number") {
+    if (valueType.toLowerCase() == "number") {
       response.numberInput = value;
     }
-    if(valueType.toLowerCase() == "text") {
+    if (valueType.toLowerCase() == "text") {
       response.textInput = value;
     }
-    if(responseStored != null) {
+    if (responseStored != null) {
       this.updatePrefillResponseById(id, response);
     } else {
       this.prefillResponses.push(response)
@@ -446,52 +449,52 @@ class SurveyHandler {
     surveyPartialUrl = surveyPartialUrl.replace("{complete}", "false");
     surveyPartialUrl = surveyPartialUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyPartialUrl = Config.API_URL + surveyPartialUrl;
-    (window as any).ccsdkDebug?console.log("Posting Prefill Responses to Server"):'';
-    (window as any).ccsdkDebug?console.log(this.prefillResponses):'';
+    (window as any).ccsdkDebug ? console.log("Posting Prefill Responses to Server") : '';
+    (window as any).ccsdkDebug ? console.log(this.prefillResponses) : '';
     return RequestHelper.post(surveyPartialUrl, this.prefillResponses);
   }
 
-  updatePrefillResponseById(id : any, resp : any) {
-    for(let response of this.prefillResponses) {
-      if(response.questionId == id) {
+  updatePrefillResponseById(id: any, resp: any) {
+    for (let response of this.prefillResponses) {
+      if (response.questionId == id) {
         response = resp;
       }
     }
   }
 
-  getPrefillResponseById(id : any) {
-    for(let response of this.prefillResponses) {
-      if(response.questionId == id) {
+  getPrefillResponseById(id: any) {
+    for (let response of this.prefillResponses) {
+      if (response.questionId == id) {
         return response;
       }
     }
     return null;
   }
 
-  getQuestionById(id : any) {
-    for(let question of this.questions) {
-      if(question.id == id) {
+  getQuestionById(id: any) {
+    for (let question of this.questions) {
+      if (question.id == id) {
         return question;
       }
     }
   }
 
-  postPartialAnswer(index : any, response : any) {
+  postPartialAnswer(index: any, response: any) {
     // let data = new FormData();
     //in case of file.
     // let input = document.querySelector('input[type="file"]') ;
     // data.append('file', input.files[0]);
-    let question : any = this.questionsToDisplay[index];
-    if(typeof question === 'undefined') {
+    let question: any = this.questionsToDisplay[index];
+    if (typeof question === 'undefined') {
       //now?
       // return (window as any).ccsdkDebug?console.log("No Partial Remaining"):'';
     }
-    let data : any = {
-      comparator : 0,
-      questionId : question.id,
-      questionText : question.text,
-      textInput : response.text,
-      numberInput : response.number
+    let data: any = {
+      comparator: 0,
+      questionId: question.id,
+      questionText: question.text,
+      textInput: response.text,
+      numberInput: response.number
     };
     // if(this.isPartialAvailable == false) {
     //   this.answers.push(data);
@@ -500,8 +503,8 @@ class SurveyHandler {
     // (window as any).ccsdkDebug?console.log("Submitting for : " + index):'';
     let surveyPartialUrl = Config.SURVEY_PARTIAL_RESPONSE.replace("{id}", this.surveyData.partialResponseId);
     //if this is the last of displayed question
-    (window as any).ccsdkDebug?console.log("partial response",question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id):'';
-    if(question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id) {
+    (window as any).ccsdkDebug ? console.log("partial response", question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id) : '';
+    if (question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id) {
       surveyPartialUrl = surveyPartialUrl.replace("{complete}", "true");
     } else {
       surveyPartialUrl = surveyPartialUrl.replace("{complete}", "false");
@@ -515,19 +518,23 @@ class SurveyHandler {
     // let result = RequestHelper.post(surveyPartialUrl, "[" + JSON.stringify(data) + "]");
     let onSurveyAnswerEvent = new CustomEvent(Constants.SURVEY_ANSWER_EVENT + "-" + this.surveyToken);
     document.dispatchEvent(onSurveyAnswerEvent);
-    if(question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id) {
+    if (question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id) {
       //last question
       let postSurveyFinalUrl = Config.POST_SURVEY_FINAL.replace("{tokenId}", this.ccsdk.surveyToken);
       postSurveyFinalUrl = Config.API_URL + postSurveyFinalUrl;
       RequestHelper.post(surveyPartialUrl, data);
+      let answersAll = [];
+      for (let answer in this.surveyAnswers) {
+        answersAll.push(this.surveyAnswers[answer]);
+      }
       let finalData = {
-        id : this.ccsdk.surveyToken,
-        user : this.ccsdk.config.username,
-        locationId : null,
-        responses : this.surveyAnswers,
-        nps : 0,
-        surveyClient : "JS-Web",
-        responseDuration : 0
+        id: this.ccsdk.surveyToken,
+        user: this.ccsdk.config.username,
+        locationId: null,
+        responses: answersAll,
+        nps: 0,
+        surveyClient: "JS-Web",
+        responseDuration: 0
       };
       return RequestHelper.post(postSurveyFinalUrl, finalData);
     } else {
@@ -543,82 +550,82 @@ class SurveyHandler {
    * @param {any} question
    * @memberof Survey
    */
-  checkConditionals(question : any) {
+  checkConditionals(question: any) {
     return true;
   }
 
-  compileTemplate(question : any) {
-    let self : SurveyHandler = this;
+  compileTemplate(question: any) {
+    let self: SurveyHandler = this;
     //get question type
     let questionTemplate;
     // (window as any).ccsdkDebug?console.log(question):'';
 
-    switch(question.displayType) {
+    switch (question.displayType) {
       case "Slider":
-        let opt : any = question.multiSelect[0].split("-");
-        let optMin : any = opt[0].split(";");
-        let optMax : any = opt[1].split(";");
+        let opt: any = question.multiSelect[0].split("-");
+        let optMin: any = opt[0].split(";");
+        let optMax: any = opt[1].split(";");
         //get text question template and compile it.
         questionTemplate = templates.question_slider;
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
         questionTemplate = questionTemplate.replace(/{{min}}/g, optMin[0]);
-        if(optMin[1]){
-          questionTemplate = questionTemplate.replace(/{{minLabel}}/g, optMin[1]+"-");
-        }else{
+        if (optMin[1]) {
+          questionTemplate = questionTemplate.replace(/{{minLabel}}/g, optMin[1] + "-");
+        } else {
           questionTemplate = questionTemplate.replace(/{{minLabel}}/g, "");
         }
         questionTemplate = questionTemplate.replace(/{{max}}/g, optMax[0]);
-        if(optMax[1]){
-          questionTemplate = questionTemplate.replace(/{{maxLabel}}/g, optMax[1]+"-");
-        }else{
+        if (optMax[1]) {
+          questionTemplate = questionTemplate.replace(/{{maxLabel}}/g, optMax[1] + "-");
+        } else {
           questionTemplate = questionTemplate.replace(/{{maxLabel}}/g, "");
         }
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-      break;
+        break;
       case "Scale":
         //get text question template and compile it.
-        (window as any).ccsdkDebug?console.log(question.questionTags):'';
-        if(question.questionTags.includes("NPS")) {
+        (window as any).ccsdkDebug ? console.log(question.questionTags) : '';
+        if (question.questionTags.includes("NPS")) {
           questionTemplate = templates.question_nps;
           questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
           questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
           questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
         } else if (question.questionTags.includes("CSAT")) {
-            if(question.questionTags.includes("csat_satisfaction_5")) {
-              questionTemplate = templates.question_csat_satisfaction_5;
-            } else if(question.questionTags.includes("csat_agreement_5")) {
-              questionTemplate = templates.question_csat_agreement_5;
-            }
-            questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-            questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
-            questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-            questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+          if (question.questionTags.includes("csat_satisfaction_5")) {
+            questionTemplate = templates.question_csat_satisfaction_5;
+          } else if (question.questionTags.includes("csat_agreement_5")) {
+            questionTemplate = templates.question_csat_agreement_5;
+          }
+          questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
         } else {
           let tileColor = '';
-          let style= '';
+          let style = '';
           if (question.presentationMode.includes("Color")) {
             tileColor = question.presentationMode.split(':')[1];
             let tileColorDark = this.util.shadeBlendConvert(-0.3, tileColor, undefined);
             style = '\
               <style>\
               #id'+ question.id + ' .option-number-item.option-scale{\
-                background-color : '+ tileColor +';\
+                background-color : '+ tileColor + ';\
               }\
               #id'+ question.id + ' .option-number-item.option-scale:hover,\
               #id'+ question.id + ' .option-number-item.option-scale.selected{\
-                background-color : '+ tileColorDark +';\
+                background-color : '+ tileColorDark + ';\
               }\
               </style>\
             ';
           }
-          
+
           questionTemplate = templates.question_scale;
-          questionTemplate = questionTemplate.replace(/{{style}}/g,style);
+          questionTemplate = questionTemplate.replace(/{{style}}/g, style);
           questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
           questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
           questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
           //construct NPS scale here....
@@ -627,15 +634,15 @@ class SurveyHandler {
           let options = "";
           let startRangeLabel = "Very unlikely";
           let endRangeLabel = "Very likely";
-          if(question.displayLegend){
-            if (question.displayLegend.length > 0){
-              startRangeLabel = question.displayLegend[0] ? question.displayLegend[0]:null;
+          if (question.displayLegend) {
+            if (question.displayLegend.length > 0) {
+              startRangeLabel = question.displayLegend[0] ? question.displayLegend[0] : null;
               endRangeLabel = question.displayLegend[1] ? question.displayLegend[1] : null;
             }
           }
-          if(question.multiSelect.length > 0) {
+          if (question.multiSelect.length > 0) {
             startRange = parseFloat(question.multiSelect[0].split("-")[0]);
-            if(startRangeLabel==null){
+            if (startRangeLabel == null) {
               startRangeLabel = question.multiSelect[0].split("-")[0].split(";")[1];
             }
             endRange = parseFloat(question.multiSelect[0].split("-")[1]);
@@ -645,50 +652,52 @@ class SurveyHandler {
           }
           startRangeLabel = startRangeLabel == null ? "Very unlikely" : startRangeLabel;
           endRangeLabel = endRangeLabel == null ? "Very likely" : endRangeLabel;
-          let divider : any = 1;            
-          if(endRange < 11){
-          }else{
+          let divider: any = 1;
+          if (endRange < 11) {
+          } else {
             divider = (endRange - startRange) / 10.0;
           }
           let initial = 0.0;
-          for(let initial = startRange ; initial <= endRange ; initial += divider) {
-            options += '<span data-rating="'+ initial + '" class="option-number-item option-scale">' + initial + '</span>';
+          for (let initial = startRange; initial <= endRange; initial += divider) {
+            options += '<span data-rating="' + initial + '" class="option-number-item option-scale">' + initial + '</span>';
           }
           questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
           questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel);
           questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel);
         }
 
-      break;
+        break;
       case "Text":
         //get text question template and compile it.
         questionTemplate = templates.question_text;
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+        questionTemplate = questionTemplate.replace("{{validationHint}}", question.validationHint ? question.validationHint : "");
 
-      break;
+        break;
       case "Number":
-      //get text question template and compile it.
-      questionTemplate = templates.question_number;
-      questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-      questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
-      questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-      questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+        //get text question template and compile it.
+        questionTemplate = templates.question_number;
+        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+        questionTemplate = questionTemplate.replace("{{validationHint}}", question.validationHint ? question.validationHint : "");
 
-    break;
+        break;
       case "MultilineText":
         //get text question template and compile it.
         questionTemplate = templates.question_multi_line_text;
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
 
-      break;
+        break;
       case "MultiSelect":
-        let acTemplate : string ;
+        let acTemplate: string;
         let multiSelect1;
         //get text question template and compile it.
         multiSelect1 = Array.prototype.slice.call(question.multiSelect);
@@ -699,33 +708,33 @@ class SurveyHandler {
           console.log('selection api option', question.multiSelect);
         }
         //get text question template and compile it.
-        if (((question.displayStyle == 'radiobutton/checkbox') || (question.displayStyle == 'icon')) && (question.multiSelect.length < 7)){
+        if (((question.displayStyle == 'radiobutton/checkbox') || (question.displayStyle == 'icon')) && (question.multiSelect.length < 7)) {
           // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
           let checkOptionContainsImage: boolean = self.util.checkOptionContainsImage(multiSelect1);
           // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
           if (checkOptionContainsImage) {
             // (window as any).ccsdkDebug?console.log('select type 2'):'';
-            acTemplate= templates.question_checkbox;
+            acTemplate = templates.question_checkbox;
             let options2 = self.util.generateCheckboxImageOptions(multiSelect1, question.id);
             // (window as any).ccsdkDebug?console.log(options2):'';
             questionTemplate = acTemplate;
             questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
             acTemplate = questionTemplate;
           } else {
-            let options3 : string = self.util.generateCheckboxOptions(multiSelect1, question.id);
+            let options3: string = self.util.generateCheckboxOptions(multiSelect1, question.id);
             // (window as any).ccsdkDebug?console.log(options2):'';
             acTemplate = templates.question_checkbox;
             questionTemplate = acTemplate.replace(/{{options}}/g, options3);
             acTemplate = questionTemplate;
           }
-        }else{
+        } else {
           // (window as any).ccsdkDebug?console.log('select type 3'):'';
           acTemplate = templates.question_multi_select;
-          
+
           // acTemplate = templates.question_select;
           let options3 = self.util.generateSelectOptions(multiSelect1);
-          if(self.ccsdk.config.language !== 'default') {
-            if(typeof question.translated[self.ccsdk.config.language] !== 'undefined'
+          if (self.ccsdk.config.language !== 'default') {
+            if (typeof question.translated[self.ccsdk.config.language] !== 'undefined'
               && question.translated[self.ccsdk.config.language].multiSelect !== 'undefined'
               && question.translated[self.ccsdk.config.language].multiSelect.length > 0
             ) {
@@ -737,33 +746,33 @@ class SurveyHandler {
             }
           }
           // questionTemplate = acTemplate;
-          self.ccsdk.debug?console.log(options3):'';
+          self.ccsdk.debug ? console.log(options3) : '';
           questionTemplate = acTemplate.replace(/{{options}}/g, options3);
           acTemplate = questionTemplate;
-          
+
         }
         questionTemplate = acTemplate;
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
 
-      break;
+        break;
       case "Select":
-        let acTemplate1 : string ;
-        let acTemplate2 : string ;
-        let options1 : string ;
-        let options2 : string ;
+        let acTemplate1: string;
+        let acTemplate2: string;
+        let options1: string;
+        let options2: string;
         let multiSelect;
         //get text question template and compile it.
         multiSelect = Array.prototype.slice.call(question.multiSelect);
-        if (question.presentationMode == 'Invert'){
+        if (question.presentationMode == 'Invert') {
           console.log('selection option before reverse', multiSelect);
           multiSelect.reverse();
           console.log('selection option after reverse', multiSelect);
-          console.log('selection api option',question.multiSelect);
+          console.log('selection api option', question.multiSelect);
         }
-        if((question.displayStyle == 'radiobutton/checkbox') && (multiSelect.length < 7)){
+        if ((question.displayStyle == 'radiobutton/checkbox') && (multiSelect.length < 7)) {
           // if(question.displayStyle == 'radiobutton/checkbox'){
           // (window as any).ccsdkDebug?console.log('select type 1'):'';
           // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
@@ -778,53 +787,53 @@ class SurveyHandler {
             // (window as any).ccsdkDebug?console.log(options2):'';
             questionTemplate = acTemplate2;
             questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
-          }else{
+          } else {
             acTemplate1 = templates.question_radio;
             questionTemplate = acTemplate1;
             options1 = self.util.generateRadioOptions(multiSelect, question.id);
-            questionTemplate = questionTemplate.replace("{{options}}", options1);   
+            questionTemplate = questionTemplate.replace("{{options}}", options1);
           }
-        } else if ((question.displayStyle == 'icon') && (multiSelect.length < 7)){
+        } else if ((question.displayStyle == 'icon') && (multiSelect.length < 7)) {
           acTemplate1 = templates.question_radio;
           questionTemplate = acTemplate1;
           options1 = self.util.generateRadioOptions(multiSelect, question.id);
           questionTemplate = questionTemplate.replace("{{options}}", options1);
-          
-        }else{
-          
-            // (window as any).ccsdkDebug?console.log('select type 3'):'';
-            acTemplate1 = templates.question_select;
-            options1 = self.util.generateSelectOptions(multiSelect);            
-            if(self.ccsdk.config.language !== 'default') {
-              if(typeof question.translated[self.ccsdk.config.language] !== 'undefined'
-                && question.translated[self.ccsdk.config.language].multiSelect !== 'undefined'
-                && question.translated[self.ccsdk.config.language].multiSelect.length > 0
-              ) {
-                multiSelect = Array.prototype.slice.call(question.translated[self.ccsdk.config.language].multiSelect);
-                if (question.presentationMode == 'Invert') {
-                  multiSelect.reverse();
-                }
-                options1 = self.util.generateSelectOptions(multiSelect);
+
+        } else {
+
+          // (window as any).ccsdkDebug?console.log('select type 3'):'';
+          acTemplate1 = templates.question_select;
+          options1 = self.util.generateSelectOptions(multiSelect);
+          if (self.ccsdk.config.language !== 'default') {
+            if (typeof question.translated[self.ccsdk.config.language] !== 'undefined'
+              && question.translated[self.ccsdk.config.language].multiSelect !== 'undefined'
+              && question.translated[self.ccsdk.config.language].multiSelect.length > 0
+            ) {
+              multiSelect = Array.prototype.slice.call(question.translated[self.ccsdk.config.language].multiSelect);
+              if (question.presentationMode == 'Invert') {
+                multiSelect.reverse();
               }
+              options1 = self.util.generateSelectOptions(multiSelect);
             }
-            questionTemplate = acTemplate1;
-            questionTemplate = questionTemplate.replace("{{options}}", options1);
-        
+          }
+          questionTemplate = acTemplate1;
+          questionTemplate = questionTemplate.replace("{{options}}", options1);
+
 
         }
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
         // (window as any).ccsdkDebug?console.log(questionTemplate):'';
 
-      break;
+        break;
       case "Smile-5":
         //get text question template and compile it.
-        if (question.presentationMode == "Invert"){
+        if (question.presentationMode == "Invert") {
           questionTemplate = templates.question_smile_5_inverted;
 
-        }else{
+        } else {
 
           questionTemplate = templates.question_smile_5;
         }
@@ -839,12 +848,12 @@ class SurveyHandler {
         startRangeLabel = startRangeLabel == null ? "Very unlikely" : startRangeLabel;
         endRangeLabel = endRangeLabel == null ? "Very likely" : endRangeLabel;
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
         questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel);
         questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel);
-      break;
+        break;
       case "Star-5":
         //get text question template and compile it.
         let startRangeLabel1 = "Very unlikely";
@@ -859,17 +868,17 @@ class SurveyHandler {
         endRangeLabel1 = endRangeLabel1 == null ? "Very likely" : endRangeLabel1;
         questionTemplate = templates.question_star_5;
         questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id"+question.id);
+        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
         questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
         questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
         questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel1);
         questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel1);
-      break;
+        break;
     }
     return questionTemplate;
   }
 
-  questionCompare(a : any, b : any) {
+  questionCompare(a: any, b: any) {
     return a.sequence - b.sequence;
   }
 
@@ -887,91 +896,91 @@ class SurveyHandler {
    */
   filterQuestions() {
     let self = this;
-    for(let question of this.questions) {
-      if(!question.isRetired) {
+    for (let question of this.questions) {
+      if (!question.isRetired) {
         //filter out prefill question only if it is filled?.
         // if(!this.isQuestionFilled(question)){
-          if( !(this.isPrefillQuestion(question))) {
-            if(this.isPrefillTags(question)) {
-              self.ccsdk.debug?console.log(this.prefillResponses):'';
-              continue;
-            }
-            if(
-              question.conditionalFilter != null && 
-              ( question.conditionalFilter.filterquestions == null
-              || question.conditionalFilter.filterquestions.length == 0)
-            ) {
-              this.questionsToDisplay.push(question);
-            } else {
-              this.conditionalQuestions.push(question);
-            }
-          } else {
-            this.fillPrefillWithTags(question);
+        if (!(this.isPrefillQuestion(question))) {
+          if (this.isPrefillTags(question)) {
+            self.ccsdk.debug ? console.log(this.prefillResponses) : '';
+            continue;
           }
+          if (
+            question.conditionalFilter != null &&
+            (question.conditionalFilter.filterquestions == null
+              || question.conditionalFilter.filterquestions.length == 0)
+          ) {
+            this.questionsToDisplay.push(question);
+          } else {
+            this.conditionalQuestions.push(question);
+          }
+        } else {
+          this.fillPrefillWithTags(question);
+        }
         // }
       }
     }
   }
 
-  isPrefillTags(question : any) {
-    if(typeof question.questionTags !== 'undefined' && question.questionTags.length > 0) {
-      for(let tag of question.questionTags) {
-        switch(tag.toLowerCase()) {
+  isPrefillTags(question: any) {
+    if (typeof question.questionTags !== 'undefined' && question.questionTags.length > 0) {
+      for (let tag of question.questionTags) {
+        switch (tag.toLowerCase()) {
           case "screensize":
-          //add size to prefill array
-          this.fillPrefillQuestion(question.id, "Width:" + window.innerWidth + "px / Height:" + window.innerHeight + "px" , "text");
-          return true;
+            //add size to prefill array
+            this.fillPrefillQuestion(question.id, "Width:" + window.innerWidth + "px / Height:" + window.innerHeight + "px", "text");
+            return true;
         }
       }
     }
     return false;
   }
 
-  fillPrefillWithTags(question : any) {
-    if(typeof question.questionTags !== 'undefined' && question.questionTags.length > 0) {
-      for(let tag of question.questionTags) {
-        if( typeof this.prefillWithTags[tag.toLowerCase()] !== 'undefined') {
+  fillPrefillWithTags(question: any) {
+    if (typeof question.questionTags !== 'undefined' && question.questionTags.length > 0) {
+      for (let tag of question.questionTags) {
+        if (typeof this.prefillWithTags[tag.toLowerCase()] !== 'undefined') {
           this.fillPrefillQuestion(question.id, this.prefillWithTags[tag.toLowerCase()], "text");
         }
       }
     }
   }
 
-  getConditionalSurveyQuestions() : any {
+  getConditionalSurveyQuestions(): any {
     return this.conditionalQuestions;
   }
 
-  isPrefillQuestion(question : any) {
-    if(question.apiFill == true) {
+  isPrefillQuestion(question: any) {
+    if (question.apiFill == true) {
       return true;
     }
-    if(question.staffFill == true) {
+    if (question.staffFill == true) {
       return true;
     }
     return false;
   }
 
-  isQuestionFilled(question : any) {
-    for(let response of this.prefillResponses) {
-      if(response.questionId == question.questionId) {
+  isQuestionFilled(question: any) {
+    for (let response of this.prefillResponses) {
+      if (response.questionId == question.questionId) {
         return true;
       }
     }
     return false;
   }
 
-  destroySurvey(){
-    let self : SurveyHandler = this;
+  destroySurvey() {
+    let self: SurveyHandler = this;
     document.addEventListener('ccclose', this.destroySurveyCb);
   }
 
-  destroy(){
+  destroy() {
     let surveyContainer = this.ccsdk.dom.getSurveyContainer(this.surveyToken);
     let welcomeContainer = this.ccsdk.dom.getWelcomeContainer(this.surveyToken);
-    if(typeof surveyContainer != 'undefined'){
+    if (typeof surveyContainer != 'undefined') {
       this.util.remove(surveyContainer);
     }
-    if (typeof welcomeContainer != 'undefined') {    
+    if (typeof welcomeContainer != 'undefined') {
       this.util.remove(welcomeContainer);
     }
     document.removeEventListener('ccclose', this.destroySurveyCb);

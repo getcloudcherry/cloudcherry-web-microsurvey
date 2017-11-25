@@ -89,6 +89,7 @@ class DomSurvey{
         let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
         document.dispatchEvent(onSurveyClickEvent);
         self.util.addClass(self.$startBtn, 'disabled');
+        self.showLoader();
         self.startSurvey();
       }else{
         self.initSurveyDom();
@@ -203,7 +204,7 @@ class DomSurvey{
       //start survey
       //check if only one language is configured
       console.log(this.ccsdk.surveyData);
-      if(typeof this.ccsdk.surveyData.translated == undefined || Object.keys(this.ccsdk.surveyData.translated).length <= 1){
+      if(typeof this.ccsdk.surveyData.translated == undefined || Object.keys(this.ccsdk.surveyData.translated).length < 1){
         this.loadFirstQuestion(); 
       }else{
         this.ccsdk.survey.displayLanguageSelector();
@@ -241,6 +242,44 @@ class DomSurvey{
     let isRequired : boolean = false;
     let q : HTMLElement = this.$questionContainer[0].firstChild;
     // (window as any).ccsdkDebug?console.log(this.$questionContainer):'';
+    //check if validationRegex is set and is fulfilled
+    let validationRegex = this.ccsdk.survey.questionsToDisplay[this.qIndex].validationRegex
+    if(validationRegex){
+      console.log('validationRegex', validationRegex);
+      console.log('response', this.qResponse);
+      let pattern = validationRegex.match(new RegExp('^/(.*?)/([gimy]*)$'));
+      let regex = new RegExp(validationRegex);
+      let validationSpan: Element = this.$questionContainer[0].firstChild.querySelectorAll(".cc-question-container__validation")[0]
+        if (this.qResponse.text){
+          console.log('test regex text', regex.test(this.qResponse.text));
+          if (regex.test(this.qResponse.text)){
+            this.util.removeClass(validationSpan, "show");
+            this.util.addClass(validationSpan, "hide");
+          }else{
+            if (validationSpan) {
+              this.util.addClass(validationSpan, "show");
+              this.util.removeClass(validationSpan, "hide");
+            }
+            return;
+          }
+        }
+      else if (this.qResponse.number) {
+          console.log('test regex text', regex.test(this.qResponse.number));
+        
+          if (regex.test(this.qResponse.number)) {
+            this.util.removeClass(validationSpan, "show");
+            this.util.addClass(validationSpan, "hide");
+          } else {
+            if (validationSpan) {
+              this.util.addClass(validationSpan, "show");
+              this.util.removeClass(validationSpan, "hide");
+            }
+            return;
+          }
+      }
+      
+    }
+
     isRequired = q.getAttribute('data-required').toLowerCase() == 'true' ? true : false;
     let span : Element = this.$questionContainer[0].firstChild.querySelectorAll(".cc-question-container__required")[0]
     if(isRequired && Object.keys(this.qResponse).length === 0) {
@@ -341,7 +380,18 @@ class DomSurvey{
       this.util.addClassAll(leftIcon , 'hide-slide');
       this.util.removeClassAll(leftIcon , 'show-slide');
     }
-	}
+  }
+  
+  showLoader(){
+    let $loader = document.querySelectorAll(".cc-loaderimg")[0];
+    this.util.addClass($loader, 'show');
+    this.util.removeClass($loader, 'hide');
+  }
+  hideLoader(){
+    let $loader = document.querySelectorAll(".cc-loaderimg")[0];
+    this.util.removeClass($loader, 'show');
+    this.util.addClass($loader, 'hide');
+  }
 
   appendInBody(html){
     document.querySelectorAll("body")[0].insertAdjacentHTML(
@@ -459,6 +509,9 @@ class DomSurvey{
           break;
         case 'singleline':
           this.setupListenersQuestionSingleline(index, qId);
+          break;
+        case 'number':
+        this.setupListenersQuestionNumber(index, qId);  
         default:
         break;
     }
@@ -940,6 +993,43 @@ class DomSurvey{
     });
     this.domListeners.push(ref);    
     
+    ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
+  }
+
+  setupListenersQuestionNumber(index: number, qId: string) {
+    let self: DomSurvey = this;
+    let numberRes: string = '';
+    if (this.util.checkIfListenerExists('#' + qId, this.domListeners)) {
+      //remove listeners
+      (window as any).ccsdkDebug ? console.log("number question - previous listeners exists") : '';
+      this.removePrevListener('#' + qId);
+
+    }
+    //set previous value
+    let questionId: any;
+    questionId = qId.substring(2, qId.length);
+    (window as any).ccsdkDebug ? console.log('number question', this.ccsdk.survey.answers[questionId]) : '';
+    if (typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== '') {
+      let previousValue = this.ccsdk.survey.answers[questionId].number;
+      (window as any).ccsdkDebug ? console.log('number input box', document.querySelectorAll('#' + qId)[0]) : '';
+      let previousSelection = <HTMLInputElement>document.querySelectorAll('#' + qId)[0];
+      (window as any).ccsdkDebug ? console.log('number previous selection', previousSelection) : '';
+      (window as any).ccsdkDebug ? console.log('number previous value', previousValue) : '';
+      if (typeof previousSelection !== 'undefined' &&
+        previousSelection != null &&
+        typeof previousValue !== 'undefined') {
+        previousSelection.value = previousValue;
+      }
+    }
+    let ref = this.util.initListener('change', '#' + qId, function () {
+      numberRes = this.value;
+      self.qResponse.type = 'number';
+      self.qResponse.text = null ;
+      self.qResponse.number = numberRes;
+      self.qResponse.questionId = qId;
+    });
+    this.domListeners.push(ref);
+
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
   }
 

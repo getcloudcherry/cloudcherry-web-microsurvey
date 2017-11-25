@@ -75,14 +75,17 @@
     // height: 150px;
     height: auto;
     max-height: 150px;
-    overflow: scroll;
+    overflow: hidden;
 }
 
 .cc-select-options{
     /*  max-height: 150px;
     overflow-y: scroll; */
-    overflow: scroll;
+    // overflow: scroll;
+    // height: 100%;
+    overflow-y: scroll;
     height: 100%;
+    width: 110%;
 }
 .cc-select.opened .cc-select-options-container {
     opacity: 1;
