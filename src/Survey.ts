@@ -181,6 +181,7 @@ class Survey {
         //copy data.
         let event = new CustomEvent(Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken , { detail : JSON.parse(JSON.stringify(surveyData)) });
         document.dispatchEvent(event);
+        self.dom.hideLoader();
         self.initSurveyQuestions();
     });
   }

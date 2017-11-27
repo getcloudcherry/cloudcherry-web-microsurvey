@@ -30,7 +30,8 @@ html[dir="rtl"] .cc-question-container{
     left:initial;
 }
 
-html[dir="rtl"] .cc-question-container__required{
+html[dir="rtl"] .cc-question-container__required,
+html[dir="rtl"] .cc-question-container__validation{
     right: 0%;
     left:initial;
 }
@@ -42,7 +43,7 @@ html[dir="rtl"] .cc-question-container__required-label {
 html[dir="rtl"] .cc-question-container__list li{
 	display: inline-block;
     // padding-right: 29px;
-    padding-right: 25px!important;
+    padding-right: 15px!important;
     // padding-left: 0;
         padding-left: 15px!important;
 	vertical-align: middle;
@@ -88,7 +89,11 @@ html[dir="rtl"] .cc-question-container__content{
     html[dir="rtl"] .cc-big-list-container .cc-question-container__list,
     html[dir="rtl"] .cc-question-container__list{
 		text-align: right;
-	}
+    }
+    
+    html[dir="rtl"] .multiline-box{
+	    margin: 0 0px 0 0px;   
+    }
 }
 
 @media (min-width: 767px) and (max-width: 992px){

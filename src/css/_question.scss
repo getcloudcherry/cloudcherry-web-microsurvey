@@ -127,7 +127,7 @@
 	width: 20%;
 	position: relative;
 }
-.cc-question-container__required{
+.cc-question-container__required, .cc-question-container__validation{
 		position: absolute;
 	// top: 0;
 	top: -14px;
@@ -299,7 +299,7 @@ p.cc-thankyou-powered{
 
 @media (min-width: 767px) and (max-width: 1024px){
 	.cc-popup-container-2 {
-		height: 300px;
+		height: 200px;
 	}
 	.cc-big-list-container .cc-question-container__list,.cc-question-container__list{
 		text-align: left;
