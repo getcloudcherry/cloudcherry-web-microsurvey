@@ -57,9 +57,9 @@ class TriggerManager {
   static addSurvey(surveyId : any, trigger : Triggers) {
     TriggerManager.triggerInstances[surveyId] = trigger;
     if(Object.keys(TriggerManager.triggerInstances).length >= 1) {
-      console.log(TriggerManager.triggerInterval);
+      (window as any).ccsdkDebug ?console.log(TriggerManager.triggerInterval):'';
       if(TriggerManager.triggerInterval == null) {
-        console.log("TriggerHandler : Setting up Interval Trigger Handlers.");
+        (window as any).ccsdkDebug ?console.log("TriggerHandler : Setting up Interval Trigger Handlers."):'';
         TriggerManager.triggerInterval = setInterval(TriggerManager.processIntervalTriggers, 1000);
       }
       //processing sequential triggers if any.

@@ -96,6 +96,7 @@ input[type=range]::-moz-range-thumb:active {
     width: 100px;
     display: inline-block;
     text-align: center;
+    font-weight: bold;
 }
 .slider-tip:after{
     border-width: 5px 5px 0;

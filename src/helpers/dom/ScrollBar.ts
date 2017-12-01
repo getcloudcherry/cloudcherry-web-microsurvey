@@ -102,7 +102,7 @@ class Scrollbar {
   }
 
   static initAll() {
-    console.log("init scrollbar called");
+    (window as any).ccsdkDebug ?console.log("init scrollbar called"):'';
     var nodes = d.querySelectorAll('*[cc-scrollbar-container]');
 
     for (var i = 0; i < nodes.length; i++) {

@@ -74,11 +74,15 @@
         var ins = window.CCSDK("init", token ,{
           // themeColor : "rgb(235, 28, 35)",
           // themeColor : color,
-          textDirection : 'rtl',
+          textDirection : 'ltr',
           isActive: false, //boolean,    // Whether a microsurvey is enabled or disabled, true for enabled
           welcomeText: 'Hey There! Help us improve :)', // Welcome message
           thankyouText: 'Thank you for taking the survey', // Thank you message
           brandColor: color, // Theme color
+          // top right or right top
+          // left top or top left 
+          // bottom right or right bottom
+          // bottom left or left bottom
           position: 'bottom right', // Position of the microsurvey, Top Left, Top Right, Bottom Left, Bottom Right
           // keepAlive: 5, //number, // Hide the microsurvey after the specified seconds, 0 for no timer
           cssSelector: "#anywhere", // Show the microsurvey when the user click's on the specified HTML element(s)
@@ -89,22 +93,7 @@
           // grepInvertURL: string, // Show the microsurvey if the URL doesn't match the given regular expression
           onExitDetect: true, // Show the microsurvey when the user tries to leave the page or close the tab
           // startButtonText: 'Start Survey', // Use this text in the start button
-          resumeButtonText: 'Resume Survey', // Use this text in the resume button
-          display : {
-            //write it accordring to screen corners
-            // top right or right top
-            // left top or top left 
-            // bottom right or right bottom
-            // bottom left or left bottom
-            'position' : 'bottom right',
-            // write it in fashion of from-to
-            // right-left
-            // left-right
-            // top-bottom
-            // bottom-top
-            'welcomePopupAnimation' : 'right-left',
-            'surveyPopupAnimation' : 'right-left'
-          }
+          resumeButtonText: 'Resume', // Use this text in the resume button
         });
 
         // var ins = window.CCSDK("init", "WW-35080" ,{

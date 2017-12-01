@@ -146,7 +146,7 @@ class Triggers {
     let self = this;
     let isEnabled = true;
     if( this.ccsdk.surveyRunning || this.ccsdk.surveyDone ) {
-      console.log('returning');
+      (window as any).ccsdkDebug?console.log('returning'):'';
       return;
     }
     if(typeof this.conditionalTriggers !== 'undefined') {
@@ -155,7 +155,7 @@ class Triggers {
           switch(conditionalTrigger) {
             case "onExitDetect":
               let onExitDetect = self.ccsdk.util.initListener("mouseout", document, function () {
-                console.log("Mouse out");
+                (window as any).ccsdkDebug?console.log("Mouse out"):'';
 
               });
 
@@ -173,21 +173,21 @@ class Triggers {
               let pageStartTime = new Date(Cookie.get(Constants.CCTriggerPageStartTime)).getTime();
               let pageTime = new Date(Cookie.get(Constants.CCTriggerPageElapsedTime)).getTime();
               isEnabled = TriggerUtils.checkTimeCondition(pageTime, pageStartTime, this.conditionalTriggers[conditionalTrigger]);
-              console.log('waitSeconds enabled', isEnabled);
+              (window as any).ccsdkDebug?console.log('waitSeconds enabled', isEnabled):'';
             break;
             case "scrollPercent":
               //fill it with current scroll position
               isEnabled = isEnabled && TriggerUtils.checkScroll( (window as any).ccsdkTopOffset, this.conditionalTriggers[conditionalTrigger]);
-              console.log('scrollPercent enabled', isEnabled);
+              (window as any).ccsdkDebug?console.log('scrollPercent enabled', isEnabled):'';
               
             break;
             case "grepURL":
               isEnabled = isEnabled && TriggerUtils.checkInUrl(this.conditionalTriggers[conditionalTrigger]);
-              console.log('grepURL enabled', isEnabled);
+              (window as any).ccsdkDebug?console.log('grepURL enabled', isEnabled):'';
             break;
             case "grepInvertURL":
                 isEnabled = isEnabled && !TriggerUtils.checkInUrl(this.conditionalTriggers[conditionalTrigger]);
-                console.log('grepInvertURL enabled', isEnabled);
+                (window as any).ccsdkDebug?console.log('grepInvertURL enabled', isEnabled):'';
             break;
           }
         }
