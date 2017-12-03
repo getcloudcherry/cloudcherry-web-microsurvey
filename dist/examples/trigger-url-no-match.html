@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700" rel="stylesheet">
 <meta name="viewport" charset="utf-8" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
 	<title>Survey</title>
 	<style type="text/css">
@@ -50,13 +50,15 @@
     <div id="brand">CloudCherry</div>
     <div class="button">
       <button type="button" id="anywhere">Launch Demo Survey</button>
+      <br>
+      <small>Survey will not automatically launch when url contains google</small>
     </div>
   </div>
 	<script>
-        var token = getQueryString("t");
-        var color = decodeURIComponent(getQueryString("c"));
-        document.getElementsByTagName('button')[0].style.background = color;;
-
+    var token = getQueryString("t");
+    var color = decodeURIComponent(getQueryString("c"));
+    console.log(token, color);
+    document.getElementsByTagName('button')[0].style.background = color;;
 			(function () {
           // add a queue event here
           window.CCSDK = window.CCSDK || function () {
@@ -83,15 +85,15 @@
             // left top or top left 
             // bottom right or right bottom
             // bottom left or left bottom
-            position: 'bottom left', // Position of the microsurvey, Top Left, Top Right, Bottom Left, Bottom Right
+            position: 'bottom right', // Position of the microsurvey, Top Left, Top Right, Bottom Left, Bottom Right
             // keepAlive: 5, //number, // Hide the microsurvey after the specified seconds, 0 for no timer
             cssSelector: "#anywhere", // Show the microsurvey when the user click's on the specified HTML element(s)
             // scrollPercent: 0, // number, // Show the microsurvey when the user scrolls the page more than the specified percentage
             // click: 0,  //number, // Show the microsurvey when the user clicks the specified number of times in the page
             // waitSeconds: 0, //number, // Show the microsurvey when the user spends the specified number of seconds in the page
-            // grepURL: 'hello', // Show the microsurvey if the URL matches the given regular expression
-            // grepInvertURL: string, // Show the microsurvey if the URL doesn't match the given regular expression
-            onExitDetect: true, // Show the microsurvey when the user tries to leave the page or close the tab
+            // grepURL: /hello/, // Show the microsurvey if the URL matches the given regular expression
+            grepInvertURL: /google/, // Show the microsurvey if the URL doesn't match the given regular expression
+            onExitDetect: false, // Show the microsurvey when the user tries to leave the page or close the tab
             // startButtonText: 'Start Survey', // Use this text in the start button
             resumeButtonText: 'Resume', // Use this text in the resume button
           });
@@ -112,7 +114,7 @@
       // console.log(e);
 			// console.log(ins);
       // e.detail.survey.trigger('launch');
-      e.detail.survey.trigger('click', '#anywhere');
+      // e.detail.survey.trigger('url-match', /xyz=123/);
       //  e.detail.survey.trigger('launch');
     });
 

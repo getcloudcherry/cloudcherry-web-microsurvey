@@ -43,7 +43,7 @@ class Survey {
     this.thorttlingLogic = null;
     // this.setupSurvey();
     this.triggers = new Triggers(this);
-    // TriggerManager.addSurvey(this.surveyToken, this.triggers);
+    TriggerManager.addSurvey(this.surveyToken, this.triggers);
     this.survey = new SurveyHandler(this);
     this.util = new DomUtilities;
     //set themeColor of survey

@@ -26,7 +26,7 @@ if( individualPageViewCount == null) {
   Cookie.set(Constants.CCTriggerIndividualPageViewCount, individualPageViewCount, undefined, window.location.href);
 }
 
-(window as any).clickCount = 0;
+(window as any).click = 0;
 
 window.onscroll = function (e) {  
   // called when the window is scrolled.  
@@ -39,7 +39,7 @@ window.onscroll = function (e) {
 
 
 document.onclick = function(e) {
-  (window as any).clickCount++;
+  (window as any).click++;
 }
 
 
