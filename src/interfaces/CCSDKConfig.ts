@@ -17,7 +17,7 @@ interface CCSDKConfig{
   keepAlive : number;
   cssSelector : string;
   scrollPercent : number;
-  click : number;
+  clickCount : number;
   waitSeconds : number;
   grepURL : string;
   grepInvertURL : string;

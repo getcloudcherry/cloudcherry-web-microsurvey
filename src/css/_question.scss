@@ -134,7 +134,6 @@
     font-size: 11px;
     // right: 1%;
     left: 0;
-    right: 0;
     font-weight: normal;
     color: #C1272D;
 		display: none;
@@ -194,7 +193,7 @@ p.cc-thankyou-powered{
 }
 .cc-thankyou-powered .cc-thankyou-logo{
 	// background:url('https://cx.getcloudcherry.com/microsurvey-assets/cc-thankyou-logo.svg');
-	background:url('https://cx.getcloudcherry.com/microsurvey-assets/cc-thankyou-logo.svg');
+	background:url('http://localhost:8080/images/cc-thankyou-logo.svg');
 	background-size: cover;
 	margin-right:8px;
 	display: inline-block;
