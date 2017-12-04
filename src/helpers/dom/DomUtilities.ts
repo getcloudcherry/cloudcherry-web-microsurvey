@@ -307,6 +307,25 @@ generateRadioImageOptions(arr : any, id : string){
     return res;
   }
 }
+  generateRadioIgnoreImageOptions(arr: any, id: string) {
+    if (Array.isArray(arr)) {
+      let i: number = 0;
+      let res: string = '';
+      for (i = 0; i < arr.length; i++) {
+        let optHtml: string = templates.option_radio;
+        let opt: any = arr[i].split(';')
+        //  optHtml = optHtml.replace(/{{image}}/g, Config.CDN_URL+opt[1] );
+        //  optHtml = optHtml.replace(/{{image}}/g, 'https://cx.getcloudcherry.com/microsurvey-assets/' + opt[0] + '_selected.svg');
+        optHtml = optHtml.replace(/{{qId}}/g, "nm" + id);
+        optHtml = optHtml.replace(/{{label}}/g, opt[0]);
+        optHtml = optHtml.replace(/{{value}}/g, opt[0]);
+        res += optHtml;
+
+      }
+      return res;
+    }
+  }
+
 
   generateRadioOptions(arr: any, id: string) {
     if (Array.isArray(arr)) {
@@ -334,6 +353,25 @@ generateRadioImageOptions(arr : any, id : string){
         //  optHtml = optHtml.replace(/{{image}}/g, Config.CDN_URL+opt[1] );
         //  optHtml = optHtml.replace(/{{image}}/g, 'https://cx.getcloudcherry.com/microsurvey-assets/' + opt[0] + '_selected.svg');
         optHtml = optHtml.replace(/{{image}}/g, 'https://cx.getcloudcherry.com/microsurvey-assets/' + opt[1]);
+        optHtml = optHtml.replace(/{{qId}}/g, "nm" + id);
+        optHtml = optHtml.replace(/{{label}}/g, opt[0]);
+        optHtml = optHtml.replace(/{{value}}/g, opt[0]);
+        res += optHtml;
+
+      }
+      return res;
+    }
+  }
+
+  generateCheckboxIgnoreImageOptions(arr: any, id: string) {
+    if (Array.isArray(arr)) {
+      let i: number = 0;
+      let res: string = '';
+      for (i = 0; i < arr.length; i++) {
+        let optHtml: string = templates.option_checkbox;
+        let opt: any = arr[i].split(';')
+        //  optHtml = optHtml.replace(/{{image}}/g, Config.CDN_URL+opt[1] );
+        //  optHtml = optHtml.replace(/{{image}}/g, 'https://cx.getcloudcherry.com/microsurvey-assets/' + opt[0] + '_selected.svg');
         optHtml = optHtml.replace(/{{qId}}/g, "nm" + id);
         optHtml = optHtml.replace(/{{label}}/g, opt[0]);
         optHtml = optHtml.replace(/{{value}}/g, opt[0]);

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="253px" height="240px" viewBox="0 0 253 240" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46.2 (44496) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 4</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="0.0443256 0.229667566 58.6517756 0.229667566 58.6517756 48.1760567 0.0443256 48.1760567 0.0443256 0.229667566"></polygon>
+        <polygon id="path-3" points="0.0119922 65.1828127 65.0334982 65.1828127 65.0334982 0.03376266 0.0119922 0.03376266"></polygon>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="iPhone-7">
+            <g id="Group-4">
+                <g id="Page-1">
+                    <g id="Group-27">
+                        <path d="M95.230465,4.15331642 C75.811197,9.12350589 58.184181,18.6126975 43.523337,31.446073 L73.670311,65.7999615 C82.909365,57.785531 93.966983,51.8375993 106.134765,48.6640111 L95.230465,4.15331642 Z" id="Fill-1" fill="#FF4D4D"></path>
+                        <path d="M51.1909068,97.583712 C55.7985428,85.862009 63.0272588,75.4719706 72.1534748,67.1484309 L42.0090308,32.7981071 C27.4114368,45.9920251 15.8827328,62.5540611 8.6226448,81.26713 L51.1909068,97.583712 Z" id="Fill-3" fill="#EE4D4D"></path>
+                        <g id="Group-7" transform="translate(97.152000, 0.000000)">
+                            <mask id="mask-2" fill="white">
+                                <use xlink:href="#path-1"></use>
+                            </mask>
+                            <g id="Clip-6"></g>
+                            <path d="M47.7484876,48.1755474 L58.6517756,3.66790816 C49.2467536,1.42215657 39.4359196,0.229514794 29.3477976,0.229514794 C19.2601816,0.229514794 9.4498536,1.42266581 0.0443256,3.66790816 L10.9476136,48.1760567 C16.8592116,46.7929589 23.0182436,46.0611799 29.3477976,46.0611799 C35.6778576,46.0611799 41.8368896,46.7924496 47.7484876,48.1755474" id="Fill-5" fill="#FF8C4D" mask="url(#mask-2)"></path>
+                        </g>
+                        <path d="M157.769383,4.15408028 L146.865589,48.6637565 C159.079923,51.8495665 170.175997,57.8316173 179.436303,65.8934072 L209.641467,31.5940074 C194.948745,18.6852643 177.262021,9.14362089 157.769383,4.15408028" id="Fill-8" fill="#FFB84E"></path>
+                        <path d="M211.15461,32.9473147 L180.950458,67.2446774 C190.061494,75.5834943 197.276548,85.9837176 201.863944,97.7150961 L244.458012,81.474391 C237.231826,62.7450264 225.726904,46.1666946 211.15461,32.9473147" id="Fill-10" fill="#FFDD4D"></path>
+                        <path d="M206.985068,136.387702 L252.197686,141.934352 C252.72595,137.209108 252.999696,132.406968 252.999696,127.539645 C252.999696,112.012386 250.2339,97.1364459 245.177442,83.3782893 L202.580844,99.6200129 C205.736766,108.329048 207.459696,117.731669 207.459696,127.539645 C207.459696,130.529906 207.296764,133.480956 206.985068,136.387702" id="Fill-12" fill="#F5EB4D"></path>
+                        <path d="M206.74568,138.410508 C205.06323,151.107407 200.475328,162.879525 193.677218,173.028184 L231.14247,199.087559 C242.042216,182.973146 249.360494,164.209662 251.952732,143.956649 L206.74568,138.410508 Z" id="Fill-14" fill="#73CA81"></path>
+                        <g id="Group-18" transform="translate(164.956000, 174.669568)">
+                            <mask id="mask-4" fill="white">
+                                <use xlink:href="#path-3"></use>
+                            </mask>
+                            <g id="Clip-17"></g>
+                            <path d="M27.5697642,0.03376266 C20.3951902,10.1880227 10.9613262,18.6098458 0.0119922,24.5725454 L21.1521662,65.1829654 C38.6410442,55.7599751 53.6748102,42.3226401 65.0334982,26.0921197 L27.5697642,0.03376266 Z" id="Fill-16" fill="#4DB47C" mask="url(#mask-4)"></path>
+                        </g>
+                        <path d="M60.400461,174.581979 L22.887139,200.577699 C34.220021,216.825534 49.230005,230.287822 66.702185,239.737293 L87.908645,199.172195 C76.970949,193.192181 67.558843,184.746933 60.400461,174.581979" id="Fill-19" fill="#B64D4D"></path>
+                        <path d="M46.000966,136.245981 C45.698378,133.385576 45.54,130.481376 45.54,127.540001 C45.54,117.68161 47.283676,108.234176 50.470464,99.4874576 L7.905238,83.171894 C2.798686,96.9881041 0,111.93381 0,127.540001 C0,132.331447 0.266662,137.059747 0.77924,141.713189 L46.000966,136.245981 Z" id="Fill-21" fill="#D94D4D"></path>
+                        <path d="M1.019843,143.735893 C3.577167,163.997563 10.864073,182.771741 21.737001,198.901432 L59.255383,172.902147 C52.473971,162.744322 47.900743,150.969149 46.238027,138.269194 L1.019843,143.735893 Z" id="Fill-23" fill="#C14D4D"></path>
+                    </g>
+                    <text id="0" font-family="OpenSans-Semibold, Open Sans" font-size="16" font-weight="500" fill="#FFFFFF">
+                        <tspan x="53" y="210">0</tspan>
+                    </text>
+                    <text id="1" font-family="OpenSans-Semibold, Open Sans" font-size="16" font-weight="500" fill="#FFFFFF">
+                        <tspan x="25" y="170">1</tspan>
+                    </text>
+                    <text id="2" font-family="OpenSans-Semibold, Open Sans" font-size="16" font-weight="500" fill="#FFFFFF">
+                        <tspan x="21" y="119">2</tspan>
+                    </text>
+                    <text id="3" font-family="OpenSans-Semibold, Open Sans" font-size="16" font-weight="500" fill="#FFFFFF">
+                        <tspan x="38" y="72">3</tspan>
+                    </text>
+                    <text id="5" font-family="OpenSans-Semibold, Open Sans" font-size="16" font-weight="500" fill="#FFFFFF">
+                        <tspan x="121" y="28">5</tspan>
+                    </text>
+                    <text id="4" font-family="OpenSans-Semibold, Open Sans" font-size="16" font-weight="500" fill="#FFFFFF">
+                        <tspan x="74" y="40">4</tspan>
+                    </text>
+                    <text id="6" font-family="OpenSans-Semibold, Open Sans" font-size="16" font-weight="500" fill="#FFFFFF">
+                        <tspan x="168" y="40">6</tspan>
+                    </text>
+                    <text id="7" font-family="OpenSans-Semibold, Open Sans" font-size="16" font-weight="500" fill="#FFFFFF">
+                        <tspan x="206" y="71">7</tspan>
+                    </text>
+                    <text id="8" font-family="OpenSans-Semibold, Open Sans" font-size="16" font-weight="500" fill="#FFFFFF">
+                        <tspan x="222" y="119">8</tspan>
+                    </text>
+                    <text id="9" font-family="OpenSans-Semibold, Open Sans" font-size="16" font-weight="500" fill="#FFFFFF">
+                        <tspan x="219" y="168">9</tspan>
+                    </text>
+                    <text id="10" font-family="OpenSans-Semibold, Open Sans" font-size="16" font-weight="500" fill="#FFFFFF">
+                        <tspan x="186" y="211">10</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
