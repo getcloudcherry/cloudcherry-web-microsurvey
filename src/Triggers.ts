@@ -116,9 +116,6 @@ class Triggers {
   processIntervalTriggers() {
     //if survey already launched
     //skip processing.
-    if( this.ccsdk.surveyRunning || this.ccsdk.surveyDone ) {
-      return;
-    }
     this.TriggerPopUpByTimeSpentOnPage();
     this.TriggerPopUpByTimeSpentOnSite();
   }
@@ -126,25 +123,19 @@ class Triggers {
   setConditionalTriggers(config : CCSDKConfig) {
     (window as any).ccsdkDebug?console.log(config.grepURL):'';
     //
-    if ((typeof config.click !== 'undefined') && (config.click != 0)) {
-      this.conditionalTriggers.click = config.click;
-    }
-    if ((typeof config.onExitDetect !== 'undefined')) {
-      this.conditionalTriggers.onExitDetect = config.onExitDetect;
-    }
-    // if ((typeof config.cssSelector !== 'undefined')) {
-    //   this.conditionalTriggers.cssSelector = config.cssSelector;
-    // }
-    if ((typeof config.waitSeconds !== 'undefined') && (config.waitSeconds !== 0)) {
+    this.conditionalTriggers.clickCount = config.clickCount;
+    this.conditionalTriggers.onExitDetect = config.onExitDetect;
+    this.conditionalTriggers.cssSelector = config.cssSelector;
+    if ((typeof config.waitSeconds !== undefined) && (config.waitSeconds !== 0)) {
       this.conditionalTriggers.waitSeconds = config.waitSeconds;
     }
-    if ((typeof config.scrollPercent !== 'undefined') && (config.scrollPercent !== 0)) {
+    if ((typeof config.scrollPercent !== undefined) && (config.scrollPercent !== 0)) {
       this.conditionalTriggers.scrollPercent = config.scrollPercent;
     }
-    if ((typeof config.grepInvertURL !== 'undefined') && (config.grepInvertURL)){
+    if ((typeof config.grepInvertURL !== undefined) && (config.grepInvertURL)){
       this.conditionalTriggers.grepInvertURL = config.grepInvertURL;
     }
-    if ((typeof config.grepURL !== 'undefined') && (config.grepURL)) {
+    if ((typeof config.grepURL !== undefined) && (config.grepURL)) {
       this.conditionalTriggers.grepURL = config.grepURL;
     }
 
@@ -155,52 +146,48 @@ class Triggers {
     let self = this;
     let isEnabled = true;
     if( this.ccsdk.surveyRunning || this.ccsdk.surveyDone ) {
-      (window as any).ccsdkDebug?console.log('returning'):'';
+      console.log('returning');
       return;
     }
     if(typeof this.conditionalTriggers !== 'undefined') {
-      if(Object.keys(this.conditionalTriggers).length == 0) {
-        return false;
-      }
       for(let conditionalTrigger in this.conditionalTriggers) {
         if(this.conditionalTriggers[conditionalTrigger] != null) {
           switch(conditionalTrigger) {
             case "onExitDetect":
               let onExitDetect = self.ccsdk.util.initListener("mouseout", document, function () {
-                (window as any).ccsdkDebug?console.log("Mouse out"):'';
+                console.log("Mouse out");
 
               });
 
               onExitDetect.internalHandler = self.ccsdk.util.listener(document, onExitDetect.type, onExitDetect.id, onExitDetect.cb);
 
             break;
-            case "click":
+            case "clickCount":
               //find click count on screen
               //calculate click count
-              // if((window as any).click > this.conditionalTriggers.click) {
-              //   return SurveyManager.addSurvey(this.ccsdk.surveyToken);
-              // }
-              isEnabled = isEnabled && ((window as any).click >= this.conditionalTriggers.click);
+              if((window as any).clickCount > this.conditionalTriggers.clickCount) {
+                return SurveyManager.addSurvey(this.ccsdk.surveyToken);
+              }
             break;
             case "waitSeconds":
               let pageStartTime = new Date(Cookie.get(Constants.CCTriggerPageStartTime)).getTime();
               let pageTime = new Date(Cookie.get(Constants.CCTriggerPageElapsedTime)).getTime();
               isEnabled = TriggerUtils.checkTimeCondition(pageTime, pageStartTime, this.conditionalTriggers[conditionalTrigger]);
-              (window as any).ccsdkDebug?console.log('waitSeconds enabled', isEnabled):'';
+              console.log('waitSeconds enabled', isEnabled);
             break;
             case "scrollPercent":
               //fill it with current scroll position
               isEnabled = isEnabled && TriggerUtils.checkScroll( (window as any).ccsdkTopOffset, this.conditionalTriggers[conditionalTrigger]);
-              (window as any).ccsdkDebug?console.log('scrollPercent enabled', isEnabled):'';
+              console.log('scrollPercent enabled', isEnabled);
               
             break;
             case "grepURL":
               isEnabled = isEnabled && TriggerUtils.checkInUrl(this.conditionalTriggers[conditionalTrigger]);
-              (window as any).ccsdkDebug?console.log('grepURL enabled', isEnabled):'';
+              console.log('grepURL enabled', isEnabled);
             break;
             case "grepInvertURL":
                 isEnabled = isEnabled && !TriggerUtils.checkInUrl(this.conditionalTriggers[conditionalTrigger]);
-                (window as any).ccsdkDebug?console.log('grepInvertURL enabled', isEnabled):'';
+                console.log('grepInvertURL enabled', isEnabled);
             break;
           }
         }

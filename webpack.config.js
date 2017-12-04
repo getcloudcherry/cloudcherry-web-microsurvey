@@ -29,9 +29,9 @@ let config = Object.keys(languages).map(function(language) {
       // new webpack.ProvidePlugin({
       //   $: 'cash-dom'
       // }),
-      new UglifyJSPlugin({
-				sourceMap : false
-      }),
+      // new UglifyJSPlugin({
+			// 	sourceMap : false
+      // }),
       new CompressionPlugin({
         asset: "[path].gz[query]",
         algorithm: "gzip",

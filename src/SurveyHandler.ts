@@ -702,34 +702,20 @@ class SurveyHandler {
         //get text question template and compile it.
         multiSelect1 = Array.prototype.slice.call(question.multiSelect);
         if (question.presentationMode == 'Invert') {
-          // console.log('selection option before reverse', multiSelect1);
+          console.log('selection option before reverse', multiSelect1);
           multiSelect1.reverse();
-          // console.log('selection option after reverse', multiSelect1);
-          // console.log('selection api option', question.multiSelect);
+          console.log('selection option after reverse', multiSelect1);
+          console.log('selection api option', question.multiSelect);
         }
         //get text question template and compile it.
         if (((question.displayStyle == 'radiobutton/checkbox') || (question.displayStyle == 'icon')) && (question.multiSelect.length < 7)) {
           // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
           let checkOptionContainsImage: boolean = self.util.checkOptionContainsImage(multiSelect1);
           // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
-          if (checkOptionContainsImage
-            && (
-              ((multiSelect1.length > 0) && multiSelect1[0].includes("Male"))
-              || ((multiSelect1.length > 0) && multiSelect1[0].includes("Yes"))
-              || ((multiSelect1.length > 1) && multiSelect1[1].includes("Yes")))
-            
-          ) {
+          if (checkOptionContainsImage) {
             // (window as any).ccsdkDebug?console.log('select type 2'):'';
             acTemplate = templates.question_checkbox;
             let options2 = self.util.generateCheckboxImageOptions(multiSelect1, question.id);
-            // (window as any).ccsdkDebug?console.log(options2):'';
-            questionTemplate = acTemplate;
-            questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
-            acTemplate = questionTemplate;
-          }else if(checkOptionContainsImage){
-            // (window as any).ccsdkDebug?console.log('select type 2'):'';
-            acTemplate = templates.question_checkbox;
-            let options2 = self.util.generateCheckboxIgnoreImageOptions(multiSelect1, question.id);
             // (window as any).ccsdkDebug?console.log(options2):'';
             questionTemplate = acTemplate;
             questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
@@ -781,10 +767,10 @@ class SurveyHandler {
         //get text question template and compile it.
         multiSelect = Array.prototype.slice.call(question.multiSelect);
         if (question.presentationMode == 'Invert') {
-          // console.log('selection option before reverse', multiSelect);
+          console.log('selection option before reverse', multiSelect);
           multiSelect.reverse();
-          // console.log('selection option after reverse', multiSelect);
-          // console.log('selection api option', question.multiSelect);
+          console.log('selection option after reverse', multiSelect);
+          console.log('selection api option', question.multiSelect);
         }
         if ((question.displayStyle == 'radiobutton/checkbox') && (multiSelect.length < 7)) {
           // if(question.displayStyle == 'radiobutton/checkbox'){
@@ -794,22 +780,10 @@ class SurveyHandler {
           // questionTemplate = acTemplate1;
           let checkOptionContainsImage: boolean = self.util.checkOptionContainsImage(multiSelect);
           // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
-          if (checkOptionContainsImage 
-            && (
-                 ((multiSelect.length > 0) && multiSelect[0].includes("Male") )
-              || ((multiSelect.length > 0) &&multiSelect[0].includes("Yes") )
-              || ((multiSelect.length > 1) &&multiSelect[1].includes("Yes")))
-          ) {
+          if (checkOptionContainsImage) {
             // (window as any).ccsdkDebug?console.log('select type 2'):'';
             acTemplate2 = templates.question_radio_image;
             options2 = self.util.generateRadioImageOptions(multiSelect, question.id);
-            // (window as any).ccsdkDebug?console.log(options2):'';
-            questionTemplate = acTemplate2;
-            questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
-          }else if(checkOptionContainsImage){
-            // (window as any).ccsdkDebug?console.log('select type 2'):'';
-            acTemplate2 = templates.question_radio_image;
-            options2 = self.util.generateRadioIgnoreImageOptions(multiSelect, question.id);
             // (window as any).ccsdkDebug?console.log(options2):'';
             questionTemplate = acTemplate2;
             questionTemplate = questionTemplate.replace(/{{options}}/g, options2);

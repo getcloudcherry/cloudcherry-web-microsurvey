@@ -74,13 +74,8 @@ class DomSurvey{
  removePrevListener(id : string) : boolean {
     for(let listener of this.domListeners) {
       if(listener.id == id) {
-        let index = this.domListeners.indexOf(listener);
-        (window as any).ccsdkDebug ? console.log("removing listener", id) : '';
-        (window as any).ccsdkDebug?console.log("removing listener index",index ):'';
+        (window as any).ccsdkDebug?console.log("removing listener", id):'';
         this.util.removeListener(this.$body, listener.type, listener.internalHandler);
-          if (index > -1) {
-            this.domListeners.splice(index, 1);
-          }
         (window as any).ccsdkDebug?console.log(this.domListeners):'';
       }
     }
@@ -155,12 +150,12 @@ class DomSurvey{
   minimizeSurvey(){
     // this.$popupContainer[0].removeClass('');
     this.util.removeClass(this.$popupContainer2[0], 'hide-right-left');
-    this.util.addClass(this.$popupContainer2[0], 'hide-right-left');
+    this.util.addClass(this.$popupContainer2[0], 'hide-up-bottom');
     setTimeout(()=>{
       this.util.removeClass(this.$popupContainer2[0], 'show-slide');
     },200);
     this.util.removeClass(this.$popupContainer[0], 'hide-right-left');
-    this.util.addClass(this.$popupContainer[0], 'hide-right-left');
+    this.util.addClass(this.$popupContainer[0], 'hide-bottom-up');
     setTimeout(()=>{
       this.util.addClass(this.$popupContainer[0], 'show-slide');
     },200);
@@ -208,7 +203,7 @@ class DomSurvey{
     } else {
       //start survey
       //check if only one language is configured
-      (window as any).ccsdkDebug ?console.log(this.ccsdk.surveyData):'';
+      console.log(this.ccsdk.surveyData);
       if(typeof this.ccsdk.surveyData.translated == undefined || Object.keys(this.ccsdk.surveyData.translated).length < 1){
         this.loadFirstQuestion(); 
       }else{
@@ -237,7 +232,7 @@ class DomSurvey{
 	}
 
 	nextQuestion(){
-    (window as any).ccsdkDebug ?console.log('next question q response init',this.qResponse):'';
+  console.log('next question q response',this.qResponse);
     //empty the domListner
     // this.util.removeAllListeners(this.domListeners);
     let onSurveyQuestionEvent = new CustomEvent(Constants.SURVEY_QUESTION_EVENT + "-" + this.ccsdk.surveyToken);
@@ -250,8 +245,8 @@ class DomSurvey{
     //check if validationRegex is set and is fulfilled
     let validationRegex = this.ccsdk.survey.questionsToDisplay[this.qIndex].validationRegex
     if(validationRegex){
-      (window as any).ccsdkDebug ?console.log('validationRegex', validationRegex):'';
-      (window as any).ccsdkDebug ?console.log('response', this.qResponse):'';
+      console.log('validationRegex', validationRegex);
+      console.log('response', this.qResponse);
       let pattern = validationRegex.match(new RegExp('^/(.*?)/([gimy]*)$'));
       let regex = new RegExp(validationRegex);
       let validationSpan: Element = this.$questionContainer[0].firstChild.querySelectorAll(".cc-question-container__validation")[0]
@@ -269,7 +264,7 @@ class DomSurvey{
           }
         }
       else if (this.qResponse.number) {
-          (window as any).ccsdkDebug ?console.log('test regex text', regex.test(this.qResponse.number)):'';
+          console.log('test regex text', regex.test(this.qResponse.number));
         
           if (regex.test(this.qResponse.number)) {
             this.util.removeClass(validationSpan, "show");
@@ -298,30 +293,20 @@ class DomSurvey{
         this.util.removeClass(span, "show");
         this.util.addClass(span, "hide");
       }
-
-      if (this.qResponse !== 'undefined'){
-        // (window as any).ccsdkDebug?console.log('qindex ' + this.qIndex):'';
-        if(typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined'
-          && this.qResponse.type == this.ccsdk.survey.answers[this.currentQuestionId].type
-          && this.qResponse.text == this.ccsdk.survey.answers[this.currentQuestionId].text
-          && this.qResponse.number == this.ccsdk.survey.answers[this.currentQuestionId].number
-        ) {
-          //don't submit if already submitted.
-        } else if (typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined'
-          &&  !this.qResponse.text
-          &&  !this.qResponse.number
-        ) {
-          //previous entry filled
-        }else {
-        // (window as any).ccsdkDebug?console.log('submitting ' + this.currentQuestionId):'';
-        // console.log(this.qResponse);
-          
-        let qId = this.qResponse.questionId?this.qResponse.questionId:this.currentQuestionId;
-        this.submitQuestion(this.qIndex, this.qResponse, this.qResponse.type, qId);
-        //save response
-        this.ccsdk.survey.answers[this.currentQuestionId] = JSON.parse(JSON.stringify(this.qResponse));
-        }
+      // (window as any).ccsdkDebug?console.log('qindex ' + this.qIndex):'';
+      if(typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined' && this.qResponse !== 'undefined'
+        && this.qResponse.type == this.ccsdk.survey.answers[this.currentQuestionId].type
+        && this.qResponse.text == this.ccsdk.survey.answers[this.currentQuestionId].text
+        && this.qResponse.number == this.ccsdk.survey.answers[this.currentQuestionId].number
+      ) {
+        //don't submit if already submitted.
+      } else {
+      // (window as any).ccsdkDebug?console.log('submitting ' + this.currentQuestionId):'';
+      let qId = this.qResponse.questionId?this.qResponse.questionId:this.currentQuestionId;
+      this.submitQuestion(this.qIndex, this.qResponse, this.qResponse.type, qId);
       }
+      //save response
+      this.ccsdk.survey.answers[this.currentQuestionId] = JSON.parse(JSON.stringify(this.qResponse));
     }
     ConditionalFlowFilter.filterQuestion(this.ccsdk.survey, this.ccsdk.survey.questionsToDisplay[this.qIndex]);
 
@@ -351,7 +336,6 @@ class DomSurvey{
           this.qIndex = 0;
         }
         //repopulate qResponse based on answers.
-        (window as any).ccsdkDebug ?console.log('previous answer', this.ccsdk.survey.answers[this.currentQuestionId]):'';
         this.qResponse = typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined' ? JSON.parse(JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])) : {};
         // this.util.removeClassAll(this.$questionContainer[0].firstChild, 'show-slide');
     		// this.util.addClass(nextQ, 'show-slide');
@@ -370,8 +354,8 @@ class DomSurvey{
       this.util.addClass(leftIcon[0] , 'show-slide');
       this.util.removeClass(leftIcon[0] , 'hide-slide');
     }
-    (window as any).ccsdkDebug?console.log('next question q response end', this.qResponse):'';
     this.qResponse = {};
+    console.log('next question q response', this.qResponse);
     
 	}
 
@@ -389,7 +373,6 @@ class DomSurvey{
     // this.util.removeClassAll(this.$questionContainer,'show-slide');
     this.loadQuestionSpecifics(null, this.qIndex);
     this.qResponse = typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined' ? JSON.parse(JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])) : {};
-    (window as any).ccsdkDebug?console.log("prevQuestion qResponse", this.qResponse):'';
 		this.util.addClass(this.$questionContainer[0].firstChild, 'show-slide');
     this.updateProgress();
     if(this.qIndex == 0) {
@@ -488,7 +471,7 @@ class DomSurvey{
           let allOptions1 : any = document.querySelectorAll('#' + qId + ' .option-number-item');
           let optionWidth1 = (100/allOptions1.length) - .6;
           // (window as any).ccsdkDebug?console.log("Option width", allOptions1, optionWidth1.toFixed(2)):'';
-          // self.util.css(allOptions1 , 'width',  optionWidth1.toFixed(1) + '%');
+          self.util.css(allOptions1 , 'width',  optionWidth1.toFixed(1) + '%');
           this.setupListenersQuestionScale(index, qId);
         break;
         case 'nps':
@@ -575,9 +558,7 @@ class DomSurvey{
       // alert('calling next questions inside scale');
       let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyClickEvent);
-      setTimeout(()=>{
-        self.nextQuestion();
-      },500);
+      self.nextQuestion();
       // self.util.trigger(document,'q-answered', {
       //   index : index,
       //   rating : rating,
@@ -636,9 +617,7 @@ class DomSurvey{
       document.dispatchEvent(onSurveyClickEvent);
       
       // alert('calling next questions inside scale');
-      setTimeout(() => {
-        self.nextQuestion();
-      }, 500);
+      self.nextQuestion();
       // self.util.trigger(document,'q-answered', {
       //   index : index,
       //   rating : rating,
@@ -675,7 +654,9 @@ class DomSurvey{
           }
         }
       }
+
     }
+
 
     let ref = this.util.initListener('click', '#'+qId+' .cc-checkbox', function(){
       // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox input');
@@ -739,9 +720,7 @@ class DomSurvey{
       let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyClickEvent);
       //move to next question automagically
-      setTimeout(() => {
-        self.nextQuestion();
-      }, 500);
+      self.nextQuestion();
     });
     this.domListeners.push(ref);    
     
@@ -784,9 +763,7 @@ class DomSurvey{
       let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyClickEvent);
       //move to next question automagically
-      setTimeout(() => {
-        self.nextQuestion();
-      }, 500);
+      self.nextQuestion();
     });
     this.domListeners.push(ref);    
     
@@ -819,14 +796,11 @@ class DomSurvey{
       let rating : number = this.getAttribute('data-rating');
       self.util.removeClassAll(allOptions, "selected");
       self.util.addClass(this, "selected");
-
-      //select previous sibling
-      // let child : any = this.previousSibling;
-      // while( ( child = child.previousSibling) != null ){
-      //   self.util.addClass(child, "selected");
-      // }
-
-
+      let child : any = this.previousSibling;
+      while( ( child = child.previousSibling) != null ){
+        // (window as any).ccsdkDebug?console.log('questionstar', 'previousSiblings', child):'';
+        self.util.addClass(child, "selected");
+      }
       // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
       // (window as any).ccsdkDebug?console.log('Star selected',rating):'';
       self.qResponse.type = 'star';
@@ -837,9 +811,7 @@ class DomSurvey{
       let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyClickEvent);
       //move to next question automagically
-      setTimeout(() => {
-        self.nextQuestion();
-      }, 500);
+      self.nextQuestion();
     });
     this.domListeners.push(ref);    
     
@@ -874,12 +846,11 @@ class DomSurvey{
       let rating : number = this.getAttribute('data-rating');
       self.util.removeClassAll(allOptions, "selected");
       self.util.addClass(this, "selected");
-
-      //select previous siblings
-      // let child : any = this.previousSibling;
-      // while( ( child = child.previousSibling) != null ){
-      //   self.util.addClass(child, "selected");
-      // }
+      let child : any = this.previousSibling;
+      while( ( child = child.previousSibling) != null ){
+        // (window as any).ccsdkDebug?console.log('questionscale', 'previousSiblings', child):'';
+        self.util.addClass(child, "selected");
+      }
       // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
       // (window as any).ccsdkDebug?console.log('Smile selected',rating):'';
       self.qResponse.type = 'smile';
@@ -890,9 +861,7 @@ class DomSurvey{
       let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyClickEvent);
       //move to next question automagically
-      setTimeout(() => {
-        self.nextQuestion();
-      }, 500);
+      self.nextQuestion();
     });
     this.domListeners.push(ref);    
     
@@ -904,18 +873,18 @@ class DomSurvey{
     var self: DomSurvey = this;
     if (this.util.checkIfListenerExists('#' + qId + ' .option-smile-box', this.domListeners)) {
       //remove listeners
-      (window as any).ccsdkDebug?console.log("csat question - previous listeners exists"):'';
+      (window as any).ccsdkDebug?console.log("smile question - previous listeners exists"):'';
       this.removePrevListener('#' + qId + ' .option-smile-box');
 
     }
     //set previous value
     let questionId: any;
     questionId = qId.substring(2, qId.length);
-    (window as any).ccsdkDebug?console.log('csat question', this.ccsdk.survey.answers[questionId]):'';
+    (window as any).ccsdkDebug?console.log('smile question', this.ccsdk.survey.answers[questionId]):'';
     if (typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== '') {
       let previousValue = this.ccsdk.survey.answers[questionId].number;
       let previousSelection = document.querySelectorAll('#' + qId + ' .option-smile-box[data-rating="' + previousValue + '"]')[0];
-      (window as any).ccsdkDebug?console.log('csat previous selection', previousSelection):'';
+      (window as any).ccsdkDebug?console.log('smile previous selection', previousSelection):'';
       if (typeof previousSelection !== 'undefined' && previousSelection != null) {
 
         this.util.addClass(previousSelection, "selected");
@@ -946,9 +915,7 @@ class DomSurvey{
       let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyClickEvent);
       //move to next question automagically
-      setTimeout(() => {
-        self.nextQuestion();
-      }, 500);
+      self.nextQuestion();
     });
     this.domListeners.push(ref);
 

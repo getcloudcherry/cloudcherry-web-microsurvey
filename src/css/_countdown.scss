@@ -10,10 +10,6 @@ svg.timer {
   height: 40px;
   transform: rotateY(-180deg)   rotateZ(-90deg);
 }
-html[dir="rtl"] svg.timer{
-    right: 0;
-    left: initial
-}
 
 svg.timer circle {
   stroke-dasharray: 50px;

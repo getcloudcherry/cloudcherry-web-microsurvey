@@ -26,7 +26,7 @@ if( individualPageViewCount == null) {
   Cookie.set(Constants.CCTriggerIndividualPageViewCount, individualPageViewCount, undefined, window.location.href);
 }
 
-(window as any).click = 0;
+(window as any).clickCount = 0;
 
 window.onscroll = function (e) {  
   // called when the window is scrolled.  
@@ -39,7 +39,7 @@ window.onscroll = function (e) {
 
 
 document.onclick = function(e) {
-  (window as any).click++;
+  (window as any).clickCount++;
 }
 
 
@@ -57,9 +57,9 @@ class TriggerManager {
   static addSurvey(surveyId : any, trigger : Triggers) {
     TriggerManager.triggerInstances[surveyId] = trigger;
     if(Object.keys(TriggerManager.triggerInstances).length >= 1) {
-      (window as any).ccsdkDebug ?console.log(TriggerManager.triggerInterval):'';
+      console.log(TriggerManager.triggerInterval);
       if(TriggerManager.triggerInterval == null) {
-        (window as any).ccsdkDebug ?console.log("TriggerHandler : Setting up Interval Trigger Handlers."):'';
+        console.log("TriggerHandler : Setting up Interval Trigger Handlers.");
         TriggerManager.triggerInterval = setInterval(TriggerManager.processIntervalTriggers, 1000);
       }
       //processing sequential triggers if any.
