@@ -43,7 +43,7 @@ class Survey {
     this.thorttlingLogic = null;
     // this.setupSurvey();
     this.triggers = new Triggers(this);
-    // TriggerManager.addSurvey(this.surveyToken, this.triggers);
+    TriggerManager.addSurvey(this.surveyToken, this.triggers);
     this.survey = new SurveyHandler(this);
     this.util = new DomUtilities;
     //set themeColor of survey
@@ -164,12 +164,45 @@ class Survey {
   setDisplayOptions(){
     this.survey.surveyDisplay.position =  this.config && this.config.position ?
     this.config.position : "bottom right";
-    this.survey.surveyDisplay.welcomePopupAnimation =  this.config && this.config.display && this.config.display.welcomePopupAnimation ?
-    "hide-"+ this.config.display.welcomePopupAnimation : "hide-right-left";
-    this.survey.surveyDisplay.surveyPopupAnimation =  this.config && this.config.display && this.config.display.surveyPopupAnimation ?
-    "hide-"+ this.config.display.surveyPopupAnimation : "hide-right-left";
-    this.survey.surveyDisplay.surveyPosition =  this.config && this.config.display && this.config.display.surveyPosition ?
-    this.config.display.surveyPosition : ( this.config.display.position.search(/bottom/gi)==-1?"top":"bottom" ) ;
+    let welcomePopupAnimation = 'hide-right-left';
+    // this.survey.surveyDisplay.welcomePopupAnimation =  this.config && this.config.display && this.config.display.welcomePopupAnimation ?
+    // "hide-"+ this.config.display.welcomePopupAnimation : "hide-right-left";
+    // this.survey.surveyDisplay.surveyPopupAnimation =  this.config && this.config.display && this.config.display.surveyPopupAnimation ?
+    // "hide-"+ this.config.display.surveyPopupAnimation : "hide-right-left";
+    // this.survey.surveyDisplay.surveyPosition =  this.config && this.config.display && this.config.display.surveyPosition ?
+    // this.config.display.surveyPosition : ( this.config.display.position.search(/bottom/gi)==-1?"top":"bottom" ) ;
+
+    switch (this.survey.surveyDisplay.position) {
+      case 'bottom right':
+        welcomePopupAnimation = 'hide-right-left';
+        break;
+      case 'right bottom':
+        welcomePopupAnimation = 'hide-right-left';
+        break;
+      case 'top right':
+        welcomePopupAnimation = 'hide-right-left';
+        break;
+      case 'right top':
+        welcomePopupAnimation = 'hide-right-left';
+        break;
+      case 'bottom left':
+        welcomePopupAnimation = 'hide-left-right';
+        break;
+      case 'left bottom':
+        welcomePopupAnimation = 'hide-left-right';
+        break;
+      case 'top left':
+        welcomePopupAnimation = 'hide-left-right';
+        break;
+      case 'left top':
+        welcomePopupAnimation = 'hide-left-right';
+        break;
+      default:
+        welcomePopupAnimation = 'hide-right-left';
+        break;
+    }
+    this.survey.surveyDisplay.welcomePopupAnimation = welcomePopupAnimation;
+    this.survey.surveyDisplay.surveyPosition = this.config.position.search(/bottom/gi) == -1 ? "top" : "bottom";
   }
 
   getSurveyData(){

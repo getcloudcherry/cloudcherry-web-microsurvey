@@ -1,55 +1,50 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700" rel="stylesheet">
-  <meta name="viewport" charset="utf-8" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height"
-  />
-  <title>Survey</title>
-  <style type="text/css">
-    body {
-      margin: 0 auto;
-    }
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700" rel="stylesheet">
+<meta name="viewport" charset="utf-8" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+	<title>Survey</title>
+	<style type="text/css">
+  body{
+    margin : 0 auto;
+  }
+  button{
+    background: rgb(238, 64, 54);
+    padding:20px 50px;
+    color:#fff;
+    border:solid 0px ;
+    font-size: 20px;
+    box-shadow:3px 4px 7px 2px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  button:hover{
+    box-shadow:1px 1px 5px 1px rgba(0,0,0,0.2);
+  }
+  #brand{
+    background: url(https://cx.getcloudcherry.com/microsurvey-assets/cloudcherry-login-logo.png);
+    margin: 80px auto;
+    width: 164px;
+    text-indent: -10000px;
+    height: 91px;
+  }
+  .container{
+    text-align: center;
+  }
 
-    button {
-      background: rgb(238, 64, 54);
-      padding: 20px 50px;
-      color: #fff;
-      border: solid 0px;
-      font-size: 20px;
-      box-shadow: 3px 4px 7px 2px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      transition: all .2s;
-    }
+	</style>
+	<script>
+	//colors can be either hex or rgb
+	// themeColor = '#fdaf19';
+	// themeColor = '#4db47c';
+	// themeColor = '#db3c39';
 
-    button:hover {
-      box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.2);
-    }
+	// themeColor = 'rgb(210, 42, 53)';
+	//check for hex and if false - take for granted that it is rgb
+	// var isHex  = /^#[0-9A-F]{6}$/i.test(themeColor)
 
-    #brand {
-      background: url(https://cx.getcloudcherry.com/assets/cloudcherry-login-logo.png);
-      margin: 80px auto;
-      width: 164px;
-      text-indent: -10000px;
-      height: 91px;
-    }
-
-    .container {
-      text-align: center;
-    }
-  </style>
-  <script>
-    //colors can be either hex or rgb
-    // themeColor = '#fdaf19';
-    // themeColor = '#4db47c';
-    // themeColor = '#db3c39';
-
-    // themeColor = 'rgb(210, 42, 53)';
-    //check for hex and if false - take for granted that it is rgb
-    // var isHex  = /^#[0-9A-F]{6}$/i.test(themeColor)
-  </script>
+	</script>
 </head>
-
 <body class="">
   <div class="container">
     <div id="brand">CloudCherry</div>
@@ -57,7 +52,7 @@
       <button type="button" id="anywhere">Launch Demo Survey</button>
     </div>
   </div>
-  <script>
+	<script>
     var token = getQueryString("t");
     var color = decodeURIComponent(getQueryString("c"));
     document.getElementsByTagName('button')[0].style.background = color;;
@@ -99,12 +94,12 @@
         // startButtonText: 'Start Survey', // Use this text in the start button
         resumeButtonText: 'Resume', // Use this text in the resume button
       });
-      // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
+        // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
 
-      //click trigger
-      //pass id or class...currently works on first element of class
+    		//click trigger
+    		//pass id or class...currently works on first element of class
 
-    })();
+		})();
 
     // document.addEventListener('ccready',function(){
     //   ccSurvey = window.CCSDK("init", "WW-02872",{
@@ -112,21 +107,21 @@
     //   });
     // });
 
-    document.addEventListener(token + '-ready', function (e) {
+    document.addEventListener(token+'-ready', function(e){
       // console.log(e);
-      // console.log(ins);
+			// console.log(ins);
       // e.detail.survey.trigger('launch');
       e.detail.survey.trigger('click', '#anywhere');
       //  e.detail.survey.trigger('launch');
     });
-
-    function getQueryString(field, url) {
+    function getQueryString  ( field, url ) {
       var href = url ? url : window.location.href;
-      var reg = new RegExp('[?&]' + field + '=([^&#]*)', 'i');
+      var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
       var string = reg.exec(href);
       return string ? string[1] : null;
     };
-  </script>
-</body>
 
+
+</script>
+</body>
 </html>

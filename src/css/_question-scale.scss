@@ -130,6 +130,7 @@
 .cc-question-container[data-type="smile"] .option-left-rating-text,
 .cc-question-container[data-type="star"] .option-left-rating-text{
 	left:7px;
+	bottom:-12px;
 }
 .option-right-rating-text{
 	left: auto;
@@ -138,6 +139,20 @@
 .cc-question-container[data-type="smile"] .option-right-rating-text,
 .cc-question-container[data-type="star"] .option-right-rating-text{
 	right:36px;
+	bottom:-12px;
+	
+}
+.cc-question-container[data-type="scale"] .option-number-item{
+	width: 38px;
+    margin: 0 .5px;
+    cursor: pointer;
+    display: inline-block;
+    float: none;
+}
+.cc-question-container[data-type="scale"] .cc-question-container__list{
+	display: inline-block;
+    width: auto;
+    position: relative;
 }
 .rating-color{
 	position: relative;

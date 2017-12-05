@@ -3,7 +3,7 @@ import { DisplayConfig } from "./interfaces/DisplayConfig";
 import { SurveyHandler } from "./SurveyHandler";
 import { DomSurvey } from "./helpers/dom/DomSurvey";
 import { DomUtilities } from "./helpers/dom/DomUtilities";
-import { Scrollbar } from "./helpers/dom/ScrollBar";
+import { Scrollbar } from "./helpers/dom/Scrollbar";
 import { Cookie } from './helpers/Cookie';
 import { Constants } from './Constants';
 import { Slider } from "./helpers/dom/Slider";
@@ -30,7 +30,7 @@ let localCCSDK = {
 // let instances : any = {};
 
 (window as any).globalSurveyRunning = false;
-(window as any).ccsdkDebug = true;
+(window as any).ccsdkDebug = false;
 
 if(typeof (window as any).CCSDK !== 'undefined') {
   var queue = (window as any).CCSDK.q;
@@ -39,12 +39,12 @@ if(typeof (window as any).CCSDK !== 'undefined') {
           var time = new Date();
           // console.log(this.time);
       } else {
-          console.log(arguments);
+          (window as any).ccsdkDebug?console.log(arguments):'';
           var args = (Array as any).from(arguments);
           // console.log(arguments);
           //Call this functions as ccsdk('functionName', ['argument1', 'argument2']);
           var functionName = args.splice(0,1)[0];
-          console.log(functionName);
+        (window as any).ccsdkDebug ?console.log(functionName):'';
           return localCCSDK[functionName].apply(this, args);
       }
   };
@@ -79,7 +79,7 @@ export function destroy(surveyToken : string){
 }
 //
 export function trigger(surveyToken : string, type : string, target : string) {
-  console.log(SurveyManager.surveyInstances);
+  (window as any).ccsdkDebug ?console.log(SurveyManager.surveyInstances):'';
   SurveyManager.surveyInstances[surveyToken].trigger(type, target);
   //tell trigger manager to register trigger.
 }
