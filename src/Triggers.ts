@@ -166,7 +166,7 @@ class Triggers {
         if(this.conditionalTriggers[conditionalTrigger] != null) {
           switch(conditionalTrigger) {
             case "onExitDetect":
-              let onExitDetect = self.ccsdk.util.initListener("mouseout", document, function () {
+              let onExitDetect = self.ccsdk.util.initListener("mouseout", "document", function () {
                 (window as any).ccsdkDebug?console.log("Mouse out"):'';
 
               });
@@ -185,7 +185,7 @@ class Triggers {
             case "waitSeconds":
               let pageStartTime = new Date(Cookie.get(Constants.CCTriggerPageStartTime)).getTime();
               let pageTime = new Date(Cookie.get(Constants.CCTriggerPageElapsedTime)).getTime();
-              isEnabled = TriggerUtils.checkTimeCondition(pageTime, pageStartTime, this.conditionalTriggers[conditionalTrigger]);
+              isEnabled = isEnabled && TriggerUtils.checkTimeCondition(pageTime, pageStartTime, this.conditionalTriggers[conditionalTrigger]);
               (window as any).ccsdkDebug?console.log('waitSeconds enabled', isEnabled):'';
             break;
             case "scrollPercent":

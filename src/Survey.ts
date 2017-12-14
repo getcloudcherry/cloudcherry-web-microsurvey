@@ -41,6 +41,9 @@ class Survey {
     this.config = config;
     this.surveyRunning = false;
     this.thorttlingLogic = null;
+    if(typeof this.config.textDirection === 'undefined') {
+      this.config.textDirection = "ltr";
+    }
     // this.setupSurvey();
     this.triggers = new Triggers(this);
     TriggerManager.addSurvey(this.surveyToken, this.triggers);
@@ -57,6 +60,7 @@ class Survey {
     this.config.username = "test";
     this.config.password = "test";
     this.config.location = "location";
+    this.config.language = "English (Default)";
     //check trigger conditions and add itself to 
     //based on new config
     //gotta and these.
@@ -280,14 +284,19 @@ class Survey {
   }
   
 
-  public prefill(questionId : string, answerObject : any) {
+  public prefill(questionId : string, answer : any) {
     //save this in this.surveyHandler
-    this.survey.fillPrefillQuestionObject(questionId, answerObject);
+    // this.survey.fillPrefillQuestionObject(questionId, answerObject);
+    this.survey.fillPrefillDirect(questionId, answer);
   }
 
   public fillPrefill(questionTag : string, answer : any) {
     //save this in this.surveyHandler
     this.survey.fillPrefill(questionTag, answer);
+  }
+
+  public fillPrefillByNote(questionNote : string, answer : any){
+    this.survey.fillPrefillByNote(questionNote, answer);
   }
 
   public trigger(type : string, target : any) {

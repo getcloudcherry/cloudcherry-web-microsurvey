@@ -7,7 +7,7 @@
     "test": "mocha",
     "build": "webpack",
     "watch": "webpack --watch",
-    "start": "webpack-dev-server --open --no-inline",
+    "start": "webpack-dev-server --open ",
     "prod": "webpack -p"
   },
   "author": "Wowlabz",

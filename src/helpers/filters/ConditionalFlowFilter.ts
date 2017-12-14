@@ -3,6 +3,7 @@ class ConditionalFlowFilter {
   public static filterQuestion(surveyHandler : any, question : any) {
     let aAddedCount = 0;
     let aRemovedCount = 0;
+
     if (surveyHandler.getAnswerForQuestionId(question.id) != null) {
         for (let aQuestion of surveyHandler.getConditionalSurveyQuestions()) {
             if (aQuestion.conditionalFilter != null) {
@@ -43,6 +44,9 @@ class ConditionalFlowFilter {
     if (aAddedCount > 0 || aRemovedCount > 0) {
         surveyHandler.getSurveyQuestions().sort(ConditionalFlowFilter.questionCompare);
         // surveyHandler.sendConditionalFLowQuestionsData(surveyHandler.getSurveyQuestions().size());
+        return true;
+    } else {
+      // return false;
     }
     (window as any).ccsdkDebug?console.log(surveyHandler.getSurveyQuestions()):'';
   }
@@ -99,9 +103,12 @@ class ConditionalFlowFilter {
       } else {
           let iFoundAll = false;
           for (let aAnswer of filterQuestion.answerCheck) {
+            //   console.log('hello',surveyHandler.getAnswerForQuestionId(filterQuestion.questionId), aAnswer);
+
               if (surveyHandler.getAnswerForQuestionId(filterQuestion.questionId) != null)
                   if (surveyHandler.getAnswerForQuestionId(filterQuestion.questionId).textInput != null && surveyHandler.getAnswerForQuestionId(filterQuestion.questionId).textInput.includes(aAnswer)) {
                       iFoundAll = true;
+                      break;
                   } else {
                       iFoundAll = false;
                       break;

@@ -15,6 +15,7 @@ class Constants {
   static GRANT_TYPE = "password";
   static AUTHORIZATION = "Authorization";
   static AUTHORIZATION_BEARER = "Bearer";
+  static SURVEY_CLIENT = "JS-MicroWeb";
 }
 
 export { Constants };

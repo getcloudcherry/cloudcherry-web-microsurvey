@@ -2,7 +2,7 @@ class TriggerUtils {
 
 
     public static checkInUrl(inUrl : RegExp) {
-        return window.location.href.match(inUrl).length > 0;
+        return window.location.href.match(inUrl) != null && window.location.href.match(inUrl).length > 0;
     }
 
     public static checkTimeCondition(pageTime : number, pageStartTime : number, minPageTime : number) {
