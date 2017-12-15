@@ -3,7 +3,7 @@ import { DisplayConfig } from "./interfaces/DisplayConfig";
 import { SurveyHandler } from "./SurveyHandler";
 import { DomSurvey } from "./helpers/dom/DomSurvey";
 import { DomUtilities } from "./helpers/dom/DomUtilities";
-import { Scrollbar } from "./helpers/dom/Scrollbar";
+import { Scrollbar } from "./helpers/dom/ScrollBar";
 import { Cookie } from './helpers/Cookie';
 import { Constants } from './Constants';
 import { Slider } from "./helpers/dom/Slider";
@@ -24,7 +24,8 @@ let localCCSDK = {
   show : show,
   on : on,
   prefill : prefill,
-  fillPrefill : fillPrefill
+  prefillByTag: prefillByTag,
+  prefillByNote : prefillByNote
 };
 
 // let instances : any = {};
@@ -67,9 +68,16 @@ export function init(surveyToken : any) {
   // console.log(arguments[arguments.length - 1]);
   let config = (typeof arguments[1] === 'object')? arguments[1] : {};
   //create survey instance
-  SurveyManager.surveyInstances[surveyToken] = (SurveyManager.surveyInstances[surveyToken]) ? SurveyManager.surveyInstances[surveyToken] : new Survey(surveyToken, config);
+  if(typeof Cookie.get(surveyToken + '-finish') !== 'undefined' && Cookie.get(surveyToken + '-finish')) {
+    return;
+  }
+  if(typeof config.isActive !== 'undefined' && config.isActive) {
+    SurveyManager.surveyInstances[surveyToken] = (SurveyManager.surveyInstances[surveyToken]) ? SurveyManager.surveyInstances[surveyToken] : new Survey(surveyToken, config);
+    return SurveyManager.surveyInstances[surveyToken];
+  } else {
+    //do nothing
+  }
   
-  return SurveyManager.surveyInstances[surveyToken];
 }
 
 export function destroy(surveyToken : string){
@@ -80,28 +88,46 @@ export function destroy(surveyToken : string){
 //
 export function trigger(surveyToken : string, type : string, target : string) {
   (window as any).ccsdkDebug ?console.log(SurveyManager.surveyInstances):'';
-  SurveyManager.surveyInstances[surveyToken].trigger(type, target);
+  if(typeof SurveyManager.surveyInstances[surveyToken] != 'undefined'){
+    SurveyManager.surveyInstances[surveyToken].trigger(type, target);
+  }
   //tell trigger manager to register trigger.
 }
 
 export function on(surveyToken : string, type : string, callback : any) {
-  SurveyManager.surveyInstances[surveyToken].on(type, callback);
+  if (typeof SurveyManager.surveyInstances[surveyToken] != 'undefined') {  
+    SurveyManager.surveyInstances[surveyToken].on(type, callback);
+  }
 }
 
 export function prefill(surveyToken : string, questionId : string, answerObject : any) {
-  SurveyManager.surveyInstances[surveyToken].prefill(questionId, answerObject);
+  if (typeof SurveyManager.surveyInstances[surveyToken] != 'undefined') {  
+    SurveyManager.surveyInstances[surveyToken].prefill(questionId, answerObject);
+  }
 }
 
-export function fillPrefill(surveyToken : string, questionTag : string, answer : any) {
-  SurveyManager.surveyInstances[surveyToken].fillPrefill(questionTag, answer);
+export function prefillByTag(surveyToken : string, questionTag : string, answer : any) {
+  if (typeof SurveyManager.surveyInstances[surveyToken] != 'undefined') { 
+    SurveyManager.surveyInstances[surveyToken].fillPrefill(questionTag, answer);
+  }
+}
+
+export function prefillByNote(surveyToken : string, questionNote : string, answer : any){
+  if (typeof SurveyManager.surveyInstances[surveyToken] != 'undefined') {  
+    SurveyManager.surveyInstances[surveyToken].fillPrefillByNote(questionNote, answer);
+  }
 }
 
 export function show(surveyToken : string) {
-  SurveyManager.surveyInstances[surveyToken].show();
+  if (typeof SurveyManager.surveyInstances[surveyToken] != 'undefined') {  
+    SurveyManager.surveyInstances[surveyToken].show();
+  }
 }
 
 export function hide(surveyToken : string) {
-  SurveyManager.surveyInstances[surveyToken].hide();
+  if (typeof SurveyManager.surveyInstances[surveyToken] != 'undefined') {  
+    SurveyManager.surveyInstances[surveyToken].hide();
+  }
 }
 
 //on exit detect

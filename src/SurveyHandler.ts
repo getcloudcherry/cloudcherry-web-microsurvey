@@ -10,6 +10,8 @@ import { ConditionalTextFilter } from "./helpers/filters/ConditionalTextFilter";
 import { Constants } from "./Constants";
 import { LanguageTextFilter } from "./helpers/filters/LanguageTextFilter";
 import { Select } from './helpers/dom/Select';
+import { Cookie } from './helpers/Cookie';
+import { ConditionalFlowFilter } from './helpers/filters/ConditionalFlowFilter';
 
 
 class SurveyHandler {
@@ -22,7 +24,9 @@ class SurveyHandler {
   welcomeQuestion: any;
   welcomeQuestionButtonText: any;
   prefillResponses: any;
+  prefillDirect : any;
   prefillWithTags: any;
+  prefillWithNote : any;
   questionResponses: any;
   answers: any = {};
   surveyAnswers: any = {};
@@ -58,6 +62,8 @@ class SurveyHandler {
     this.conditionalQuestions = [];
     this.prefillResponses = [];
     this.prefillWithTags = {};
+    this.prefillWithNote = {};
+    this.prefillDirect = {};
     this.answers = {};
     this.util = new DomUtilities();
     this.dom = ccsdk.dom;
@@ -76,10 +82,13 @@ class SurveyHandler {
       this.util.addClass(thankyouContainer[0], 'show-thankyou-slide');
       let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyEndEvent);
+      //set done cookie for 30 days.
+      Cookie.set(this.surveyToken + '-finish', 'true', 30, '/');
       setTimeout(() => {
         this.destroy();
       }, 2000);
     }
+
     this.destroySurveyCb = (e: any) => {
       let self: SurveyHandler = this;
       //send end survey event.
@@ -268,14 +277,12 @@ class SurveyHandler {
     }
 
     this.acceptAnswers();
-    this.postPrefillPartialAnswer();
     // self.survey.displayLanguageSelector();
 
   }
 
   checkWelcomeQuestionDisplay(keepAlive) {
     let self = this;
-    console.log("asd");
     let now = new Date();
     if (keepAlive) {
       console.log((now.getTime() - this.welcomeQuestionDisplayTime.getTime()) / 1000);
@@ -333,6 +340,8 @@ class SurveyHandler {
       self.util.removeClassAll(submitBtn, 'act-cc-button-lang-next');
       self.util.addClassAll(submitBtn, 'act-cc-button-next');
       self.ccsdk.dom.loadFirstQuestion();        // this.loadFirstQuestion();
+      self.postPrefillPartialAnswer();
+      
 
     });
     this.domListeners.push(languageSelect);
@@ -392,6 +401,14 @@ class SurveyHandler {
   }
 
   getAnswerForQuestionId(questionId: string) {
+    let answer = this.surveyAnswers[questionId];
+    if(typeof answer  === 'undefined') {
+      for(let response of this.prefillResponses) {
+        if(response.questionId == questionId) {
+          return response;
+        }
+      }
+    }
     return this.surveyAnswers[questionId];
   }
 
@@ -413,11 +430,24 @@ class SurveyHandler {
 
   fillPrefill(tag: any, value: object) {
     this.prefillWithTags[tag.toLowerCase()] = value;
-    (window as any).ccsdkDebug ? console.log('fillPrefill', this.prefillWithTags) : '';
+    (window as any).ccsdkDebug ? console.log('prefillByTag', this.prefillWithTags) : '';
+  }
+
+  fillPrefillByNote(note:any, value: object){
+    this.prefillWithNote[note.toLowerCase()] = value;
+    (window as any).ccsdkDebug ? console.log('prefillByNote', this.prefillWithNote) : '';
+    
+  }
+
+  fillPrefillDirect(questionId : string, value : object){
+    this.prefillDirect[questionId] = value;
+    (window as any).ccsdkDebug ? console.log('prefillDirect', this.prefillDirect) : '';
+    
   }
 
   fillPrefillQuestion(id: any, value: any, valueType: string) {
     let question: any = this.getQuestionById(id);
+    console.log(this.questions);
     let response: any;
     let responseStored = this.getPrefillResponseById(id);
     if (responseStored != null) {
@@ -430,6 +460,8 @@ class SurveyHandler {
         numberInput: null
       };
     }
+    valueType = this.getAnswerTypeFromDisplayType(question.displayType);
+
     if (valueType.toLowerCase() == "number") {
       response.numberInput = value;
     }
@@ -451,7 +483,12 @@ class SurveyHandler {
     surveyPartialUrl = Config.API_URL + surveyPartialUrl;
     (window as any).ccsdkDebug ? console.log("Posting Prefill Responses to Server") : '';
     (window as any).ccsdkDebug ? console.log(this.prefillResponses) : '';
-    return RequestHelper.post(surveyPartialUrl, this.prefillResponses);
+    if(typeof this.prefillResponses !== 'undefined' && this.prefillResponses.length > 0) {
+      return RequestHelper.post(surveyPartialUrl, this.prefillResponses);
+    } else {
+      console.log('No Prefill data');
+      return;
+    }
   }
 
   updatePrefillResponseById(id: any, resp: any) {
@@ -533,7 +570,7 @@ class SurveyHandler {
         locationId: null,
         responses: answersAll,
         nps: 0,
-        surveyClient: "JS-Web",
+        surveyClient: Constants.SURVEY_CLIENT,
         responseDuration: 0
       };
       return RequestHelper.post(postSurveyFinalUrl, finalData);
@@ -559,353 +596,408 @@ class SurveyHandler {
     //get question type
     let questionTemplate;
     // (window as any).ccsdkDebug?console.log(question):'';
-
-    switch (question.displayType) {
-      case "Slider":
-        let opt: any = question.multiSelect[0].split("-");
-        let optMin: any = opt[0].split(";");
-        let optMax: any = opt[1].split(";");
-        //get text question template and compile it.
-        questionTemplate = templates.question_slider;
-        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{min}}/g, optMin[0]);
-        if (optMin[1]) {
-          questionTemplate = questionTemplate.replace(/{{minLabel}}/g, optMin[1] + "-");
-        } else {
-          questionTemplate = questionTemplate.replace(/{{minLabel}}/g, "");
-        }
-        questionTemplate = questionTemplate.replace(/{{max}}/g, optMax[0]);
-        if (optMax[1]) {
-          questionTemplate = questionTemplate.replace(/{{maxLabel}}/g, optMax[1] + "-");
-        } else {
-          questionTemplate = questionTemplate.replace(/{{maxLabel}}/g, "");
-        }
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
-        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-        break;
-      case "Scale":
-        //get text question template and compile it.
-        (window as any).ccsdkDebug ? console.log(question.questionTags) : '';
-        if (question.questionTags.includes("NPS")) {
-          questionTemplate = templates.question_nps;
+    if(question != 'undefined'){
+      switch (question.displayType) {
+        case "Slider":
+          let opt: any = question.multiSelect[0].split("-");
+          let optMin: any = opt[0].split(";");
+          let optMax: any = opt[1].split(";");
+          //get text question template and compile it.
+          questionTemplate = templates.question_slider;
           questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
-          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-        } else if (question.questionTags.includes("CSAT")) {
-          if (question.questionTags.includes("csat_satisfaction_5")) {
-            questionTemplate = templates.question_csat_satisfaction_5;
-          } else if (question.questionTags.includes("csat_agreement_5")) {
-            questionTemplate = templates.question_csat_agreement_5;
-          }
-          questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
-          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-        } else {
-          let tileColor = '';
-          let style = '';
-          if (question.presentationMode.includes("Color")) {
-            tileColor = question.presentationMode.split(':')[1];
-            let tileColorDark = this.util.shadeBlendConvert(-0.3, tileColor, undefined);
-            style = '\
-              <style>\
-              #id'+ question.id + ' .option-number-item.option-scale{\
-                background-color : '+ tileColor + ';\
-              }\
-              #id'+ question.id + ' .option-number-item.option-scale:hover,\
-              #id'+ question.id + ' .option-number-item.option-scale.selected{\
-                background-color : '+ tileColorDark + ';\
-              }\
-              </style>\
-            ';
-          }
-
-          questionTemplate = templates.question_scale;
-          questionTemplate = questionTemplate.replace(/{{style}}/g, style);
-          questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
-          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-          //construct NPS scale here....
-          let startRange = 0.0;
-          let endRange = 10.0;
-          let options = "";
-          let startRangeLabel = "Very unlikely";
-          let endRangeLabel = "Very likely";
-          if (question.displayLegend) {
-            if (question.displayLegend.length > 0) {
-              startRangeLabel = question.displayLegend[0] ? question.displayLegend[0] : null;
-              endRangeLabel = question.displayLegend[1] ? question.displayLegend[1] : null;
-            }
-          }
-          if (question.multiSelect.length > 0) {
-            startRange = parseFloat(question.multiSelect[0].split("-")[0]);
-            if (startRangeLabel == null) {
-              startRangeLabel = question.multiSelect[0].split("-")[0].split(";")[1];
-            }
-            endRange = parseFloat(question.multiSelect[0].split("-")[1]);
-            if (endRangeLabel == null) {
-              endRangeLabel = question.multiSelect[0].split("-")[1].split(";")[1];
-            }
-          }
-          startRangeLabel = startRangeLabel == null ? "Very unlikely" : startRangeLabel;
-          endRangeLabel = endRangeLabel == null ? "Very likely" : endRangeLabel;
-          let divider: any = 1;
-          if (endRange < 11) {
+          questionTemplate = questionTemplate.replace(/{{min}}/g, optMin[0]);
+          if (optMin[1]) {
+            questionTemplate = questionTemplate.replace(/{{minLabel}}/g, optMin[1] + "-");
           } else {
-            divider = (endRange - startRange) / 10.0;
+            questionTemplate = questionTemplate.replace(/{{minLabel}}/g, "");
           }
-          let initial = 0.0;
-          for (let initial = startRange; initial <= endRange; initial += divider) {
-            options += '<span data-rating="' + initial + '" class="option-number-item option-scale">' + initial + '</span>';
-          }
-          questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
-          questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel);
-          questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel);
-        }
-
-        break;
-      case "Text":
-        //get text question template and compile it.
-        questionTemplate = templates.question_text;
-        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
-        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-        questionTemplate = questionTemplate.replace("{{validationHint}}", question.validationHint ? question.validationHint : "");
-
-        break;
-      case "Number":
-        //get text question template and compile it.
-        questionTemplate = templates.question_number;
-        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
-        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-        questionTemplate = questionTemplate.replace("{{validationHint}}", question.validationHint ? question.validationHint : "");
-
-        break;
-      case "MultilineText":
-        //get text question template and compile it.
-        questionTemplate = templates.question_multi_line_text;
-        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
-        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-
-        break;
-      case "MultiSelect":
-        let acTemplate: string;
-        let multiSelect1;
-        //get text question template and compile it.
-        multiSelect1 = Array.prototype.slice.call(question.multiSelect);
-        if (question.presentationMode == 'Invert') {
-          // console.log('selection option before reverse', multiSelect1);
-          multiSelect1.reverse();
-          // console.log('selection option after reverse', multiSelect1);
-          // console.log('selection api option', question.multiSelect);
-        }
-        //get text question template and compile it.
-        if (((question.displayStyle == 'radiobutton/checkbox') || (question.displayStyle == 'icon')) && (question.multiSelect.length < 7)) {
-          // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
-          let checkOptionContainsImage: boolean = self.util.checkOptionContainsImage(multiSelect1);
-          // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
-          if (checkOptionContainsImage
-            && (
-              ((multiSelect1.length > 0) && multiSelect1[0].includes("Male"))
-              || ((multiSelect1.length > 0) && multiSelect1[0].includes("Yes"))
-              || ((multiSelect1.length > 1) && multiSelect1[1].includes("Yes")))
-            
-          ) {
-            // (window as any).ccsdkDebug?console.log('select type 2'):'';
-            acTemplate = templates.question_checkbox;
-            let options2 = self.util.generateCheckboxImageOptions(multiSelect1, question.id);
-            // (window as any).ccsdkDebug?console.log(options2):'';
-            questionTemplate = acTemplate;
-            questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
-            acTemplate = questionTemplate;
-          }else if(checkOptionContainsImage){
-            // (window as any).ccsdkDebug?console.log('select type 2'):'';
-            acTemplate = templates.question_checkbox;
-            let options2 = self.util.generateCheckboxIgnoreImageOptions(multiSelect1, question.id);
-            // (window as any).ccsdkDebug?console.log(options2):'';
-            questionTemplate = acTemplate;
-            questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
-            acTemplate = questionTemplate;
+          questionTemplate = questionTemplate.replace(/{{max}}/g, optMax[0]);
+          if (optMax[1]) {
+            questionTemplate = questionTemplate.replace(/{{maxLabel}}/g, optMax[1] + "-");
           } else {
-            let options3: string = self.util.generateCheckboxOptions(multiSelect1, question.id);
-            // (window as any).ccsdkDebug?console.log(options2):'';
-            acTemplate = templates.question_checkbox;
+            questionTemplate = questionTemplate.replace(/{{maxLabel}}/g, "");
+          }
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+          break;
+        case "Scale":
+          //get text question template and compile it.
+          (window as any).ccsdkDebug ? console.log(question.questionTags) : '';
+          if (question.questionTags.includes("NPS")) {
+            questionTemplate = templates.question_nps;
+            questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+            questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+            questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+            questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+          } else if (question.questionTags.includes("CSAT")) {
+            if (question.questionTags.includes("csat_satisfaction_5")) {
+              questionTemplate = templates.question_csat_satisfaction_5;
+            } else if (question.questionTags.includes("csat_agreement_5")) {
+              questionTemplate = templates.question_csat_agreement_5;
+            }
+            questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+            questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+            questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+            questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+          } else {
+            let tileColor = '';
+            let style = '';
+            if (question.presentationMode != null && question.presentationMode.includes("Color")) {
+              tileColor = question.presentationMode.split(':')[1];
+              let tileColorDark = this.util.shadeBlendConvert(-0.3, tileColor, undefined);
+              style = '\
+                <style>\
+                #id'+ question.id + ' .option-number-item.option-scale{\
+                  background-color : '+ tileColor + ';\
+                }\
+                #id'+ question.id + ' .option-number-item.option-scale:hover,\
+                #id'+ question.id + ' .option-number-item.option-scale.selected{\
+                  background-color : '+ tileColorDark + ';\
+                }\
+                </style>\
+              ';
+            }
+
+            questionTemplate = templates.question_scale;
+            questionTemplate = questionTemplate.replace(/{{style}}/g, style);
+            questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+            questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+            questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+            questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+            //construct NPS scale here....
+            let startRange = 0.0;
+            let endRange = 10.0;
+            let options = "";
+            let startRangeLabel = "";
+            // let startRangeLabel = "";
+            // let endRangeLabel = "Very likely";
+            let endRangeLabel = "";
+            let displayLegend = LanguageTextFilter.translateDisplayLegend(this, question);
+            if (displayLegend) {
+              if (displayLegend.length > 0) {
+                startRangeLabel = displayLegend[0] ? displayLegend[0] : null;
+                endRangeLabel = displayLegend[1] ? displayLegend[1] : null;
+              }
+            }
+            if (question.multiSelect.length > 0) {
+              startRange = parseFloat(question.multiSelect[0].split("-")[0]);
+              if (startRangeLabel == null) {
+                startRangeLabel = question.multiSelect[0].split("-")[0].split(";")[1];
+              }
+              endRange = parseFloat(question.multiSelect[0].split("-")[1]);
+              if (endRangeLabel == null) {
+                endRangeLabel = question.multiSelect[0].split("-")[1].split(";")[1];
+              }
+            }
+            startRangeLabel = startRangeLabel == null ? "" : startRangeLabel;
+            endRangeLabel = endRangeLabel == null ? "" : endRangeLabel;
+            let divider: any = 1;
+            if (endRange < 11) {
+            } else {
+              divider = (endRange - startRange) / 10.0;
+            }
+            let initial = 0.0;
+            for (let initial = startRange; initial <= endRange; initial += divider) {
+              options += '<span data-rating="' + initial + '" class="option-number-item option-scale">' + initial + '</span>';
+            }
+            questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
+            questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel);
+            questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel);
+          }
+
+          break;
+        case "Text":
+          //get text question template and compile it.
+          questionTemplate = templates.question_text;
+          questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+          questionTemplate = questionTemplate.replace("{{validationHint}}", question.validationHint ? question.validationHint : "");
+
+          break;
+        case "Number":
+          //get text question template and compile it.
+          questionTemplate = templates.question_number;
+          questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+          questionTemplate = questionTemplate.replace("{{validationHint}}", question.validationHint ? question.validationHint : "");
+
+          break;
+        case "MultilineText":
+          //get text question template and compile it.
+          questionTemplate = templates.question_multi_line_text;
+          questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+
+          break;
+        case "MultiSelect":
+          let acTemplate: string;
+          let multiSelect1;
+          //get text question template and compile it.
+          multiSelect1 = Array.prototype.slice.call(question.multiSelect);
+          if (question.presentationMode == 'Invert') {
+            // console.log('selection option before reverse', multiSelect1);
+            multiSelect1.reverse();
+            // console.log('selection option after reverse', multiSelect1);
+            // console.log('selection api option', question.multiSelect);
+          }
+          //get text question template and compile it.
+          if (((question.displayStyle == 'radiobutton/checkbox') || (question.displayStyle == 'icon')) && (question.multiSelect.length < 6)) {
+            // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
+            let checkOptionContainsImage: boolean = self.util.checkOptionContainsImage(multiSelect1);
+            // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
+            if (checkOptionContainsImage
+              && (
+                ((multiSelect1.length > 0) && multiSelect1[0].includes("Male"))
+                || ((multiSelect1.length > 0) && multiSelect1[0].includes("Yes"))
+                || ((multiSelect1.length > 1) && multiSelect1[1].includes("Yes")))
+              
+            ) {
+              // (window as any).ccsdkDebug?console.log('select type 2'):'';
+              acTemplate = templates.question_checkbox;
+              let options2 = self.util.generateCheckboxImageOptions(multiSelect1, question.id);
+              // (window as any).ccsdkDebug?console.log(options2):'';
+              questionTemplate = acTemplate;
+              questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
+              acTemplate = questionTemplate;
+            }else if(checkOptionContainsImage){
+              // (window as any).ccsdkDebug?console.log('select type 2'):'';
+              acTemplate = templates.question_checkbox;
+              let options2 = self.util.generateCheckboxIgnoreImageOptions(multiSelect1, question.id);
+              // (window as any).ccsdkDebug?console.log(options2):'';
+              questionTemplate = acTemplate;
+              questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
+              acTemplate = questionTemplate;
+            } else {
+              let options3: string = self.util.generateCheckboxOptions(multiSelect1, question.id);
+              // (window as any).ccsdkDebug?console.log(options2):'';
+              acTemplate = templates.question_checkbox;
+              questionTemplate = acTemplate.replace(/{{options}}/g, options3);
+              acTemplate = questionTemplate;
+            }
+          } else {
+            // (window as any).ccsdkDebug?console.log('select type 3'):'';
+            acTemplate = templates.question_multi_select;
+
+            // acTemplate = templates.question_select;
+            let options3 = self.util.generateSelectOptions(multiSelect1);
+
+            if (!self.ccsdk.config.language.includes('Default')) {
+              if (
+                typeof question.translated !== 'undefined'
+                && question.translated != null
+                && typeof question.translated[self.ccsdk.config.language] !== 'undefined'
+                && question.translated[self.ccsdk.config.language].multiSelect !== 'undefined'
+                && question.translated[self.ccsdk.config.language].multiSelect.length > 0
+              ) {
+                multiSelect1 = Array.prototype.slice.call(question.translated[self.ccsdk.config.language].multiSelect);
+                if (question.presentationMode == 'Invert') {
+                  multiSelect1.reverse();
+                }
+                options3 = self.util.generateSelectOptions(multiSelect1);
+              }
+            }
+            // questionTemplate = acTemplate;
+            self.ccsdk.debug ? console.log(options3) : '';
             questionTemplate = acTemplate.replace(/{{options}}/g, options3);
             acTemplate = questionTemplate;
-          }
-        } else {
-          // (window as any).ccsdkDebug?console.log('select type 3'):'';
-          acTemplate = templates.question_multi_select;
 
-          // acTemplate = templates.question_select;
-          let options3 = self.util.generateSelectOptions(multiSelect1);
-          if (self.ccsdk.config.language !== 'default') {
-            if (typeof question.translated[self.ccsdk.config.language] !== 'undefined'
-              && question.translated[self.ccsdk.config.language].multiSelect !== 'undefined'
-              && question.translated[self.ccsdk.config.language].multiSelect.length > 0
+          }
+          questionTemplate = acTemplate;
+          questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+
+          break;
+        case "Select":
+          let acTemplate1: string;
+          let acTemplate2: string;
+          let options1: string;
+          let options2: string;
+          let multiSelect;
+          //get text question template and compile it.
+          multiSelect = Array.prototype.slice.call(question.multiSelect);
+          if (question.presentationMode == 'Invert') {
+            // console.log('selection option before reverse', multiSelect);
+            multiSelect.reverse();
+            // console.log('selection option after reverse', multiSelect);
+            // console.log('selection api option', question.multiSelect);
+          }
+          if ((question.displayStyle == 'radiobutton/checkbox') && (multiSelect.length < 6)) {
+            // if(question.displayStyle == 'radiobutton/checkbox'){
+            // (window as any).ccsdkDebug?console.log('select type 1'):'';
+            // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
+            // acTemplate1 = templates.question_radio;
+            // questionTemplate = acTemplate1;
+            let checkOptionContainsImage: boolean = self.util.checkOptionContainsImage(multiSelect);
+            // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
+            if (checkOptionContainsImage 
+              && (
+                  ((multiSelect.length > 0) && multiSelect[0].includes("Male") )
+                || ((multiSelect.length > 0) &&multiSelect[0].includes("Yes") )
+                || ((multiSelect.length > 1) &&multiSelect[1].includes("Yes")))
             ) {
-              multiSelect1 = Array.prototype.slice.call(question.translated[self.ccsdk.config.language].multiSelect);
-              if (question.presentationMode == 'Invert') {
-                multiSelect1.reverse();
-              }
-              options3 = self.util.generateSelectOptions(multiSelect1);
+              // (window as any).ccsdkDebug?console.log('select type 2'):'';
+              acTemplate2 = templates.question_radio_image;
+              options2 = self.util.generateRadioImageOptions(multiSelect, question.id);
+              // (window as any).ccsdkDebug?console.log(options2):'';
+              questionTemplate = acTemplate2;
+              questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
+            }else if(checkOptionContainsImage){
+              // (window as any).ccsdkDebug?console.log('select type 2'):'';
+              acTemplate2 = templates.question_radio_image;
+              options2 = self.util.generateRadioIgnoreImageOptions(multiSelect, question.id);
+              // (window as any).ccsdkDebug?console.log(options2):'';
+              questionTemplate = acTemplate2;
+              questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
+            } else {
+              acTemplate1 = templates.question_radio;
+              questionTemplate = acTemplate1;
+              options1 = self.util.generateRadioOptions(multiSelect, question.id);
+              questionTemplate = questionTemplate.replace("{{options}}", options1);
             }
-          }
-          // questionTemplate = acTemplate;
-          self.ccsdk.debug ? console.log(options3) : '';
-          questionTemplate = acTemplate.replace(/{{options}}/g, options3);
-          acTemplate = questionTemplate;
-
-        }
-        questionTemplate = acTemplate;
-        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
-        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-
-        break;
-      case "Select":
-        let acTemplate1: string;
-        let acTemplate2: string;
-        let options1: string;
-        let options2: string;
-        let multiSelect;
-        //get text question template and compile it.
-        multiSelect = Array.prototype.slice.call(question.multiSelect);
-        if (question.presentationMode == 'Invert') {
-          // console.log('selection option before reverse', multiSelect);
-          multiSelect.reverse();
-          // console.log('selection option after reverse', multiSelect);
-          // console.log('selection api option', question.multiSelect);
-        }
-        if ((question.displayStyle == 'radiobutton/checkbox') && (multiSelect.length < 7)) {
-          // if(question.displayStyle == 'radiobutton/checkbox'){
-          // (window as any).ccsdkDebug?console.log('select type 1'):'';
-          // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
-          // acTemplate1 = templates.question_radio;
-          // questionTemplate = acTemplate1;
-          let checkOptionContainsImage: boolean = self.util.checkOptionContainsImage(multiSelect);
-          // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
-          if (checkOptionContainsImage 
-            && (
-                 ((multiSelect.length > 0) && multiSelect[0].includes("Male") )
-              || ((multiSelect.length > 0) &&multiSelect[0].includes("Yes") )
-              || ((multiSelect.length > 1) &&multiSelect[1].includes("Yes")))
-          ) {
-            // (window as any).ccsdkDebug?console.log('select type 2'):'';
-            acTemplate2 = templates.question_radio_image;
-            options2 = self.util.generateRadioImageOptions(multiSelect, question.id);
-            // (window as any).ccsdkDebug?console.log(options2):'';
-            questionTemplate = acTemplate2;
-            questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
-          }else if(checkOptionContainsImage){
-            // (window as any).ccsdkDebug?console.log('select type 2'):'';
-            acTemplate2 = templates.question_radio_image;
-            options2 = self.util.generateRadioIgnoreImageOptions(multiSelect, question.id);
-            // (window as any).ccsdkDebug?console.log(options2):'';
-            questionTemplate = acTemplate2;
-            questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
-          } else {
+          } else if ((question.displayStyle == 'icon') && (multiSelect.length < 6)) {
             acTemplate1 = templates.question_radio;
             questionTemplate = acTemplate1;
             options1 = self.util.generateRadioOptions(multiSelect, question.id);
             questionTemplate = questionTemplate.replace("{{options}}", options1);
-          }
-        } else if ((question.displayStyle == 'icon') && (multiSelect.length < 7)) {
-          acTemplate1 = templates.question_radio;
-          questionTemplate = acTemplate1;
-          options1 = self.util.generateRadioOptions(multiSelect, question.id);
-          questionTemplate = questionTemplate.replace("{{options}}", options1);
 
-        } else {
+          } else {
 
-          // (window as any).ccsdkDebug?console.log('select type 3'):'';
-          acTemplate1 = templates.question_select;
-          options1 = self.util.generateSelectOptions(multiSelect);
-          if (self.ccsdk.config.language !== 'default') {
-            if (typeof question.translated[self.ccsdk.config.language] !== 'undefined'
-              && question.translated[self.ccsdk.config.language].multiSelect !== 'undefined'
-              && question.translated[self.ccsdk.config.language].multiSelect.length > 0
-            ) {
-              multiSelect = Array.prototype.slice.call(question.translated[self.ccsdk.config.language].multiSelect);
-              if (question.presentationMode == 'Invert') {
-                multiSelect.reverse();
+            // (window as any).ccsdkDebug?console.log('select type 3'):'';
+            acTemplate1 = templates.question_select;
+            options1 = self.util.generateSelectOptions(multiSelect);
+            if (!self.ccsdk.config.language.includes('Default')) {
+              if (typeof question.translated !== 'undefined'
+                && question.translated != null
+                && typeof question.translated[self.ccsdk.config.language] !== 'undefined'
+                && question.translated[self.ccsdk.config.language].multiSelect !== 'undefined'
+                && question.translated[self.ccsdk.config.language].multiSelect.length > 0
+              ) {
+                multiSelect = Array.prototype.slice.call(question.translated[self.ccsdk.config.language].multiSelect);
+                if (question.presentationMode == 'Invert') {
+                  multiSelect.reverse();
+                }
+                options1 = self.util.generateSelectOptions(multiSelect);
               }
-              options1 = self.util.generateSelectOptions(multiSelect);
+            }
+            questionTemplate = acTemplate1;
+            questionTemplate = questionTemplate.replace("{{options}}", options1);
+
+
+          }
+          questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+          // (window as any).ccsdkDebug?console.log(questionTemplate):'';
+
+          break;
+        case "Smile-5":
+          //get text question template and compile it.
+          if (question.presentationMode == "Invert") {
+            questionTemplate = templates.question_smile_5_inverted;
+
+          } else {
+
+            questionTemplate = templates.question_smile_5;
+          }
+          // let startRangeLabel = "Very unlikely";
+          // let endRangeLabel = "Very likely";
+          let startRangeLabel = "";
+          let endRangeLabel = "";
+          let displayLegend2 = LanguageTextFilter.translateDisplayLegend(this, question);
+          
+          if (displayLegend2) {
+            if (displayLegend2.length > 0) {
+              startRangeLabel = displayLegend2[0] ? displayLegend2[0] : null;
+              endRangeLabel = displayLegend2[1] ? displayLegend2[1] : null;
             }
           }
-          questionTemplate = acTemplate1;
-          questionTemplate = questionTemplate.replace("{{options}}", options1);
-
-
-        }
-        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
-        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-        // (window as any).ccsdkDebug?console.log(questionTemplate):'';
-
-        break;
-      case "Smile-5":
-        //get text question template and compile it.
-        if (question.presentationMode == "Invert") {
-          questionTemplate = templates.question_smile_5_inverted;
-
-        } else {
-
-          questionTemplate = templates.question_smile_5;
-        }
-        let startRangeLabel = "Very unlikely";
-        let endRangeLabel = "Very likely";
-        if (question.displayLegend) {
-          if (question.displayLegend.length > 0) {
-            startRangeLabel = question.displayLegend[0] ? question.displayLegend[0] : null;
-            endRangeLabel = question.displayLegend[1] ? question.displayLegend[1] : null;
+          startRangeLabel = startRangeLabel == null ? "" : startRangeLabel;
+          endRangeLabel = endRangeLabel == null ? "" : endRangeLabel;
+          questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+          questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel);
+          questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel);
+          break;
+        case "Star-5":
+          //get text question template and compile it.
+          let startRangeLabel1 = "";
+          let endRangeLabel1 = "";
+          let displayLegend3 = LanguageTextFilter.translateDisplayLegend(this, question);
+          
+          if (displayLegend3) {
+            if (displayLegend3.length > 0) {
+              startRangeLabel1 = displayLegend3[0] ? displayLegend3[0] : null;
+              endRangeLabel1 = displayLegend3[1] ? displayLegend3[1] : null;
+            }
           }
-        }
-        startRangeLabel = startRangeLabel == null ? "Very unlikely" : startRangeLabel;
-        endRangeLabel = endRangeLabel == null ? "Very likely" : endRangeLabel;
-        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
-        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-        questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel);
-        questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel);
-        break;
-      case "Star-5":
-        //get text question template and compile it.
-        let startRangeLabel1 = "Very unlikely";
-        let endRangeLabel1 = "Very likely";
-        if (question.displayLegend) {
-          if (question.displayLegend.length > 0) {
-            startRangeLabel1 = question.displayLegend[0] ? question.displayLegend[0] : null;
-            endRangeLabel1 = question.displayLegend[1] ? question.displayLegend[1] : null;
-          }
-        }
-        startRangeLabel1 = startRangeLabel1 == null ? "Very unlikely" : startRangeLabel1;
-        endRangeLabel1 = endRangeLabel1 == null ? "Very likely" : endRangeLabel1;
-        questionTemplate = templates.question_star_5;
-        questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
-        questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
-        questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
-        questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
-        questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel1);
-        questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel1);
-        break;
+          startRangeLabel1 = startRangeLabel1 == null ? "" : startRangeLabel1;
+          endRangeLabel1 = endRangeLabel1 == null ? "" : endRangeLabel1;
+          questionTemplate = templates.question_star_5;
+          questionTemplate = questionTemplate.replace("{{question}}", ConditionalTextFilter.filterText(this, question));
+          questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
+          questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
+          questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+          questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel1);
+          questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel1);
+          break;
+      }
     }
     return questionTemplate;
   }
 
   questionCompare(a: any, b: any) {
     return a.sequence - b.sequence;
+  }
+  
+  getAnswerTypeFromDisplayType(displayType: string) {
+    // console.log('question type',displayType);
+    let type: string;
+    switch (displayType) {
+      case "Slider":
+        type = "number";
+        break;
+      case "Scale":
+        type = "number";
+        break;
+      case "Text":
+        type = "text";
+        break;
+      case "Number":
+        type = "number";
+        break;
+      case "MultilineText":
+        type = "text";
+        break;
+      case "MultiSelect":
+        type = "text";
+        break;
+      case "Select":
+        type = "text";
+        break;
+      case "Smile-5":
+        type = "number";
+        break;
+      case "Star-5":
+        type = "number";
+        break;
+      default:
+        type = "text";
+        break;
+    }
+
+    return type;
   }
 
   /**
@@ -926,8 +1018,21 @@ class SurveyHandler {
       if (!question.isRetired) {
         //filter out prefill question only if it is filled?.
         // if(!this.isQuestionFilled(question)){
+        if (this.isPrefillTags(question)) {
+          self.ccsdk.debug ? console.log(this.prefillResponses) : '';
+          continue;
+        }
         if (!(this.isPrefillQuestion(question))) {
-          if (this.isPrefillTags(question)) {
+
+          // if (this.isPrefillTags(question)) {
+          //   self.ccsdk.debug ? console.log(this.prefillResponses) : '';
+          //   continue;
+          // }
+          if (this.isPrefillNote(question)){
+            self.ccsdk.debug ? console.log(this.prefillResponses) : '';
+            continue;
+          }
+          if (this.isPrefillDirect(question)) {
             self.ccsdk.debug ? console.log(this.prefillResponses) : '';
             continue;
           }
@@ -938,19 +1043,32 @@ class SurveyHandler {
           ) {
             this.questionsToDisplay.push(question);
           } else {
-            this.conditionalQuestions.push(question);
+            //if conditions full filled, fill it in questionsToDisplay
+            if(ConditionalFlowFilter.filterQuestion(this, question)) {
+               //auto does that
+            } else {
+              this.conditionalQuestions.push(question);
+            }
           }
         } else {
           this.fillPrefillWithTags(question);
+          this.fillPrefillWithNote(question);
+          ConditionalFlowFilter.filterQuestion(this, question);
         }
         // }
       }
     }
+    //re condition questions.
+    for(let question of this.questions) {
+      ConditionalFlowFilter.filterQuestion(this, question);
+    }
+
+    // console.log(this.conditionalQuestions);
   }
 
   isPrefillTags(question: any) {
     if (typeof question.questionTags !== 'undefined' && question.questionTags.length > 0) {
-      for (let tag of question.questionTags) {
+      for (let tag of question.questionTags) {        
         switch (tag.toLowerCase()) {
           case "screensize":
             //add size to prefill array
@@ -961,16 +1079,52 @@ class SurveyHandler {
     }
     return false;
   }
+  isPrefillNote(question:any){
+    if (typeof question.note !== 'undefined' 
+    && question.note != null 
+    && question.note.length > 0
+    && this.prefillWithNote[question.note.toLowerCase()]
+  ) {
+      let type = this.getAnswerTypeFromDisplayType(question.displayType);
+      this.fillPrefillQuestion(question.id, this.prefillWithNote[question.note.toLowerCase()] ,type);
+      return true;
+    }
+    return false;
+  }
+
+  isPrefillDirect(question: any) {
+    if (typeof question !== 'undefined'
+      && this.prefillDirect[question.id]
+    ) {
+      let type = this.getAnswerTypeFromDisplayType(question.displayType);
+      this.fillPrefillQuestion(question.id, this.prefillDirect[question.id], type);
+      return true;
+    }
+    return false;
+  }
 
   fillPrefillWithTags(question: any) {
+    // console.log(this.prefillWithTags);
     if (typeof question.questionTags !== 'undefined' && question.questionTags.length > 0) {
       for (let tag of question.questionTags) {
-        if (typeof this.prefillWithTags[tag.toLowerCase()] !== 'undefined') {
-          this.fillPrefillQuestion(question.id, this.prefillWithTags[tag.toLowerCase()], "text");
+        if (typeof this.prefillWithTags[tag.toLowerCase()] !== 'undefined') {     
+          let type = this.getAnswerTypeFromDisplayType(question.displayType);
+          this.fillPrefillQuestion(question.id, this.prefillWithTags[tag.toLowerCase()], type);
         }
       }
     }
   }
+
+  fillPrefillWithNote(question: any){
+    if (typeof question.note !== 'undefined' && question.note!= null && question.note.length > 0) {
+        if (typeof this.prefillWithNote[question.note.toLowerCase()] !== 'undefined') {
+          let type = this.getAnswerTypeFromDisplayType(question.displayType);
+          this.fillPrefillQuestion(question.id, this.prefillWithNote[question.note.toLowerCase()], type);
+        }
+    }
+  }
+
+
 
   getConditionalSurveyQuestions(): any {
     return this.conditionalQuestions;

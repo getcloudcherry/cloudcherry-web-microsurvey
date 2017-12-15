@@ -89,8 +89,9 @@ class ConditionalTextFilter {
         let iFoundAll : boolean = false;
         for (let aAnswer of filterQuestion.answerCheck) {
             if (surveyHandler.getAnswerForQuestionId(filterQuestion.questionId) != null)
-                if (surveyHandler.getAnswerForQuestionId(filterQuestion.questionId).textInput != null && surveyHandler.getAnswerForQuestionId(filterQuestion.questionId).textInput.contains(aAnswer)) {
+                if (surveyHandler.getAnswerForQuestionId(filterQuestion.questionId).textInput != null && surveyHandler.getAnswerForQuestionId(filterQuestion.questionId).textInput.includes(aAnswer)) {
                     iFoundAll = true;
+                    break;
                 } else {
                     iFoundAll = false;
                     break;

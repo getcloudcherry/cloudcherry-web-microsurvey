@@ -5,6 +5,7 @@ import { Theme } from './Theme';
 import { ConditionalFlowFilter } from "../filters/ConditionalFlowFilter";
 import { Slider } from "./Slider";
 import { Constants } from "../../Constants";
+import { setInterval } from 'timers';
 
 class DomSurvey{
 
@@ -41,7 +42,7 @@ class DomSurvey{
     // self.scrollbar = new ScrollBar("data-cc-scrollbar");
     this.util.ready(function(){
   	   // self.util.addClassAll(self.$popupContainer,'show-slide');
-  	});
+    });
   }
 
   setTheme(brandColor, time){
@@ -237,7 +238,8 @@ class DomSurvey{
 	}
 
 	nextQuestion(){
-    (window as any).ccsdkDebug ?console.log('next question q response init',this.qResponse):'';
+    (window as any).ccsdkDebug ? console.log('next question q response init', this.qResponse) : '';
+    // console.log('next question q response init',this.qResponse);
     //empty the domListner
     // this.util.removeAllListeners(this.domListeners);
     let onSurveyQuestionEvent = new CustomEvent(Constants.SURVEY_QUESTION_EVENT + "-" + this.ccsdk.surveyToken);
@@ -247,6 +249,39 @@ class DomSurvey{
     let isRequired : boolean = false;
     let q : HTMLElement = this.$questionContainer[0].firstChild;
     // (window as any).ccsdkDebug?console.log(this.$questionContainer):'';
+    let span: Element = this.$questionContainer[0].firstChild.querySelectorAll(".cc-question-container__required")[0]
+    let validationSpan: Element = this.$questionContainer[0].firstChild.querySelectorAll(".cc-question-container__validation")[0]
+    if(span)
+      this.util.removeClass(span, "show");
+    if(validationSpan)  
+      this.util.removeClass(validationSpan, "show");
+
+
+    //check if question is required 
+    isRequired = q.getAttribute('data-required').toLowerCase() == 'true' ? true : false;
+    // console.log('required check',Object.keys(this.qResponse).length, isRequired, this.qResponse);
+    // if (isRequired && Object.keys(this.qResponse).length === 0) {
+    if (isRequired && (Object.keys(this.qResponse).length === 0) ){
+      if (span) {
+        this.util.addClass(span, "show");
+        this.util.removeClass(span, "hide");
+      }
+      return;
+    } else if (isRequired && (!this.qResponse.text) && (!this.qResponse.number) ){
+      if (span) {
+        this.util.addClass(span, "show");
+        this.util.removeClass(span, "hide");
+      }
+      return;
+    } else {
+      if (span) {
+        this.util.removeClass(span, "show");
+        this.util.addClass(span, "hide");
+      }
+
+
+
+
     //check if validationRegex is set and is fulfilled
     let validationRegex = this.ccsdk.survey.questionsToDisplay[this.qIndex].validationRegex
     if(validationRegex){
@@ -254,7 +289,6 @@ class DomSurvey{
       (window as any).ccsdkDebug ?console.log('response', this.qResponse):'';
       let pattern = validationRegex.match(new RegExp('^/(.*?)/([gimy]*)$'));
       let regex = new RegExp(validationRegex);
-      let validationSpan: Element = this.$questionContainer[0].firstChild.querySelectorAll(".cc-question-container__validation")[0]
         if (this.qResponse.text){
           console.log('test regex text', regex.test(this.qResponse.text));
           if (regex.test(this.qResponse.text)){
@@ -285,19 +319,7 @@ class DomSurvey{
       
     }
 
-    isRequired = q.getAttribute('data-required').toLowerCase() == 'true' ? true : false;
-    let span : Element = this.$questionContainer[0].firstChild.querySelectorAll(".cc-question-container__required")[0]
-    if(isRequired && Object.keys(this.qResponse).length === 0) {
-      if(span) {
-        this.util.addClass(span, "show");
-        this.util.removeClass(span, "hide");
-      }
-      return;
-    } else {
-      if(span) {
-        this.util.removeClass(span, "show");
-        this.util.addClass(span, "hide");
-      }
+    
 
       if (this.qResponse !== 'undefined'){
         // (window as any).ccsdkDebug?console.log('qindex ' + this.qIndex):'';
@@ -306,11 +328,14 @@ class DomSurvey{
           && this.qResponse.text == this.ccsdk.survey.answers[this.currentQuestionId].text
           && this.qResponse.number == this.ccsdk.survey.answers[this.currentQuestionId].number
         ) {
+          console.log('no submit');
           //don't submit if already submitted.
         } else if (typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined'
           &&  !this.qResponse.text
           &&  !this.qResponse.number
         ) {
+          // console.log('no submit 2');
+          
           //previous entry filled
         }else {
         // (window as any).ccsdkDebug?console.log('submitting ' + this.currentQuestionId):'';
@@ -324,12 +349,12 @@ class DomSurvey{
       }
     }
     ConditionalFlowFilter.filterQuestion(this.ccsdk.survey, this.ccsdk.survey.questionsToDisplay[this.qIndex]);
-
+    // console.log(this.ccsdk.survey.questionsToDisplay);
     //go to next question
     this.qIndex++;
     //reset the post parameters
     // this.qResponse = typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined' ? JSON.parse(JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])) : {};
-    this.qResponse = {};
+    // this.qResponse = {};
     let nextButtonState : string = 'initial';
     // (window as any).ccsdkDebug?console.log(this.$questionContainer):'';
     let nextQ : HTMLElement = this.$questionContainer;
@@ -371,7 +396,7 @@ class DomSurvey{
       this.util.removeClass(leftIcon[0] , 'hide-slide');
     }
     (window as any).ccsdkDebug?console.log('next question q response end', this.qResponse):'';
-    this.qResponse = {};
+    // this.qResponse = {};
     
 	}
 
@@ -481,6 +506,7 @@ class DomSurvey{
     this.$questionContainer[0].innerHTML += compiledTemplate;
     let qType : string = this.$questionContainer[0].firstChild.getAttribute('data-type');
     let qId : string = this.$questionContainer[0].firstChild.getAttribute('data-id');
+    this.qResponse = {};
     // (window as any).ccsdkDebug?console.log("QTYIPE AND QID " , qType, qId):'';
     this.currentQuestionId = qId.substring(2, qId.length);
     switch(qType){
@@ -555,6 +581,10 @@ class DomSurvey{
       (window as any).ccsdkDebug?console.log('scale previous selection', previousSelection):'';
       if(typeof previousSelection !== 'undefined'){
         this.util.addClass(previousSelection, "selected");
+        self.qResponse.type = 'scale';
+        self.qResponse.text = null;
+        self.qResponse.number = previousValue;
+        self.qResponse.questionId = qId;
       }
       
     }
@@ -614,6 +644,10 @@ class DomSurvey{
         this.util.addClass(previousSelection, "selected");
         let $mobileRating = document.querySelectorAll(".act-cc-nps-selected-rating")[0];
         $mobileRating.innerHTML = previousValue;
+        self.qResponse.type = 'nps';
+        self.qResponse.text = null;
+        self.qResponse.number = previousValue;
+        self.qResponse.questionId = qId;
       }
       
     }
@@ -672,6 +706,10 @@ class DomSurvey{
           if (typeof previousSelection !== 'undefined') {
             this.util.addClass(previousSelection, "selected");
             previousSelection.setAttribute('checked', 'checked');
+            self.qResponse.type = 'checkbox';
+            self.qResponse.text = previousValue;
+            self.qResponse.number = null;
+            self.qResponse.questionId = qId;
           }
         }
       }
@@ -720,6 +758,10 @@ class DomSurvey{
       if (typeof previousSelection !== 'undefined') {
         this.util.addClass(previousSelection, "selected");
         previousSelection.setAttribute('checked', 'checked');
+        self.qResponse.type = 'radio';
+        self.qResponse.text = null;
+        self.qResponse.number = previousValue;
+        self.qResponse.questionId = qId;
       }
 
     }
@@ -766,6 +808,10 @@ class DomSurvey{
       if (typeof previousSelection !== 'undefined') {
         this.util.addClass(previousSelection, "selected");
         previousSelection.setAttribute('checked', 'checked');
+        self.qResponse.type = 'radioImage';
+        self.qResponse.text = previousValue;
+        self.qResponse.number = null;
+        self.qResponse.questionId = qId;
       }
 
     }
@@ -811,6 +857,10 @@ class DomSurvey{
       (window as any).ccsdkDebug?console.log('star previous selection', previousSelection):'';
       if(typeof previousSelection !== 'undefined' && previousSelection != null){      
         this.util.addClass(previousSelection, "selected");
+        self.qResponse.type = 'star';
+        self.qResponse.text = null;
+        self.qResponse.number = previousValue;
+        self.qResponse.questionId = qId;
       }
       
     }
@@ -865,6 +915,10 @@ class DomSurvey{
       if(typeof previousSelection !== 'undefined' && previousSelection != null){
         
         this.util.addClass(previousSelection, "selected");
+        self.qResponse.type = 'smile';
+        self.qResponse.text = null;
+        self.qResponse.number = previousValue;
+        self.qResponse.questionId = qId;
       }
       
     }
@@ -920,6 +974,10 @@ class DomSurvey{
 
         this.util.addClass(previousSelection, "selected");
         previousSelection.querySelectorAll("input")[0].setAttribute('checked', 'checked');
+        self.qResponse.type = 'smile';
+        self.qResponse.text = null;
+        self.qResponse.number = previousValue;
+        self.qResponse.questionId = qId;
         
       }
 
@@ -977,7 +1035,11 @@ class DomSurvey{
           if(typeof previousSelection !== 'undefined' && 
            previousSelection != null &&
            typeof previousValue !== 'undefined'){
-            previousSelection.value = previousValue ;      
+            previousSelection.value = previousValue ;  
+            self.qResponse.type = 'multiline';
+            self.qResponse.text = previousValue;
+            self.qResponse.number = null;
+            self.qResponse.questionId = qId;    
           }
         }
     let ref = this.util.initListener('change', '#'+qId,function(){
@@ -1014,7 +1076,11 @@ class DomSurvey{
       if(typeof previousSelection !== 'undefined' && 
        previousSelection != null &&
        typeof previousValue !== 'undefined'){
-        previousSelection.value = previousValue ;      
+        previousSelection.value = previousValue ;     
+        self.qResponse.type = 'singleline';
+        self.qResponse.text = previousValue;
+        self.qResponse.number = null;
+        self.qResponse.questionId = qId; 
       }
     }
     let ref = this.util.initListener('change', '#'+qId,function(){
@@ -1027,6 +1093,8 @@ class DomSurvey{
     this.domListeners.push(ref);    
     
     ref.internalHandler = this.util.listener(this.$body, ref.type, ref.id, ref.cb);
+
+    console.log('singleline qResponse',self.qResponse);
   }
 
   setupListenersQuestionNumber(index: number, qId: string) {
@@ -1052,6 +1120,10 @@ class DomSurvey{
         previousSelection != null &&
         typeof previousValue !== 'undefined') {
         previousSelection.value = previousValue;
+        self.qResponse.type = 'number';
+        self.qResponse.text = null;
+        self.qResponse.number = previousValue;
+        self.qResponse.questionId = qId;
       }
     }
     let ref = this.util.initListener('change', '#' + qId, function () {
@@ -1091,6 +1163,10 @@ class DomSurvey{
        typeof previousValue !== 'undefined'){
         previousSelection.innerHTML = previousValue ;  
         sliderInput.value = previousValue;
+        self.qResponse.type = 'slider';
+        self.qResponse.number = previousValue;
+        self.qResponse.text = null;
+        self.qResponse.questionId = qId;
       }
     }
     let ref = this.util.initListener("change", '#' + qId + " input", function(){
@@ -1133,6 +1209,10 @@ class DomSurvey{
         if (this.ccsdk.survey.answers[questionId].text){
           self.select.setValue(this.ccsdk.survey.answers[questionId].text);
           self.select.selectOptions(this.ccsdk.survey.answers[questionId].text);
+          self.qResponse.type = 'select';
+          self.qResponse.text = this.ccsdk.survey.answers[questionId].text;
+          self.qResponse.number = null;
+          self.qResponse.questionId = qId;
         }
       }
       self.trackSelects.push(qId);
