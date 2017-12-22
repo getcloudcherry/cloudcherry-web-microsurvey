@@ -32,6 +32,7 @@ let localCCSDK = {
 
 (window as any).globalSurveyRunning = false;
 (window as any).ccsdkDebug = false;
+(window as any).isMobile = window.innerWidth <= 768 ? true:false;
 
 if(typeof (window as any).CCSDK !== 'undefined') {
   var queue = (window as any).CCSDK.q;

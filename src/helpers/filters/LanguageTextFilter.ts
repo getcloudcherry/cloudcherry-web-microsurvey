@@ -6,18 +6,26 @@ class LanguageTextFilter {
                 typeof question.translated[surveyHandler.ccsdk.config.language] !== 'undefined') {
                 return question.translated[surveyHandler.ccsdk.config.language].text;
             } else {
+                if(question.text != null){
+                    let qText = question.text.split(':');
+                    if (question.text.includes(":")) {
+                        qText = qText[0] + ': <br><span class="text-normal">' + qText[1] + '</span>';
+                    }
+                    return qText ;
+                }else{
+                    return question.text == null ? '':question.text;
+                }
+            }
+        } else {
+            if (question.text != null) {
                 let qText = question.text.split(':');
                 if (question.text.includes(":")) {
                     qText = qText[0] + ': <br><span class="text-normal">' + qText[1] + '</span>';
                 }
-                return qText ;
+                return qText;
+            } else {
+                return question.text == null ? '' : question.text;
             }
-        } else {
-            let qText = question.text.split(':');
-            if (question.text.includes(":")) {
-                qText = qText[0] + ': <br><span class="text-normal">' + qText[1] + '</span>';
-            }
-            return qText;
         }
     }
 
@@ -49,6 +57,19 @@ class LanguageTextFilter {
             }
         } else {
             return question.displayLegend;
+        }
+    }
+
+    public static translateMultiSelect(surveyHandler: any, question: any) {
+        if (!surveyHandler.ccsdk.config.language.includes('Default')) {
+            if (question.translated != null &&
+                typeof question.translated[surveyHandler.ccsdk.config.language] !== 'undefined') {
+                return question.translated[surveyHandler.ccsdk.config.language].multiSelect;
+            } else {
+                return question.multiSelect;
+            }
+        } else {
+            return question.multiSelect;
         }
     }
 
