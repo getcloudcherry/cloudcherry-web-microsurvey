@@ -2,47 +2,51 @@
 import { LanguageTextFilter } from './LanguageTextFilter';
 class ConditionalTextFilter {
   public static filterText(surveyHandler : any, question : any) : string {
-    let conditionaText : string = question.text.split(':');
-    if(question.text.includes(":")){
-        conditionaText = conditionaText[0] + ': <br><span class="text-normal">'+conditionaText[1]+'</span>';
-    } else {
-        conditionaText = conditionaText[0];
-    }
-    if (question.leadingDisplayTexts == null) {
-      conditionaText = LanguageTextFilter.translateQuestionText(surveyHandler, question);
-        return conditionaText;
-    } else if (question.leadingDisplayTexts.length == 0) {
-        conditionaText = LanguageTextFilter.translateQuestionText(surveyHandler, question);
-        return conditionaText;
-    } else {
-        for (let fOption of question.leadingDisplayTexts) {
-            if (fOption != null && fOption.filter != null && fOption.filter.filterquestions != null) {
-                let iSatisfied : boolean = false;
-                let iFailed : boolean = false;
-                for (let filterByQuestion of fOption.filter.filterquestions) {
-                    if (ConditionalTextFilter.isAnd(filterByQuestion)) {
-                        if (ConditionalTextFilter.doesSatisfy(surveyHandler, filterByQuestion) && !iFailed) {
-                            iSatisfied = true;
-                        } else {
-                            iFailed = true;
-                            break;
-                        }
-                    } else if (ConditionalTextFilter.isOr(filterByQuestion)) {
-                        if (ConditionalTextFilter.doesSatisfy(surveyHandler, filterByQuestion)) {
-                            iSatisfied = true;
-                            break;
-                        }
-                    }
-
-                }
-                if (iSatisfied && !iFailed) {
-                    conditionaText = fOption.text;
-                }
-            }
+      let conditionaText = question.text == null ? '' : LanguageTextFilter.translateQuestionText(surveyHandler, question);
+      if(question.text != null){
+          let conditionaText : string = question.text.split(':');
+          if(question.text.includes(":")){
+              conditionaText = conditionaText[0] + ': <br><span class="text-normal">'+conditionaText[1]+'</span>';
+          } else {
+              conditionaText = conditionaText[0];
+          }
         }
-    }
+          if (question.leadingDisplayTexts == null) {
+            conditionaText = LanguageTextFilter.translateQuestionText(surveyHandler, question);
+              return conditionaText;
+          } else if (question.leadingDisplayTexts.length == 0) {
+              conditionaText = LanguageTextFilter.translateQuestionText(surveyHandler, question);
+              return conditionaText;
+          } else {
+              for (let fOption of question.leadingDisplayTexts) {
+                  if (fOption != null && fOption.filter != null && fOption.filter.filterquestions != null) {
+                      let iSatisfied : boolean = false;
+                      let iFailed : boolean = false;
+                      for (let filterByQuestion of fOption.filter.filterquestions) {
+                          if (ConditionalTextFilter.isAnd(filterByQuestion)) {
+                              if (ConditionalTextFilter.doesSatisfy(surveyHandler, filterByQuestion) && !iFailed) {
+                                  iSatisfied = true;
+                              } else {
+                                  iFailed = true;
+                                  break;
+                              }
+                          } else if (ConditionalTextFilter.isOr(filterByQuestion)) {
+                              if (ConditionalTextFilter.doesSatisfy(surveyHandler, filterByQuestion)) {
+                                  iSatisfied = true;
+                                  break;
+                              }
+                          }
+      
+                      }
+                      if (iSatisfied && !iFailed) {
+                          conditionaText = fOption.text;
+                      }
+                  }
+              }
+          }
+      
+          return conditionaText;
 
-    return conditionaText;
 
   }
 

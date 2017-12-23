@@ -692,18 +692,47 @@ class SurveyHandler {
             }
             startRangeLabel = startRangeLabel == null ? "" : startRangeLabel;
             endRangeLabel = endRangeLabel == null ? "" : endRangeLabel;
+            let mobileImageUrl = '';
+            let imageVisibility010 = 'hide';
+            let imageVisibility110 = 'hide';
+            let scaleVisibility = 'show-inline';
+            let scaleImageContainer = '';
+            if(startRange == 0 && endRange == 10){
+              mobileImageUrl = "https://cx.getcloudcherry.com/microsurvey-assets/scale-0-10-neutral.svg";
+              imageVisibility010 = 'show';
+              imageVisibility110 = 'hide';
+              scaleVisibility = 'hide';
+              scaleImageContainer = 'scale-image-container';
+            }else if(startRange == 1 && endRange == 10){
+              mobileImageUrl = "https://cx.getcloudcherry.com/microsurvey-assets/scale-1-10-neutral.svg";
+              imageVisibility010 = 'hide';
+              imageVisibility110 = 'show';
+              scaleVisibility = 'hide';
+              scaleImageContainer = 'scale-image-container';
+            }
+            console.log('scale', startRange, endRange);
             let divider: any = 1;
             if (endRange < 11) {
             } else {
               divider = (endRange - startRange) / 10.0;
             }
             let initial = 0.0;
+            let optionStyle = '';
+            if((window as any).isMobile){
+              if(endRange > 6 && endRange < 11){
+                 optionStyle = 'width:' +((100/(endRange - startRange + 1)) -.5)+ '%';
+              }
+            }
             for (let initial = startRange; initial <= endRange; initial += divider) {
-              options += '<span data-rating="' + initial + '" class="option-number-item option-scale">' + initial + '</span>';
+              options += '<span data-rating="' + initial + '" class="option-number-item option-scale '+scaleVisibility+'" style="'+optionStyle+'">' + initial + '</span>';
             }
             questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
             questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel);
             questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel);
+            questionTemplate = questionTemplate.replace(/{{mobileImageUrl}}/g, mobileImageUrl);
+            questionTemplate = questionTemplate.replace("{{imageVisibility010}}", imageVisibility010);
+            questionTemplate = questionTemplate.replace("{{imageVisibility110}}", imageVisibility110);
+            questionTemplate = questionTemplate.replace("{{scaleImageContainer}}", scaleImageContainer);
           }
 
           break;
@@ -734,13 +763,14 @@ class SurveyHandler {
           questionTemplate = questionTemplate.replace(/{{questionId}}/g, "id" + question.id);
           questionTemplate = questionTemplate.replace("{{isRequired}}", question.isRequired ? "true" : "false");
           questionTemplate = questionTemplate.replace("{{requiredLabel}}", question.isRequired ? "*" : "");
+          questionTemplate = questionTemplate.replace("{{validationHint}}", question.validationHint ? question.validationHint : "");
 
           break;
         case "MultiSelect":
           let acTemplate: string;
           let multiSelect1;
           //get text question template and compile it.
-          multiSelect1 = Array.prototype.slice.call(question.multiSelect);
+          multiSelect1 = Array.prototype.slice.call(LanguageTextFilter.translateMultiSelect(this, question));
           if (question.presentationMode == 'Invert') {
             // console.log('selection option before reverse', multiSelect1);
             multiSelect1.reverse();
@@ -748,7 +778,7 @@ class SurveyHandler {
             // console.log('selection api option', question.multiSelect);
           }
           //get text question template and compile it.
-          if (((question.displayStyle == 'radiobutton/checkbox') || (question.displayStyle == 'icon')) && (question.multiSelect.length < 6)) {
+          if (((question.displayStyle == 'radiobutton/checkbox') || (question.displayStyle == 'icon')) && (multiSelect1.length < 6)) {
             // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
             let checkOptionContainsImage: boolean = self.util.checkOptionContainsImage(multiSelect1);
             // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
@@ -823,7 +853,7 @@ class SurveyHandler {
           let options2: string;
           let multiSelect;
           //get text question template and compile it.
-          multiSelect = Array.prototype.slice.call(question.multiSelect);
+          multiSelect = Array.prototype.slice.call(LanguageTextFilter.translateMultiSelect(this, question));
           if (question.presentationMode == 'Invert') {
             // console.log('selection option before reverse', multiSelect);
             multiSelect.reverse();

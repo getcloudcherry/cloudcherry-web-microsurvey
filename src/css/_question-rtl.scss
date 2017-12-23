@@ -48,6 +48,9 @@ html[dir="rtl"] .cc-question-container__list li{
         padding-left: 15px!important;
 	vertical-align: middle;
 }
+html[dir="rtl"] .cc-question-container[data-type="checkbox"] .cc-question-container__list li{
+    padding-right: 0!important;
+}
 
 html[dir="rtl"] .cc-question-container__list li span{
     padding-right: 15px;

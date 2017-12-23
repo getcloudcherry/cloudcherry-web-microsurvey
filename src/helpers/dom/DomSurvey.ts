@@ -564,6 +564,8 @@ class DomSurvey{
 
   setupListenersQuestionScale( index : number, qId : string ){
     var self : DomSurvey = this;
+    let selectedRating = <HTMLElement>document.querySelectorAll('#' + qId + ' .cc-nps-selected-rating')[0];
+    let selectedRating1 = <HTMLElement>document.querySelectorAll('#' + qId + ' .cc-nps-selected-rating')[1];
     //add id too.
     if(this.util.checkIfListenerExists('#' + qId + ' .option-number-item', this.domListeners)) {
       // return;
@@ -585,6 +587,9 @@ class DomSurvey{
         self.qResponse.text = null;
         self.qResponse.number = previousValue;
         self.qResponse.questionId = qId;
+        selectedRating.innerHTML = previousValue;
+        selectedRating1.innerHTML = previousValue;
+        
       }
       
     }
@@ -601,6 +606,9 @@ class DomSurvey{
       self.qResponse.text = null;
       self.qResponse.number = rating;
       self.qResponse.questionId = qId;
+      selectedRating.innerHTML = '' + rating;
+      selectedRating1.innerHTML = ''+ rating;
+      
       //move to next question automagically
       // alert('calling next questions inside scale');
       let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
