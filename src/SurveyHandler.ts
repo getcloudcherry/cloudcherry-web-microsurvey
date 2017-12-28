@@ -718,10 +718,17 @@ class SurveyHandler {
             }
             let initial = 0.0;
             let optionStyle = '';
+            console.log((window as any).isMobile);
             if((window as any).isMobile){
               if(endRange > 6 && endRange < 11){
                  optionStyle = 'width:' +((100/(endRange - startRange + 1)) -.5)+ '%';
               }
+            }else{
+              imageVisibility010 = 'hide';
+              imageVisibility110 = 'hide';
+              scaleVisibility = 'show-inline';
+              scaleImageContainer = '';
+
             }
             for (let initial = startRange; initial <= endRange; initial += divider) {
               options += '<span data-rating="' + initial + '" class="option-number-item option-scale '+scaleVisibility+'" style="'+optionStyle+'">' + initial + '</span>';
