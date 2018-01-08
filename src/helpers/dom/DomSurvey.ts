@@ -968,7 +968,6 @@ class DomSurvey{
       //remove listeners
       (window as any).ccsdkDebug?console.log("csat question - previous listeners exists"):'';
       this.removePrevListener('#' + qId + ' .option-smile-box');
-
     }
     //set previous value
     let questionId: any;

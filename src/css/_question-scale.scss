@@ -130,6 +130,20 @@
 	left: 0;
 	position: absolute;
 }
+.option-left-rating-text-small-container{
+	max-width: 57px;
+    text-align: left;
+    max-height: 37px;
+	overflow: hidden;
+	bottom:-44px;
+}
+.option-right-rating-text-small-container{
+	max-width: 57px;
+    text-align: right;
+    max-height: 37px;
+	overflow: hidden;
+	bottom:-44px;
+}
 .cc-question-container[data-type="smile"] .option-left-rating-text,
 .cc-question-container[data-type="star"] .option-left-rating-text{
 	left:7px;
