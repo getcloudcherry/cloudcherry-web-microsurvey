@@ -1087,7 +1087,11 @@ class SurveyHandler {
             (question.conditionalFilter.filterquestions == null
               || question.conditionalFilter.filterquestions.length == 0)
           ) {
-            this.questionsToDisplay.push(question);
+            //check supported display types
+            let supportedDisplayTypes = "Slider, Scale, Text, Number, MultilineText, MultiSelect, Smile - 5, Star - 5";
+            if(supportedDisplayTypes.indexOf(question.displayType) > -1){
+              this.questionsToDisplay.push(question);
+            }
           } else {
             //if conditions full filled, fill it in questionsToDisplay
             if(ConditionalFlowFilter.filterQuestion(this, question)) {
