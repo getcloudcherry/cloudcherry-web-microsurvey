@@ -36,6 +36,7 @@
     background-repeat: no-repeat;
     max-height: 50px;
     overflow: hidden;
+    margin-left : 70px;
 }
 .cc-select-trigger:after {
     position: absolute;
@@ -174,5 +175,7 @@
     .cc-select-trigger {
         min-width: 100%;
         width: auto;
+        margin-left : 0px;
+        
     }
 }

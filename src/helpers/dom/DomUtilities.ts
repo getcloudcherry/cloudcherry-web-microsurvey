@@ -395,6 +395,8 @@ generateCheckboxOptions(arr : any, id : string){
        let optHtml : string = templates.option_checkbox;
        let opt : any = arr[i].split(';')
        optHtml = optHtml.replace(/{{label}}/g, arr[i] );
+      optHtml = optHtml.replace(/{{labelFor}}/g, arr[i].replace(/\s+/g, '-'));
+       
        res += optHtml;
 
     }

@@ -4,7 +4,16 @@ class LanguageTextFilter {
         if(!surveyHandler.ccsdk.config.language.includes('Default')) {
             if( question.translated != null && 
                 typeof question.translated[surveyHandler.ccsdk.config.language] !== 'undefined') {
-                return question.translated[surveyHandler.ccsdk.config.language].text;
+                if (question.translated[surveyHandler.ccsdk.config.language].text != null) {
+                    let qText = question.translated[surveyHandler.ccsdk.config.language].text.split(':');
+                    if (question.translated[surveyHandler.ccsdk.config.language].text.includes(":")) {
+                        qText = qText[0] + ': <br><span class="text-normal">' + qText[1] + '</span>';
+                    }
+                    return qText;
+                } else {
+                    return question.translated[surveyHandler.ccsdk.config.language].text == null ? '' : question.translated[surveyHandler.ccsdk.config.language].text;
+                }
+                // return question.translated[surveyHandler.ccsdk.config.language].text;
             } else {
                 if(question.text != null){
                     let qText = question.text.split(':');

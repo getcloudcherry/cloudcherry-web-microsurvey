@@ -90,7 +90,14 @@
 }
 .radio-toggle .cc-question-container__list li span{
     padding: 10px;
-    width: auto;
+    // width: auto;
+}
+@media(min-width:1000px){
+    .radio-toggle .cc-question-container__list li span label{
+		overflow:hidden;
+		max-height:100px;
+		display: block;
+	}
 }
 
 @media (min-width: 767px) and (max-width: 992px){
