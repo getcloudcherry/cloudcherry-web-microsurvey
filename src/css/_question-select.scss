@@ -10,6 +10,8 @@
 .cc-select {
     position: relative;
     display: inline-block;
+    margin-left : 70px;
+    
 }
 .cc-select-trigger {
     position: relative;
@@ -36,7 +38,6 @@
     background-repeat: no-repeat;
     max-height: 50px;
     overflow: hidden;
-    margin-left : 70px;
 }
 .cc-select-trigger:after {
     position: absolute;
@@ -172,10 +173,11 @@
     .cc-select,.cc-select-wrapper{
         min-width: 100%;
     }
+    .cc-select{
+        margin-left : 0px;
+    }
     .cc-select-trigger {
         min-width: 100%;
         width: auto;
-        margin-left : 0px;
-        
     }
 }
