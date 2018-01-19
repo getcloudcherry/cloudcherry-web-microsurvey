@@ -301,7 +301,7 @@ generateRadioImageOptions(arr : any, id : string){
        optHtml = optHtml.replace(/{{qId}}/g, "nm"+id );
        optHtml = optHtml.replace(/{{label}}/g, opt[0] );
       optHtml = optHtml.replace(/{{labelFor}}/g, opt[0].replace(/\s+/g, '-'));
-       optHtml = optHtml.replace(/{{value}}/g, opt[0] );
+       optHtml = optHtml.replace(/{{value}}/g, '"'+opt[0]+'"' );
        res += optHtml;
 
     }
@@ -320,7 +320,7 @@ generateRadioImageOptions(arr : any, id : string){
         optHtml = optHtml.replace(/{{qId}}/g, "nm" + id);
         optHtml = optHtml.replace(/{{label}}/g, opt[0]);
         optHtml = optHtml.replace(/{{labelFor}}/g, opt[0].replace(/\s+/g, '-'));
-        optHtml = optHtml.replace(/{{value}}/g, opt[0]);
+        optHtml = optHtml.replace(/{{value}}/g, '"'+opt[0]+'"');
         res += optHtml;
 
       }
@@ -339,7 +339,7 @@ generateRadioImageOptions(arr : any, id : string){
         optHtml = optHtml.replace(/{{qId}}/g, "nm" + id);
         optHtml = optHtml.replace(/{{label}}/g, opt[0]);
         optHtml = optHtml.replace(/{{labelFor}}/g, opt[0].replace(/\s+/g, '-'));
-        optHtml = optHtml.replace(/{{value}}/g, opt[0]);
+        optHtml = optHtml.replace(/{{value}}/g, '"'+opt[0]+'"');
         res += optHtml;
 
       }
@@ -359,7 +359,7 @@ generateRadioImageOptions(arr : any, id : string){
         optHtml = optHtml.replace(/{{qId}}/g, "nm" + id);
         optHtml = optHtml.replace(/{{label}}/g, opt[0]);
         optHtml = optHtml.replace(/{{labelFor}}/g, opt[0].replace(/\s+/g, '-'));
-        optHtml = optHtml.replace(/{{value}}/g, opt[0]);
+        optHtml = optHtml.replace(/{{value}}/g, '"'+opt[0]+'"');
         res += optHtml;
 
       }
@@ -379,7 +379,7 @@ generateRadioImageOptions(arr : any, id : string){
         optHtml = optHtml.replace(/{{qId}}/g, "nm" + id);
         optHtml = optHtml.replace(/{{label}}/g, opt[0]);
         optHtml = optHtml.replace(/{{labelFor}}/g, opt[0].replace(/\s+/g, '-'));
-        optHtml = optHtml.replace(/{{value}}/g, opt[0]);
+        optHtml = optHtml.replace(/{{value}}/g, '"'+opt[0]+'"');
         res += optHtml;
 
       }
@@ -396,6 +396,7 @@ generateCheckboxOptions(arr : any, id : string){
        let opt : any = arr[i].split(';')
        optHtml = optHtml.replace(/{{label}}/g, arr[i] );
       optHtml = optHtml.replace(/{{labelFor}}/g, arr[i].replace(/\s+/g, '-'));
+      optHtml = optHtml.replace(/{{value}}/g, '"'+arr[i]+'"');
        
        res += optHtml;
 
