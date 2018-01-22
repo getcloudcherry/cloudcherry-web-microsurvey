@@ -352,7 +352,7 @@ p.cc-thankyou-powered{
 @media(min-width: 1000px){
 	.cc-question-container__text {
 		 max-height: 110px;
-    	// overflow: hidden;
+    	overflow: hidden;
 	}
 	
 }
@@ -364,6 +364,8 @@ p.cc-thankyou-powered{
 	.cc-question-container__text {
 		width: 24%;
 		padding-right: 20px;
+		max-height: 110px;
+    	overflow: hidden;
 	}
 	.cc-question-container__content.rating-color {
 		margin-left: 0px;
