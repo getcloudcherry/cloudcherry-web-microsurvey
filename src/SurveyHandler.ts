@@ -733,16 +733,19 @@ class SurveyHandler {
             for (let initial = startRange; initial <= endRange; initial += divider) {
               options += '<span data-rating="' + initial + '" class="option-number-item option-scale '+scaleVisibility+'" style="'+optionStyle+'">' + initial + '</span>';
             }
-            if ((endRange-startRange+1) < 5) {
+            if ((endRange-startRange+1) < 8) {
               var oleft = document.querySelectorAll(".option-left-rating-text")[0];
               var oright = document.querySelectorAll(".option-right-rating-text")[0];
               var optionLeftExtraClass = 'option-left-rating-text-small-container';
               var optionRightExtraClass = 'option-right-rating-text-small-container';
+              var extraStyle = '"max-width:'+((endRange - startRange + 1)*38/2 - 5) +'px";';
 
             }
             questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
             questionTemplate = questionTemplate.replace(/{{optionLeftExtraClass}}/g, optionLeftExtraClass);
             questionTemplate = questionTemplate.replace(/{{optionRightExtraClass}}/g, optionRightExtraClass);
+            questionTemplate = questionTemplate.replace(/{{optionLeftStyle}}/g, extraStyle);
+            questionTemplate = questionTemplate.replace(/{{optionRightStyle}}/g, extraStyle);
             questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel);
             questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel);
             questionTemplate = questionTemplate.replace(/{{mobileImageUrl}}/g, mobileImageUrl);
@@ -1088,7 +1091,7 @@ class SurveyHandler {
               || question.conditionalFilter.filterquestions.length == 0)
           ) {
             //check supported display types
-            let supportedDisplayTypes = "Slider, Scale, Text, Number, MultilineText, MultiSelect, Smile - 5, Star - 5";
+            let supportedDisplayTypes = "Slider, Scale, Text, Number, MultilineText, MultiSelect, Smile-5, Star-5";
             if(supportedDisplayTypes.indexOf(question.displayType) > -1){
               this.questionsToDisplay.push(question);
             }
