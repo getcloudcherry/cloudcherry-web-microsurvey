@@ -733,7 +733,7 @@ class SurveyHandler {
             for (let initial = startRange; initial <= endRange; initial += divider) {
               options += '<span data-rating="' + initial + '" class="option-number-item option-scale '+scaleVisibility+'" style="'+optionStyle+'">' + initial + '</span>';
             }
-            if ((endRange-startRange+1) < 8) {
+            if ((endRange-startRange+1) <= 10) {
               var oleft = document.querySelectorAll(".option-left-rating-text")[0];
               var oright = document.querySelectorAll(".option-right-rating-text")[0];
               var optionLeftExtraClass = 'option-left-rating-text-small-container';
