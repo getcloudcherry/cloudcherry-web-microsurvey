@@ -32,6 +32,7 @@ class Survey {
   thorttlingLogic : any;
   loginData : any;
   debug : false;
+  surveyStartTime : number;
 
   constructor(surveyToken : string, config : CCSDKConfig) {
     this.isThrottled = true;

@@ -68,6 +68,8 @@ class SurveyHandler {
     this.util = new DomUtilities();
     this.dom = ccsdk.dom;
     this.displayThankYouCb = (e: any) => {
+      //perform final post
+      this.finalPost();
       let thankyouHtml: any = templates.thankyou;
       // thankyouHtml = thankyouHtml.replace("{{question}}", this.surveyData.thankyouText);
       // thankyouHtml = thankyouHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "thankyouText"));
@@ -120,8 +122,9 @@ class SurveyHandler {
           // self.ccsdk.dom.nextQuestion();
           break;
         case 'radio':
-          response.text = null;
-          response.number = Number(data.data.number);
+          response.text = data.data.text;
+          response.number = null;
+          // response.number = Number(data.data.number);
           self.postPartialAnswer(data.index, response);
           self.ccsdk.dom.domSelectElements();
           // self.ccsdk.dom.nextQuestion();
@@ -256,6 +259,7 @@ class SurveyHandler {
   displayWelcomeQuestion() {
     //call this with true when welcome container is clicked.
     // this.ccsdk.addThrottlingEntries(false);
+    this.ccsdk.surveyStartTime = new Date();
     let self = this;
     let welcomeHtml: any = templates.question_start;
     welcomeHtml = welcomeHtml.replace("{{surveyToken}}", this.surveyToken);
@@ -285,7 +289,7 @@ class SurveyHandler {
     let self = this;
     let now = new Date();
     if (keepAlive) {
-      console.log((now.getTime() - this.welcomeQuestionDisplayTime.getTime()) / 1000);
+      // console.log((now.getTime() - this.welcomeQuestionDisplayTime.getTime()) / 1000);
       if (keepAlive <= (now.getTime() - this.welcomeQuestionDisplayTime.getTime()) / 1000) {
         self.killWelcomeQuestion();
       }
@@ -447,7 +451,7 @@ class SurveyHandler {
 
   fillPrefillQuestion(id: any, value: any, valueType: string) {
     let question: any = this.getQuestionById(id);
-    console.log(this.questions);
+    // console.log(this.questions);
     let response: any;
     let responseStored = this.getPrefillResponseById(id);
     if (responseStored != null) {
@@ -486,7 +490,7 @@ class SurveyHandler {
     if(typeof this.prefillResponses !== 'undefined' && this.prefillResponses.length > 0) {
       return RequestHelper.post(surveyPartialUrl, this.prefillResponses);
     } else {
-      console.log('No Prefill data');
+      // console.log('No Prefill data');
       return;
     }
   }
@@ -556,28 +560,38 @@ class SurveyHandler {
     let onSurveyAnswerEvent = new CustomEvent(Constants.SURVEY_ANSWER_EVENT + "-" + this.surveyToken);
     document.dispatchEvent(onSurveyAnswerEvent);
     if (question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id) {
-      //last question
-      let postSurveyFinalUrl = Config.POST_SURVEY_FINAL.replace("{tokenId}", this.ccsdk.surveyToken);
-      postSurveyFinalUrl = Config.API_URL + postSurveyFinalUrl;
-      RequestHelper.post(surveyPartialUrl, data);
-      let answersAll = [];
-      for (let answer in this.surveyAnswers) {
-        answersAll.push(this.surveyAnswers[answer]);
-      }
-      let finalData = {
-        id: this.ccsdk.surveyToken,
-        user: this.ccsdk.config.username,
-        locationId: null,
-        responses: answersAll,
-        nps: 0,
-        surveyClient: Constants.SURVEY_CLIENT,
-        responseDuration: 0
-      };
-      return RequestHelper.post(postSurveyFinalUrl, finalData);
+     //last question post moved to separate function
+      return RequestHelper.post(surveyPartialUrl, data);
+     
     } else {
       return RequestHelper.post(surveyPartialUrl, data);
     }
 
+  }
+
+  finalPost(){
+    //last question
+    let postSurveyFinalUrl = Config.POST_SURVEY_FINAL.replace("{tokenId}", this.ccsdk.surveyToken);
+    postSurveyFinalUrl = Config.API_URL + postSurveyFinalUrl;
+    let answersAll = [];
+    for (let answer in this.surveyAnswers) {
+      answersAll.push(this.surveyAnswers[answer]);
+    }
+    for (let answer in this.prefillResponses){
+      answersAll.push(this.prefillResponses[answer]);
+    }
+    let timeAtPost = new Date().getTime();
+    let finalData = {
+      id: this.ccsdk.surveyToken,
+      user: this.ccsdk.config.username,
+      locationId: null,
+      responses: answersAll,
+      nps: 0,
+      surveyClient: Constants.SURVEY_CLIENT,
+      responseDuration: Math.floor((timeAtPost - this.ccsdk.surveyStartTime.getTime()) / 1000)
+    };
+    return RequestHelper.post(postSurveyFinalUrl, finalData);
+    
   }
 
   /**
@@ -710,7 +724,7 @@ class SurveyHandler {
               scaleVisibility = 'hide';
               scaleImageContainer = 'scale-image-container';
             }
-            console.log('scale', startRange, endRange);
+            // console.log('scale', startRange, endRange);
             let divider: any = 1;
             if (endRange < 11) {
             } else {
@@ -718,7 +732,7 @@ class SurveyHandler {
             }
             let initial = 0.0;
             let optionStyle = '';
-            console.log((window as any).isMobile);
+            // console.log((window as any).isMobile);
             if((window as any).isMobile){
               if(endRange > 6 && endRange < 11){
                  optionStyle = 'width:' +((100/(endRange - startRange + 1)) -.5)+ '%';
@@ -728,6 +742,7 @@ class SurveyHandler {
               imageVisibility110 = 'hide';
               scaleVisibility = 'show-inline';
               scaleImageContainer = '';
+              mobileImageUrl="";
 
             }
             for (let initial = startRange; initial <= endRange; initial += divider) {
@@ -739,7 +754,6 @@ class SurveyHandler {
               var optionLeftExtraClass = 'option-left-rating-text-small-container';
               var optionRightExtraClass = 'option-right-rating-text-small-container';
               var extraStyle = '"max-width:'+((endRange - startRange + 1)*38/2 - 5) +'px";';
-
             }
             questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
             questionTemplate = questionTemplate.replace(/{{optionLeftExtraClass}}/g, optionLeftExtraClass);
@@ -748,7 +762,7 @@ class SurveyHandler {
             questionTemplate = questionTemplate.replace(/{{optionRightStyle}}/g, extraStyle);
             questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel);
             questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel);
-            questionTemplate = questionTemplate.replace(/{{mobileImageUrl}}/g, mobileImageUrl);
+            questionTemplate = questionTemplate.replace(/{{mobileImageUrl}}/g, '"'+mobileImageUrl+'"');
             questionTemplate = questionTemplate.replace("{{imageVisibility010}}", imageVisibility010);
             questionTemplate = questionTemplate.replace("{{imageVisibility110}}", imageVisibility110);
             questionTemplate = questionTemplate.replace("{{scaleImageContainer}}", scaleImageContainer);
