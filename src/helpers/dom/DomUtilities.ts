@@ -167,9 +167,9 @@ class DomUtilities{
 
   trigger(el : any, eventName : string, data : Object){
     if (typeof CustomEvent === 'function') {
-      var event = new CustomEvent(eventName, {detail: data});
+      var event = <any>new CustomEvent(eventName, {detail: data});
     } else {
-      var event = document.createEvent('CustomEvent');
+      var event = <any>document.createEvent('CustomEvent');
       event.initCustomEvent(eventName, true, true, data);
     }
 
