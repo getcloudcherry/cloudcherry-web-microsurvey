@@ -135,14 +135,32 @@
     text-align: left;
     max-height: 37px;
 	overflow: hidden;
-	bottom:-44px;
+	bottom:auto;
+	top:45px;
 }
 .option-right-rating-text-small-container{
 	max-width: 57px;
     text-align: right;
     max-height: 37px;
 	overflow: hidden;
-	bottom:-44px;
+	bottom:auto;
+	top:45px;
+}
+.option-left-rating-text-small-container-smile{
+	max-width: 57px;
+    text-align: left;
+    max-height: 37px;
+	overflow: hidden;
+	bottom:auto!important;
+	top:57px;
+}
+.option-right-rating-text-small-container-smile{
+	max-width: 57px;
+    text-align: right;
+    max-height: 37px;
+	overflow: hidden;
+	bottom:auto!important;
+	top:57px;
 }
 .cc-question-container[data-type="smile"] .option-left-rating-text,
 .cc-question-container[data-type="star"] .option-left-rating-text{

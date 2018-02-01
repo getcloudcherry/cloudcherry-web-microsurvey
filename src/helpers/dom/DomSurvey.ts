@@ -328,7 +328,7 @@ class DomSurvey{
           && this.qResponse.text == this.ccsdk.survey.answers[this.currentQuestionId].text
           && this.qResponse.number == this.ccsdk.survey.answers[this.currentQuestionId].number
         ) {
-          console.log('no submit');
+          // console.log('no submit');
           //don't submit if already submitted.
         } else if (typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined'
           &&  !this.qResponse.text
@@ -732,7 +732,9 @@ class DomSurvey{
         return c.value;
       }).join(',');
 
-      // (window as any).ccsdkDebug?console.log('Checkbox selected',rating):'';
+      (window as any).ccsdkDebug?console.log('Checkbox selected',rating):'';
+      console.log('Checkbox selected', rating);
+
       self.qResponse.type = 'checkbox';
       self.qResponse.text = rating;
       self.qResponse.number = null;
@@ -760,31 +762,32 @@ class DomSurvey{
     questionId = qId.substring(2, qId.length);
     (window as any).ccsdkDebug?console.log('radio question', this.ccsdk.survey.answers[questionId]):'';
     if (typeof this.ccsdk.survey.answers[questionId] !== 'undefined' && this.ccsdk.survey.answers[questionId] !== '') {
-      let previousValue = this.ccsdk.survey.answers[questionId].number;
+      let previousValue = this.ccsdk.survey.answers[questionId].text;
       let previousSelection = document.querySelectorAll('#' + qId + ' input[value="' + previousValue + '"]')[0];
       (window as any).ccsdkDebug?console.log('radio previous selection', previousSelection):'';
       if (typeof previousSelection !== 'undefined') {
         this.util.addClass(previousSelection, "selected");
         previousSelection.setAttribute('checked', 'checked');
         self.qResponse.type = 'radio';
-        self.qResponse.text = null;
-        self.qResponse.number = previousValue;
+        self.qResponse.text = previousValue;
+        self.qResponse.number = null;
         self.qResponse.questionId = qId;
       }
 
     }
 
 
+
     let ref = this.util.initListener('click', '#'+qId+' .cc-checkbox input', function(){
       // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox');
-      let rating : number = this.value;
+      let rating : string = this.value;
       // self.util.removeClassAll(allOptions, "selected");
       // self.util.addClass(this, "selected");
       // this.parentNode.querySelectorAll(".option-number-input")[0].value = rating ;
       // (window as any).ccsdkDebug?console.log('Star selected',rating):'';
       self.qResponse.type = 'radio';
-      self.qResponse.text = null;
-      self.qResponse.number = rating;
+      self.qResponse.text = rating;
+      self.qResponse.number = null;
       self.qResponse.questionId = qId;
       let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
       document.dispatchEvent(onSurveyClickEvent);
