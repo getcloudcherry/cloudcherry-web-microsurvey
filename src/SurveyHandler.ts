@@ -748,18 +748,17 @@ class SurveyHandler {
             for (let initial = startRange; initial <= endRange; initial += divider) {
               options += '<span data-rating="' + initial + '" class="option-number-item option-scale '+scaleVisibility+'" style="'+optionStyle+'">' + initial + '</span>';
             }
-            if ((endRange-startRange+1) <= 10) {
-              var oleft = document.querySelectorAll(".option-left-rating-text")[0];
-              var oright = document.querySelectorAll(".option-right-rating-text")[0];
+            if ((endRange-startRange+1) <= 11) {
               var optionLeftExtraClass = 'option-left-rating-text-small-container';
               var optionRightExtraClass = 'option-right-rating-text-small-container';
-              var extraStyle = '"max-width:'+((endRange - startRange + 1)*38/2 - 5) +'px";';
+              var optionMaxWidth = (((endRange - startRange + 1)*38/2) - 5) +'px';
+              console.log(optionMaxWidth);
             }
             questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
+            // questionTemplate = questionTemplate.replace("{{maxWidth}}", optionMaxWidth);
+            questionTemplate = questionTemplate.replace(/maxWidth/g, optionMaxWidth);
             questionTemplate = questionTemplate.replace(/{{optionLeftExtraClass}}/g, optionLeftExtraClass);
             questionTemplate = questionTemplate.replace(/{{optionRightExtraClass}}/g, optionRightExtraClass);
-            questionTemplate = questionTemplate.replace(/{{optionLeftStyle}}/g, extraStyle);
-            questionTemplate = questionTemplate.replace(/{{optionRightStyle}}/g, extraStyle);
             questionTemplate = questionTemplate.replace("{{leftLabel}}", startRangeLabel);
             questionTemplate = questionTemplate.replace("{{rightLabel}}", endRangeLabel);
             questionTemplate = questionTemplate.replace(/{{mobileImageUrl}}/g, '"'+mobileImageUrl+'"');
