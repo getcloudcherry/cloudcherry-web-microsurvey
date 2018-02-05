@@ -259,6 +259,8 @@ class SurveyHandler {
   displayWelcomeQuestion() {
     //call this with true when welcome container is clicked.
     // this.ccsdk.addThrottlingEntries(false);
+    let onSurveyImpressionEvent = new CustomEvent(Constants.SURVEY_IMPRESSION_EVENT + "-" + this.surveyToken);
+    document.dispatchEvent(onSurveyImpressionEvent);
     this.ccsdk.surveyStartTime = new Date();
     let self = this;
     let welcomeHtml: any = templates.question_start;
@@ -657,8 +659,12 @@ class SurveyHandler {
           } else {
             let tileColor = '';
             let style = '';
-            if (question.presentationMode != null && question.presentationMode.includes("Color")) {
+            if(question.attributes != null && question.attributes.scaleColor.length > 0){
+              tileColor = question.attributes.scaleColor;
+            }else if (question.presentationMode != null && question.presentationMode.includes("Color")) {
               tileColor = question.presentationMode.split(':')[1];
+            }
+            if(tileColor.length > 0){
               let tileColorDark = this.util.shadeBlendConvert(-0.3, tileColor, undefined);
               style = '\
                 <style>\

@@ -5,7 +5,8 @@ class Constants {
   static CCTriggerSiteElapsedTime = "cc-trigger-site-elapsed-time";
   static CCTriggerSitePageViewCount = "cc-trigger-site-page-count";
   static CCTriggerIndividualPageViewCount = "cc-trigger-individual-page-count";
-  static SURVEY_START_EVENT = "onImpression";
+  static SURVEY_IMPRESSION_EVENT = "onImpression";
+  static SURVEY_START_EVENT = "onStart";
   static SURVEY_DATA_EVENT = "onData";
   static SURVEY_END_EVENT = "onEnd";
   static SURVEY_CLOSE_EVENT = "onClose";
