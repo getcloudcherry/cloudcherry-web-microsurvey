@@ -1,10 +1,10 @@
-.range {
+.cc-sdk .range {
  -webkit-appearance: none;
  -moz-appearance: none;
  width: 500px;
 }
 
-input[type=range]::-webkit-slider-runnable-track {
+.cc-sdk input[type=range]::-webkit-slider-runnable-track {
  -webkit-appearance: none;
  background: #ff403d ;
     background: -moz-linear-gradient(-45deg, #ff403d 0%, #992a28 100%);
@@ -17,11 +17,11 @@ input[type=range]::-webkit-slider-runnable-track {
  
 }
 
-input[type=range]:focus {
+.cc-sdk input[type=range]:focus {
  outline: none;
 }
 
-input[type=range]::-moz-range-track {
+.cc-sdk input[type=range]::-moz-range-track {
  -moz-appearance: none;
  background: #ff403d ;
     background: -moz-linear-gradient(-45deg, #ff403d 0%, #992a28 100%);
@@ -31,7 +31,7 @@ input[type=range]::-moz-range-track {
  height: 1px;
 }
 
-input[type=range]::-webkit-slider-thumb {
+.cc-sdk input[type=range]::-webkit-slider-thumb {
  -webkit-appearance: none;
  border: 1px solid #ff403d ;
  border-radius: 50%;
@@ -46,7 +46,7 @@ input[type=range]::-webkit-slider-thumb {
  
 }
 
-input[type=range]::-moz-range-thumb {
+.cc-sdk input[type=range]::-moz-range-thumb {
  -moz-appearance: none;
  border: 1px solid #ff403d ;
  border-radius: 50%;
@@ -59,24 +59,24 @@ input[type=range]::-moz-range-thumb {
  cursor: -moz-grab;
 }
 
-input[type=range]::-moz-range-thumb:before{
+.cc-sdk input[type=range]::-moz-range-thumb:before{
     content:'asd';
 }
 
 
-input[type=range]::-webkit-slider-thumb:active {
+.cc-sdk input[type=range]::-webkit-slider-thumb:active {
  cursor: -webkit-grabbing;
 }
 
-input[type=range]::-moz-range-thumb:active {
+.cc-sdk input[type=range]::-moz-range-thumb:active {
  cursor: -moz-grabbing;
 }
 
-.cc-question-container__content.range-slider {
+.cc-sdk .cc-question-container__content.range-slider {
    height: 50px;
    padding-top: 9px;
 }
-.slider-tip{
+.cc-sdk .slider-tip{
     background: #eb1c23;
     padding: 8px 9px 9px 9px;
     position: absolute;
@@ -98,19 +98,19 @@ input[type=range]::-moz-range-thumb:active {
     text-align: center;
     font-weight: bold;
 }
-.slider-tip:after{
+.cc-sdk .slider-tip:after{
     border-width: 5px 5px 0;
     border-top-color: #000;
 }
 
 
 @media(max-width: 1024px){
-    .range{
+    .cc-sdk .range{
        width: 100%;
     }
 }
 
-input.range.blue::-moz-range-track,
-input.range.blue::-webkit-slider-runnable-track  {
+.cc-sdk input.range.blue::-moz-range-track,
+.cc-sdk input.range.blue::-webkit-slider-runnable-track  {
     background:blue;
 }

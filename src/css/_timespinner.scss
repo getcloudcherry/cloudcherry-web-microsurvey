@@ -1,4 +1,4 @@
-.chart {
+.cc-sdk .chart {
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
 	box-sizing: border-box;
@@ -9,17 +9,17 @@
 	vertical-align: top;
 	width: 21px;
 }
-.chart span {
+.cc-sdk .chart span {
 	display: block;
 	font-size: 2em;
 	font-weight: normal;
 }
-.chart canvas {
+.cc-sdk .chart canvas {
 	left: 0;
 	position: absolute;
 	top: 0;
 }
-.loader{
+.cc-sdk .loader{
 	height: 21px;
 	left: 28px;
 	position: absolute;
@@ -28,13 +28,13 @@
 }
 
 @media (min-width: 767px){
-	.chart canvas{
+	.cc-sdk .chart canvas{
 		margin-left: 10px;
 	}
 }
 
 @media (max-width: 767px){
-	.loader{
+	.cc-sdk .loader{
 		position: relative;
 		left: auto;
 		top: 0;

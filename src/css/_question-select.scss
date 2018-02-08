@@ -1,19 +1,19 @@
-.cc-select-wrapper {
+.cc-sdk .cc-select-wrapper {
     position: relative;
     display: inline-block;
     user-select: none;
     z-index:11;
 }
-.cc-select-wrapper select {
+.cc-sdk .cc-select-wrapper select {
     display: none;
 }
-.cc-select {
+.cc-sdk .cc-select {
     position: relative;
     display: inline-block;
     margin-left : 70px;
     
 }
-.cc-select-trigger {
+.cc-sdk .cc-select-trigger {
     position: relative;
     display: block;
     width: 130px;
@@ -39,7 +39,7 @@
     max-height: 50px;
     overflow: hidden;
 }
-.cc-select-trigger:after {
+.cc-sdk .cc-select-trigger:after {
     position: absolute;
     display: block;
     content: '';
@@ -52,11 +52,11 @@
     transition: all .2s ease-in-out;
     transform-origin: 50% 0;
 }
-.cc-select.opened .cc-select-trigger:after {
+.cc-sdk .cc-select.opened .cc-select-trigger:after {
     margin-top: 3px;
     transform: rotate(-135deg) translateY(-50%);
 }
-.cc-select-options-container {
+.cc-sdk .cc-select-options-container {
     position: absolute;
     display: block;
     top: 100%;
@@ -81,7 +81,7 @@
     overflow-y: scroll;
 }
 
-.cc-select-options{
+.cc-sdk .cc-select-options{
     /*  max-height: 150px;
     overflow-y: scroll; */
     // overflow: scroll;
@@ -90,19 +90,19 @@
     height: 100%;
     width: 110%;
 }
-.cc-select.opened .cc-select-options-container {
+.cc-sdk .cc-select.opened .cc-select-options-container {
     opacity: 1;
     visibility: visible;
     pointer-events: all;
     transform: translateY(calc( -100% - 65px ));
 }
 
-.cc-popup-container-2.top .cc-select-options-container,
-.cc-popup-container-2.top .cc-select.opened .cc-select-options-container{
+.cc-sdk .cc-popup-container-2.top .cc-select-options-container,
+.cc-sdk .cc-popup-container-2.top .cc-select.opened .cc-select-options-container{
     transform: translateY(calc( -100% + 75px ));
 }
 
-.cc-select-options:before {
+.cc-sdk .cc-select-options:before {
     /*       position: absolute;
     display: block;
     content: '';
@@ -115,10 +115,10 @@
     transform: rotate(45deg);
     transition: all .4s ease-in-out; */
 }
-.option-hover:before {
+.cc-sdk .option-hover:before {
     background: #f9f9f9;
 }
-.cc-select-option {
+.cc-sdk .cc-select-option {
     position: relative;
     display: block;
     padding: 0 12px;
@@ -133,50 +133,51 @@
     margin: 0;
     width: 100%;
 }
-.cc-select-option:first-of-type {
+.cc-sdk .cc-select-option:first-of-type {
     border-radius: 4px 4px 0 0;
 }
-.cc-select-option:last-of-type {
+.cc-sdk .cc-select-option:last-of-type {
     border-bottom: 0;
     border-radius: 0 0 4px 4px;
 }
-.cc-select-option:hover,
-.cc-select-option.selection {
+.cc-sdk .cc-select-option:hover,
+.cc-sdk .cc-select-option.selection {
     // background: #f9f9f9;
     background: #eaeaea;
     // margin: 0;
     // width: 100%;
 }
 
-.cc-select-wrapper.down .cc-select-options-container {
+.cc-sdk .cc-select-wrapper.down .cc-select-options-container {
     transform: translateY(calc( 20px ));
 }
-.cc-select-wrapper.down .cc-select.opened .cc-select-options-container {
+.cc-sdk .cc-select-wrapper.down .cc-select.opened .cc-select-options-container {
     transform: translateY(calc( 20px ));
 }
 
-.option-yes-no.No{
+.cc-sdk .option-yes-no.No{
     // background:url('https://cx.getcloudcherry.com/microsurvey-assets/Star_selected.svg') no-repeat;	
     // background-size:100%;
     // position: relative;
     // top: 4px;
 }
 
-.cc-question-container[data-type="nps"] .cc-question-container__content,
-    .cc-question-container[data-type="scale"] .cc-question-container__content{
+.cc-sdk .cc-question-container[data-type="nps"] .cc-question-container__content,
+.cc-sdk .cc-question-container[data-type="scale"] .cc-question-container__content{
     width: 40%;
 }
 
 
 
 @media (max-width: 767px){
-    .cc-select,.cc-select-wrapper{
+    .cc-sdk .cc-select,
+    .cc-sdk .cc-select-wrapper{
         min-width: 100%;
     }
-    .cc-select{
+    .cc-sdk .cc-select{
         margin-left : 0px;
     }
-    .cc-select-trigger {
+    .cc-sdk .cc-select-trigger {
         min-width: 100%;
         width: auto;
     }

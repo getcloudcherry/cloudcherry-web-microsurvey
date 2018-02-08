@@ -1,38 +1,38 @@
-body{
-	margin: 0;
-	padding: 0;
-	font-family: "open sans", sans-serif;
-}
-ul{
+// body{
+// 	margin: 0;
+// 	padding: 0;
+// 	font-family: "open sans", sans-serif;
+// }
+.cc-sdk ul{
 	padding-left: 0;
 	list-style-type: none;
 	margin: 0;
 }
 
-a,a:hover,a:focus{
+.cc-sdk a,.cc-sdk a:hover,.cc-sdk a:focus{
 	text-decoration: none;
 	color: inherit;
 }
-*, *:before, *:after {
+.cc-sdk *, .cc-sdk *:before, .cc-sdk *:after {
 	box-sizing: border-box;
 }
-p{
+.cc-sdk p{
 	color: inherit;
 	margin: 0;
 }
 
-map area {
+.cc-sdk map area {
 	outline:0;
 	cursor: pointer;
 }
-map area.selected{
+.cc-sdk map area.selected{
 	outline: 0px;
     outline-color: #0a2135;
     outline-width: 0px;
     outline-style: solid;
 }
 
-map area:hover{
+.cc-sdk map area:hover{
 	outline:1;
 }
 
