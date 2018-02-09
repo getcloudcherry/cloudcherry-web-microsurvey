@@ -1,4 +1,4 @@
-.cc-loaderimg {
+.cc-sdk .cc-loaderimg {
     position: absolute;
     width: 100%;
     z-index: 1000;
@@ -9,6 +9,6 @@
     background: rgba(255,255,255,0.8);
     // display: none;
 }
-.cc-loaderimg svg{
+.cc-sdk .cc-loaderimg svg{
     width:100px;
 }

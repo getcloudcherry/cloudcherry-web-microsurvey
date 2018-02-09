@@ -1,5 +1,5 @@
 
-html[dir="rtl"] .submit-icon{
+html[dir="rtl"] .cc-sdk .submit-icon{
     left: 0;
     right: initial;
     margin-left:75px;
@@ -7,7 +7,7 @@ html[dir="rtl"] .submit-icon{
 }
 @media (max-width: 767px){
 
-	html[dir="rtl"] .submit-icon {
+	html[dir="rtl"] .cc-sdk .submit-icon {
 	    position: absolute;
         right: 30px;
         left:initial;

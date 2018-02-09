@@ -1,5 +1,5 @@
 /** Scrollbar	**/
-.cc-scrollbar-wrapper {
+.cc-sdk .cc-scrollbar-wrapper {
     float: left;
     height   : 100%;
     overflow : hidden;
@@ -8,7 +8,7 @@
     z-index  : 1;
 }
 
-.cc-scrollbar-content {
+.cc-sdk .cc-scrollbar-content {
     -moz-box-sizing : border-box;
     /* padding         : 0 32px 0 0; */
     /* right           : -18px; */
@@ -19,7 +19,7 @@
     width: 107%;
 }
 
-.cc-scrollbar-scroll {
+.cc-sdk .cc-scrollbar-scroll {
     background: #aaa;
     border-radius       : 4px;
     cursor              : pointer;
@@ -31,11 +31,11 @@
     z-index             : 2;
 }
 
-.cc-scrollbar-container:hover .cc-scrollbar-scroll {
+.cc-sdk .cc-scrollbar-container:hover .cc-scrollbar-scroll {
     opacity: 1;
 }
 
-.cc-scrollbar-grabbed {
+.cc-sdk .cc-scrollbar-grabbed {
     -khtml-user-select: none;
     -moz-user-select: none;
     -o-user-select: none;

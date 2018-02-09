@@ -1,4 +1,4 @@
-.progress-bar{
+.cc-sdk .progress-bar{
 	width: 100%;
 	position: absolute;
 	background: #a47c2b;
@@ -7,7 +7,7 @@
 	left: 0;
 }
 
-.progress-line{
+.cc-sdk .progress-line{
 	background: $cc-brand-1-color;
 	height: 100%;
 	display: block;

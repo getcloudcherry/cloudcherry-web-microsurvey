@@ -1,8 +1,8 @@
-#timer {
+.cc-sdk #timer {
   position: relative;
 }
 
-svg.timer {
+.cc-sdk svg.timer {
   position: absolute;
   top: 0;
   left: 0;
@@ -10,12 +10,12 @@ svg.timer {
   height: 40px;
   transform: rotateY(-180deg)   rotateZ(-90deg);
 }
-html[dir="rtl"] svg.timer{
+html[dir="rtl"] .cc-sdk svg.timer{
     right: 0;
     left: initial
 }
 
-svg.timer circle {
+.cc-sdk svg.timer circle {
   stroke-dasharray: 50px;
   stroke-dashoffset: 0px;
   stroke-linecap: round;
