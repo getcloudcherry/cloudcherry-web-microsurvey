@@ -215,6 +215,8 @@ class Survey {
     let self : Survey = this;
     data.then(function(surveyData) {
         self.debug?console.log(surveyData):'';
+        // console.log(surveyData);
+
         self.surveyData = surveyData;
         //copy data.
         let event = new CustomEvent(Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken , { detail : JSON.parse(JSON.stringify(surveyData)) });
