@@ -216,6 +216,7 @@ class SurveyHandler {
     surveyUrl = surveyUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyUrl = Config.API_URL + surveyUrl;
     let data = RequestHelper.get(surveyUrl);
+
     // (window as any).ccsdkDebug?console.log(data):'';
     return data;
     // this.surveyData = data.then(function();
@@ -373,6 +374,7 @@ class SurveyHandler {
     //check question is supported, based on question types.
     //filter pre fill questions.
     this.questions = this.surveyData.questions;
+    
     // this.questionsToDisplay = (this.surveyData.questions as any[]).filter(this.filterQuestions);
     this.filterQuestions();
     //sort questions and display them?
@@ -758,7 +760,7 @@ class SurveyHandler {
               var optionLeftExtraClass = 'option-left-rating-text-small-container';
               var optionRightExtraClass = 'option-right-rating-text-small-container';
               var optionMaxWidth = (((endRange - startRange + 1)*38/2) - 5) +'px';
-              console.log(optionMaxWidth);
+              // console.log(optionMaxWidth);
             }
             questionTemplate = questionTemplate.replace("{{optionsRange}}", options);
             // questionTemplate = questionTemplate.replace("{{maxWidth}}", optionMaxWidth);
@@ -1090,20 +1092,20 @@ class SurveyHandler {
           self.ccsdk.debug ? console.log(this.prefillResponses) : '';
           continue;
         }
+        if (this.isPrefillNote(question)){
+          self.ccsdk.debug ? console.log(this.prefillResponses) : '';
+          continue;
+        }
+        if (this.isPrefillDirect(question)) {
+          self.ccsdk.debug ? console.log(this.prefillResponses) : '';
+          continue;
+        }
         if (!(this.isPrefillQuestion(question))) {
 
           // if (this.isPrefillTags(question)) {
           //   self.ccsdk.debug ? console.log(this.prefillResponses) : '';
           //   continue;
           // }
-          if (this.isPrefillNote(question)){
-            self.ccsdk.debug ? console.log(this.prefillResponses) : '';
-            continue;
-          }
-          if (this.isPrefillDirect(question)) {
-            self.ccsdk.debug ? console.log(this.prefillResponses) : '';
-            continue;
-          }
           if (
             question.conditionalFilter != null &&
             (question.conditionalFilter.filterquestions == null
