@@ -733,7 +733,7 @@ class DomSurvey{
       }).join(',');
 
       (window as any).ccsdkDebug?console.log('Checkbox selected',rating):'';
-      console.log('Checkbox selected', rating);
+      // console.log('Checkbox selected', rating);
 
       self.qResponse.type = 'checkbox';
       self.qResponse.text = rating;

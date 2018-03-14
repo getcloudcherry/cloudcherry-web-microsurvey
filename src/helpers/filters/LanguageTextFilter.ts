@@ -82,6 +82,24 @@ class LanguageTextFilter {
         }
     }
 
+    public static translateMultiSelectOption(surveyHandler: any, question: any, option: any){
+        let effectiveMultiselect = this.translateMultiSelect(surveyHandler, question);
+        // console.log(effectiveMultiselect);
+        if ( (effectiveMultiselect instanceof Array) && effectiveMultiselect.length > 0 ){
+            for(let i=0; i < question.multiSelect.length; i++){
+                let opt: any = question.multiSelect[i].split(';')
+                if(opt[0] == option ){
+                    return effectiveMultiselect[i].split(';')[0];
+                }else{
+    
+                }
+            }
+        }
+        return option;
+        
+
+    }
+
 }
 
 export { LanguageTextFilter };
