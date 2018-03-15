@@ -1,3 +1,6 @@
+import { isArray } from "util";
+import { LanguageTextFilter } from "./LanguageTextFilter";
+
 
 class ConditionalFlowFilter {
   public static filterQuestion(surveyHandler : any, question : any) {
@@ -102,20 +105,31 @@ class ConditionalFlowFilter {
           }
       } else {
           let iFoundAll = false;
+          let question = surveyHandler.getQuestionById(filterQuestion.questionId);
+          let questionAnswer = surveyHandler.getAnswerForQuestionId(filterQuestion.questionId);
+          let questionAnswerText = questionAnswer != null && questionAnswer.textInput != null ? questionAnswer.textInput : '';
           for (let aAnswer of filterQuestion.answerCheck) {
-            //   console.log('hello',surveyHandler.getAnswerForQuestionId(filterQuestion.questionId), aAnswer);
-
-              if (surveyHandler.getAnswerForQuestionId(filterQuestion.questionId) != null)
-                  if (surveyHandler.getAnswerForQuestionId(filterQuestion.questionId).textInput != null && surveyHandler.getAnswerForQuestionId(filterQuestion.questionId).textInput.includes(aAnswer)) {
+              if ( question.multiSelect instanceof Array ){
+                  aAnswer = LanguageTextFilter.translateMultiSelectOption(surveyHandler, question, aAnswer);
+                }
+                //   console.log('hello', question.multiSelect instanceof Array,surveyHandler.getAnswerForQuestionId(filterQuestion.questionId), aAnswer);
+                if (questionAnswer != null)
+                if (questionAnswer.textInput != null && questionAnswer.textInput.includes(aAnswer)) {
+                      questionAnswerText = questionAnswerText.replace(aAnswer, '');
+                    //   console.log(questionAnswerText);
                       iFoundAll = true;
-                      break;
+                    //   break;
                   } else {
                       iFoundAll = false;
                       break;
                   }
           }
-          if (iFoundAll)
-              return true;
+          if(questionAnswer){
+              questionAnswerText = questionAnswerText.replace(/,/g,'');
+            //   console.log(questionAnswerText);
+          }
+          if (iFoundAll && questionAnswerText.length < 1)
+              return true;    
       }
 
       return false;
