@@ -82,11 +82,12 @@ class SurveyHandler {
       let thankyouContainer: any = this.util.get("#cc-thankyou-container");
       (window as any).ccsdkDebug ? console.log(thankyouContainer) : '';
       this.util.addClass(thankyouContainer[0], 'show-thankyou-slide');
-      let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
-      document.dispatchEvent(onSurveyEndEvent);
+      // let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
+      // document.dispatchEvent(onSurveyEndEvent);
       //set done cookie for 30 days.
       Cookie.set(this.surveyToken + '-finish', 'true', 30, '/');
       setTimeout(() => {
+        this.ccsdk.dom.destroyListeners();
         this.destroy();
       }, 2000);
     }
@@ -213,7 +214,7 @@ class SurveyHandler {
   fetchQuestions() {
     this.randomNumber = parseInt((String)(Math.random() * 1000));
     let surveyUrl = Config.SURVEY_BY_TOKEN.replace("{token}", "" + this.surveyToken);
-    surveyUrl = surveyUrl.replace("{tabletId}", "" + this.randomNumber);
+    // surveyUrl = surveyUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyUrl = Config.API_URL + surveyUrl;
     let data = RequestHelper.get(surveyUrl);
 
@@ -326,8 +327,16 @@ class SurveyHandler {
     let submitBtn = document.querySelectorAll('.submit-icon');
     this.util.removeClassAll(submitBtn, 'act-cc-button-next');
     this.util.addClassAll(submitBtn, 'act-cc-button-lang-next');
+    if (this.languageSelect) {
+      this.languageSelect.destroyListeners();
+    }
     this.languageSelect.init(qId);
     let selectRes = '';
+    if (this.util.checkIfListenerExists('#' + qId + " .cc-select-options .cc-select-option", this.domListeners)) {
+      // return;
+      (window as any).ccsdkDebug ? console.log("display language select - previous listeners exists") : '';
+      this.removePrevListener('#' + qId + " .cc-select-options .cc-select-option");
+    }
     let ref = this.util.initListener('click', '#' + qId + " .cc-select-options .cc-select-option", function () {
       self.ccsdk.debug ? console.log('languageSelectOption') : '';
       selectRes = document.querySelectorAll('#' + qId + " .cc-select-trigger")[0].innerHTML;
@@ -336,7 +345,7 @@ class SurveyHandler {
     ref.internalHandler = this.util.listener($body, ref.type, ref.id, ref.cb);
 
 
-    let languageSelect = this.util.initListener("click", ".act-cc-button-lang-next", function () {
+    let languageSelect2 = this.util.initListener("click", ".act-cc-button-lang-next", function () {
       self.ccsdk.debug ? console.log('languageNext') : '';
       self.ccsdk.config.language = "default";
       self.ccsdk.config.language = selectRes; //language selection from menu then show first question
@@ -351,9 +360,9 @@ class SurveyHandler {
       
 
     });
-    this.domListeners.push(languageSelect);
+    this.domListeners.push(languageSelect2);
 
-    languageSelect.internalHandler = this.util.listener($body, languageSelect.type, languageSelect.id, languageSelect.cb);
+    languageSelect2.internalHandler = this.util.listener($body, languageSelect2.type, languageSelect2.id, languageSelect2.cb);
 
 
 
@@ -554,7 +563,7 @@ class SurveyHandler {
     } else {
       surveyPartialUrl = surveyPartialUrl.replace("{complete}", "false");
     }
-    surveyPartialUrl = surveyPartialUrl.replace("{tabletId}", "" + this.randomNumber);
+    // surveyPartialUrl = surveyPartialUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyPartialUrl = Config.API_URL + surveyPartialUrl;
     //add partial answer to main answer
     this.surveyAnswers[question.id] = data;
@@ -1089,7 +1098,7 @@ class SurveyHandler {
         //filter out prefill question only if it is filled?.
         // if(!this.isQuestionFilled(question)){
         if (this.isPrefillTags(question)) {
-          self.ccsdk.debug ? console.log(this.prefillResponses) : '';
+          self.ccsdk.debug ? console.log('prefillTags',this.prefillResponses) : '';
           continue;
         }
         if (this.isPrefillNote(question)){
@@ -1148,6 +1157,13 @@ class SurveyHandler {
             //add size to prefill array
             this.fillPrefillQuestion(question.id, "Width:" + window.innerWidth + "px / Height:" + window.innerHeight + "px", "text");
             return true;
+          default :
+            console.log("isPrefillTags", typeof this.prefillWithTags[tag.toLowerCase()]);
+            if (typeof this.prefillWithTags[tag.toLowerCase()] != 'undefined'  ){
+              let type = this.getAnswerTypeFromDisplayType(question.displayType);
+              this.fillPrefillQuestion(question.id, this.prefillWithTags[tag.toLowerCase()], type);
+              return true;
+            }
         }
       }
     }
@@ -1178,10 +1194,13 @@ class SurveyHandler {
   }
 
   fillPrefillWithTags(question: any) {
-    // console.log(this.prefillWithTags);
+    (window as any).ccsdkDebug ? console.log('fillprefillwithtags',this.prefillWithTags):'';
     if (typeof question.questionTags !== 'undefined' && question.questionTags.length > 0) {
       for (let tag of question.questionTags) {
-        if (typeof this.prefillWithTags[tag.toLowerCase()] !== 'undefined') {     
+        (window as any).ccsdkDebug ? console.log('fillprefillwithtags', tag):'';
+        if (typeof this.prefillWithTags[tag.toLowerCase()] !== 'undefined') {    
+          (window as any).ccsdkDebug ? console.log('prefil ', tag.toLowerCase(), this.prefillWithTags[tag.toLowerCase()],this.prefillWithTags):'';
+           
           let type = this.getAnswerTypeFromDisplayType(question.displayType);
           this.fillPrefillQuestion(question.id, this.prefillWithTags[tag.toLowerCase()], type);
         }
@@ -1221,6 +1240,22 @@ class SurveyHandler {
       }
     }
     return false;
+  }
+
+  removePrevListener(id: string): boolean {
+    for (let listener of this.domListeners) {
+      if (listener.id == id) {
+        let index = this.domListeners.indexOf(listener);
+        (window as any).ccsdkDebug ? console.log("removing listener", id) : '';
+        (window as any).ccsdkDebug ? console.log("removing listener index", index) : '';
+        this.util.removeListener(document.querySelectorAll("body")[0], listener.type, listener.internalHandler);
+        if (index > -1) {
+          this.domListeners.splice(index, 1);
+        }
+        (window as any).ccsdkDebug ? console.log(this.domListeners) : '';
+      }
+    }
+    return true;
   }
 
   destroySurvey() {

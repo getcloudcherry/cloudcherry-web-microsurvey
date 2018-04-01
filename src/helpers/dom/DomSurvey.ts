@@ -479,6 +479,11 @@ class DomSurvey{
         this.util.addClass( bodyElement, "blurr" );
     },200);
     let self = this;
+    if (this.util.checkIfListenerExists('.cc-language-select', this.domListeners)) {
+      // return;
+      (window as any).ccsdkDebug ? console.log("language select - previous listeners exists") : '';
+      this.removePrevListener('.cc-language-select');
+    }
     let languageSelect = this.util.initListener("click",".cc-language-select", function() {
       // let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
       // document.dispatchEvent(onSurveyClickEvent);
