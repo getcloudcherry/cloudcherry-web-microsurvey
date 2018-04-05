@@ -82,8 +82,9 @@ export function init(surveyToken : any) {
 }
 
 export function destroy(surveyToken : string){
-  // this.survey.destroy();
   //remove from trigger manager, delete instance.
+  SurveyManager.surveyInstances[surveyToken].dom.destroyListeners();
+  SurveyManager.surveyInstances[surveyToken].destroy();
   delete SurveyManager.surveyInstances[surveyToken];
 }
 //
@@ -127,6 +128,8 @@ export function show(surveyToken : string) {
 
 export function hide(surveyToken : string) {
   if (typeof SurveyManager.surveyInstances[surveyToken] != 'undefined') {  
+    SurveyManager.surveyInstances[surveyToken].dom.destroyListeners();
+    SurveyManager.surveyInstances[surveyToken].destroy();
     SurveyManager.surveyInstances[surveyToken].hide();
   }
 }
