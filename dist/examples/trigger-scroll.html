@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700" rel="stylesheet">
+<meta name="viewport" charset="utf-8" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+	<title>Survey</title>
+	<style type="text/css">
+  body{
+    margin : 0 auto;
+  }
+  button{
+    background: rgb(238, 64, 54);
+    padding:20px 50px;
+    color:#fff;
+    border:solid 0px ;
+    font-size: 20px;
+    box-shadow:3px 4px 7px 2px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  button:hover{
+    box-shadow:1px 1px 5px 1px rgba(0,0,0,0.2);
+  }
+  #brand{
+    background: url(https://cx.getcloudcherry.com/microsurvey-assets/cloudcherry-login-logo.png);
+    margin: 80px auto;
+    width: 164px;
+    text-indent: -10000px;
+    height: 91px;
+  }
+  .container{
+    text-align: center;
+  }
+
+	</style>
+	<script>
+	//colors can be either hex or rgb
+	// themeColor = '#fdaf19';
+	// themeColor = '#4db47c';
+	// themeColor = '#db3c39';
+
+	// themeColor = 'rgb(210, 42, 53)';
+	//check for hex and if false - take for granted that it is rgb
+	// var isHex  = /^#[0-9A-F]{6}$/i.test(themeColor)
+
+	</script>
+</head>
+<body class="" style="height:3000px;">
+  <div class="container">
+    <div id="brand">CloudCherry</div>
+    <div class="button">
+      <button type="button" id="anywhere">Launch Demo Survey</button>
+      <br>
+      <small>Survey will launch only when scrolling >= 200px </small>
+    </div>
+  </div>
+	<script>
+    var token = getQueryString("t");
+    var color = decodeURIComponent(getQueryString("c"));
+    console.log(token, color);
+    document.getElementsByTagName('button')[0].style.background = color;;
+			(function () {
+          // add a queue event here
+          window.CCSDK = window.CCSDK || function () {
+            (window.CCSDK.q = window.CCSDK.q || []).push(arguments);
+          };
+          var s = document.createElement('script');
+          s.type = 'text/javascript';
+          s.async = true;
+          s.src = 'https://cx.getcloudcherry.com/preview/microsurvey/script/cc.en.bundle.js';
+          var x = document.getElementsByTagName('script')[0];
+          x.parentNode.insertBefore(s, x);
+          // execute your script immediately here
+          //WW-02872
+          //CH-88360
+          var ins = window.CCSDK("init", token, {
+            // themeColor : "rgb(235, 28, 35)",
+            // themeColor : color,
+            textDirection: 'ltr',
+            isActive: false, //boolean,    // Whether a microsurvey is enabled or disabled, true for enabled
+            welcomeText: 'Hey There! Help us improve :)', // Welcome message
+            thankyouText: 'Thank you for taking the survey', // Thank you message
+            brandColor: color, // Theme color
+            // top right or right top
+            // left top or top left 
+            // bottom right or right bottom
+            // bottom left or left bottom
+            position: 'bottom right', // Position of the microsurvey, Top Left, Top Right, Bottom Left, Bottom Right
+            // keepAlive: 5, //number, // Hide the microsurvey after the specified seconds, 0 for no timer
+            cssSelector: "#anywhere", // Show the microsurvey when the user click's on the specified HTML element(s)
+            scrollPercent: 200, // number, // Show the microsurvey when the user scrolls the page more than the specified percentage
+            // click: 0,  //number, // Show the microsurvey when the user clicks the specified number of times in the page
+            // waitSeconds: 0, //number, // Show the microsurvey when the user spends the specified number of seconds in the page
+            // grepURL: 'hello', // Show the microsurvey if the URL matches the given regular expression
+            // grepInvertURL: string, // Show the microsurvey if the URL doesn't match the given regular expression
+            onExitDetect: true, // Show the microsurvey when the user tries to leave the page or close the tab
+            // startButtonText: 'Start Survey', // Use this text in the start button
+            resumeButtonText: 'Resume', // Use this text in the resume button
+          });
+        // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
+
+    		//click trigger
+    		//pass id or class...currently works on first element of class
+
+		})();
+
+    // document.addEventListener('ccready',function(){
+    //   ccSurvey = window.CCSDK("init", "WW-02872",{
+    //     themeColor : "#220033"
+    //   });
+    // });
+
+    document.addEventListener(token+'-ready', function(e){
+      // console.log(e);
+			// console.log(ins);
+      // e.detail.survey.trigger('launch');
+      // e.detail.survey.trigger('scroll-pixels', 1500);
+      //  e.detail.survey.trigger('launch');
+    });
+
+    function getQueryString  ( field, url ) {
+      var href = url ? url : window.location.href;
+      var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
+      var string = reg.exec(href);
+      return string ? string[1] : null;
+    };
+
+</script>
+</body>
+</html>

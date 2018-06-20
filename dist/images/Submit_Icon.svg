@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="47px" height="47px" viewBox="0 0 47 47" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46 (44423) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 16</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <circle id="path-1" cx="19.3130459" cy="19.3130459" r="19.3130459"></circle>
+        <filter x="-18.1%" y="-12.9%" width="136.2%" height="136.2%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.116423234 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="1-copy-20" transform="translate(-1246.000000, -664.000000)">
+            <g id="Group-16" transform="translate(1250.000000, 666.000000)">
+                <g id="Oval-4">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                    <use fill="#FCAF18" fill-rule="evenodd" xlink:href="#path-1"></use>
+                </g>
+                <g id="Group-5" transform="translate(12.000000, 11.000000)" fill-rule="nonzero" fill="#404041">
+                    <g id="fast-forward-arrows" transform="translate(6.173934, 0.000000)">
+                        <polygon id="Shape" points="0.993357559 0 0 0.993357559 7.30823082 8.3015552 0 15.6097197 0.993357559 16.6030772 9.29491276 8.3015552"></polygon>
+                    </g>
+                    <g id="fast-forward-arrows-copy">
+                        <polygon id="Shape" points="0.993357559 0 0 0.993357559 7.30823082 8.3015552 0 15.6097197 0.993357559 16.6030772 9.29491276 8.3015552"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

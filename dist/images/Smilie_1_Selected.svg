@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46.2 (44496) - http://www.bohemiancoding.com/sketch -->
+    <title>Smilie_1_Selected</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Smilie_1_Selected">
+            <path d="M94,51 C94,75.3005714 74.3005714,95 50,95 C25.6994286,95 6,75.3005714 6,51 C6,26.6994286 25.6994286,7 50,7 C74.3005714,7 94,26.6994286 94,51 Z" id="Stroke-65" stroke="#4A4A4A" stroke-width="1.2" fill="#FFD73F" stroke-linecap="round" stroke-linejoin="round"></path>
+            <g id="Group-6" transform="translate(37.000000, 63.359551)" stroke="#4A4A4A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M0.66129492,6.10832232 C0.66129492,6.10832232 6.89771734,0.120765977 13.1341398,0.120765977 C19.3705622,0.120765977 25.6069846,6.10832232 25.6069846,6.10832232" id="Stroke-66"></path>
+            </g>
+            <path d="M68,28.752809 C69.108,28.752809 70,29.6347865 70,30.7303371 L70,42.5955056 C70,43.6910562 69.108,44.5730337 68,44.5730337 C66.892,44.5730337 66,43.6910562 66,42.5955056 L66,30.7303371 C66,29.6347865 66.892,28.752809 68,28.752809 Z" id="Path" fill="#404041"></path>
+            <path d="M31,28.752809 C32.108,28.752809 33,29.6347865 33,30.7303371 L33,42.5955056 C33,43.6910562 32.108,44.5730337 31,44.5730337 C29.892,44.5730337 29,43.6910562 29,42.5955056 L29,30.7303371 C29,29.6347865 29.892,28.752809 31,28.752809 Z" id="Path" fill="#404041"></path>
+        </g>
+    </g>
+</svg>

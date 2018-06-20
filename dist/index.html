@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+<meta name="viewport" charset="utf-8" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+	<title>Survey</title>
+	<style type="text/css">
+  body{
+    margin : 0 auto;
+    font-family: 'open sans';
+    background: #efefef;
+  }
+  h1, h3, h3, h4, h5{
+    font-weight: 400;
+  }
+  button, a{
+    background: black;
+    padding:10px 30px;
+    color:#fff;
+    border:solid 0px ;
+    font-size: 15px;
+    box-shadow:3px 4px 7px 2px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+    font-weight: 300;
+    text-transform: uppercase;
+  }
+  a:hover, button:hover{
+    box-shadow:1px 1px 5px 1px rgba(0,0,0,0.2);
+  }
+  #brand{
+    background: url(https://cx.getcloudcherry.com/microsurvey-assets/cloudcherry-login-logo.png);
+    margin: 80px auto 20px;
+    width: 164px;
+    text-indent: -10000px;
+    height: 91px;
+  }
+  .container{
+    text-align: center;
+  }
+  .button{
+    display: inline-block;
+  }
+  a.red, button.red{
+    background: rgb(238, 64, 54);
+  }
+  h3.red{
+    color: rgb(238, 64, 54);   
+    text-transform: uppercase;
+    font-weight: 400;
+    font-family: "open sans"; 
+    letter-spacing: 1px;
+  }
+  .black{
+    color:black;
+  }
+  .grey{
+    color:#bbb;
+  }
+  hr{
+    width: 80%;
+    display:block;
+    height: 1px;
+    border:0;
+    border-top:solid 1px #eee;
+    margin:2em auto;
+  }
+  .options-container{
+    width: 50%;
+    margin: auto;
+    box-shadow: 2px 2px 20px 0px rgba(0,0,0,.1);
+    padding: 20px;
+    background: #fff;
+  }
+
+	</style>
+	<script>
+	//colors can be either hex or rgb
+	// themeColor = '#fdaf19';
+	// themeColor = '#4db47c';
+	// themeColor = '#db3c39';
+
+	// themeColor = 'rgb(210, 42, 53)';
+	//check for hex and if false - take for granted that it is rgb
+	// var isHex  = /^#[0-9A-F]{6}$/i.test(themeColor)
+
+	</script>
+</head>
+<body class="">
+  <div class="container">
+    <div id="brand">CloudCherry</div>
+    <h3 class="red">Javascript SDK <span class="black">Demo</span></h3>
+    <br>
+    <div class="options-container">
+      <h3>Configuration</h3>
+      <small class="grey">Set options and use buttons from next sections to launch survey</small>
+      <br>    
+      <br>    
+      Token : <input type="text" value="SR-72302">
+      <br>
+      <br>
+      Theme Color : <input type="color" value="rgb(238, 64, 54)"> <small>(# or rgb)</small>
+      <hr>
+      <h3>Display Options</h3>
+      <small class="grey">Click on the buttons below to launch a survey</small>
+      <br>
+      <br>
+      <div class="button">
+        <a href="examples/index.html" class="red">Bottom Right</a>
+      </div>
+      <div class="button">
+        <a href="examples/top-left.html">Top Left</a>
+      </div>
+      <br>
+      <br>
+      <br>
+      <div class="button">
+          <a href="examples/top-right.html">Top Right</a>
+        </div>
+      <div class="button">
+          <a href="examples/bottom-left.html">Bottom Left</a>
+      </div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <hr>
+      <h3>Text Direction</h3>
+      <small class="grey">Click on the buttons below to launch a survey</small>
+      <br>
+      <br>
+      <div class="button">
+          <a href="examples/index.html" class="red">LTR</a>
+      </div>
+      <div class="button">
+          <a href="examples/rtl.html">RTL</a>
+      </div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <hr>
+      <h3>Triggers</h3>
+      <small class="grey">Click on the buttons below to launch a survey</small>
+      <br>
+      <br>
+      <div class="button">
+          <a href="examples/trigger-click-count.html">Click Count</a>
+      </div>
+      <div class="button">
+          <a href="examples/trigger-page-time.html">Page Time</a>
+      </div>
+      <br>
+      <br>
+      <br>
+      
+      <!-- <div class="button">
+        <a href="examples/trigger-site-time.html">Site Time</a>
+      </div> -->
+      <div class="button">
+      <a href="examples/trigger-url-match.html&xyz=hello">URL Match</a>
+      </div>
+      <br>
+      <br>
+      <br>
+      
+      <div class="button">
+        <a href="examples/trigger-url-no-match.html&xyz=google">URL Not Match</a>
+      </div>
+      <div class="button">
+        <a href="examples/trigger-scroll.html">Scroll pixels</a>
+      </div>
+      
+      <br>
+      <br>
+      <br>
+      <br>
+      <hr>
+      <h3>Hooks for Analytics</h3>
+      <small class="grey">Click on the buttons below to launch a survey</small>
+      <br>
+      <br>
+      <div class="button">
+          <a href="examples/for-analytics.html">All hooks</a>
+      </div>
+      <br>
+      <br>
+      <br>
+    </div>
+   
+  </div>
+  <script>
+
+    var input = document.getElementsByTagName('input')[0];
+    var input2 = document.getElementsByTagName('input')[1];
+
+    var tid = setInterval( function () {
+        if ( document.readyState !== 'complete' ) return;
+        clearInterval( tid ); 
+        Array.prototype.forEach.call(document.querySelectorAll("a"), function(el, i){
+          let href = el.getAttribute('href');
+          el.setAttribute('data-href', href);
+          input2.value = '#d04a49';
+          href = href.replace('html', 'html'+ '?t=' + input.value + '&c=' + encodeURIComponent(input2.value) );
+          console.log(href);
+          el.setAttribute('href', href);
+      });
+    }, 100 );
+
+    input.addEventListener('keyup', function(){
+      Array.prototype.forEach.call(document.querySelectorAll("a"), function(el, i){
+        let href = el.getAttribute('data-href');
+        href = href.replace('html', 'html'+ '?t=' + input.value + '&c=' + encodeURIComponent(input2.value) );
+        console.log(href);
+        el.setAttribute('href', href);
+      });
+      
+    } );
+
+    input2.addEventListener('change', function(){
+      Array.prototype.forEach.call(document.querySelectorAll("a"), function(el, i){
+        let href = el.getAttribute('data-href');
+        href = href.replace('html', 'html'+ '?t=' + input.value + '&c=' + encodeURIComponent(input2.value) );
+        console.log(href);
+        el.setAttribute('href', href);
+      });
+      
+    } );
+
+   
+  </script>
+</body>
+</html>

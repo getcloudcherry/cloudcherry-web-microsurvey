@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100px" height="100px" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46.2 (44496) - http://www.bohemiancoding.com/sketch -->
+    <title>Yes/no selected state</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Yes/no-selected-state">
+            <g id="Group-7" transform="translate(18.000000, 13.000000)">
+                <path d="M45.8728951,26.8651083 C45.3257571,25.364025 60.6245784,11.5173843 51.6978109,0.301903947 C49.6060601,-2.32499184 42.5269356,12.8649478 32.4638044,19.739227 C26.9166665,23.5345797 14,31.6071669 14,36.0677724 L14,64.9465684 C14,70.3154999 34.4755889,76 50.0395617,76 C55.7382149,76 63.9999992,39.7906296 63.9999992,34.0378984 C64.004208,28.2681095 46.4242419,28.370456 45.8728951,26.8651083 L45.8728951,26.8651083 Z" id="Shape" fill="#FFD73F"></path>
+                <path d="M1.5,37.1875 L1.5,67.8125" id="Line" stroke="#FFD73F" stroke-width="1.2" stroke-linecap="round"></path>
+            </g>
+        </g>
+    </g>
+</svg>

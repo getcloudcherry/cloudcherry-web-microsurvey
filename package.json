@@ -1,0 +1,51 @@
+{
+  "name": "cloudcherrysdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "build": "webpack",
+    "watch": "webpack -p --watch",
+    "start": "webpack-dev-server --open ",
+    "prod": "webpack -p"
+  },
+  "author": "Wowlabz",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/assert": "0.0.31",
+    "@types/chai": "^4.0.4",
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^8.0.23",
+    "awesome-typescript-loader": "^3.2.3",
+    "chai": "^4.1.1",
+    "clean-webpack-plugin": "^0.1.16",
+    "compression-webpack-plugin": "^1.0.0",
+    "css-loader": "^0.28.5",
+    "exports-loader": "^0.6.4",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "file-loader": "^0.11.2",
+    "html-loader": "^0.5.1",
+    "i18n-webpack-plugin": "^1.0.0",
+    "image-webpack-loader": "^3.4.1",
+    "imports-loader": "^0.7.1",
+    "mocha": "^3.5.0",
+    "mocha-loader": "^1.1.1",
+    "node-sass": "^4.5.3",
+    "rtl-css-loader": "^1.0.1",
+    "sass-loader": "^6.0.6",
+    "script-loader": "^0.7.0",
+    "style-loader": "^0.18.2",
+    "svg-inline-loader": "^0.8.0",
+    "typescript": "^2.4.2",
+    "uglifyjs-webpack-plugin": "^0.4.6",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.5.5",
+    "webpack-dev-server": "^2.7.1",
+    "webpack-rtl-plugin": "^1.6.0"
+  },
+  "dependencies": {
+    "@types/es6-promise": "0.0.33",
+    "@types/mocha": "^2.2.42"
+  }
+}
