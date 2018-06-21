@@ -589,6 +589,10 @@ class SurveyHandler {
     let answersAll = [];
     // hack for partial flushing
     let lastAnswer;
+
+    if ( Object.keys( this.surveyAnswers ).length == 0 ) {
+      return;
+    }
     for ( let answer in this.surveyAnswers ) {
       answersAll.push( this.surveyAnswers[ answer ] );
       lastAnswer = this.surveyAnswers[ answer ];
@@ -606,12 +610,13 @@ class SurveyHandler {
       surveyClient: Constants.SURVEY_CLIENT,
       responseDuration: Math.floor( ( timeAtPost - this.ccsdk.surveyStartTime.getTime() ) / 1000 )
     };
-    console.log( lastAnswer );
-    let _lastAnswer = {
-      text: lastAnswer.textInput,
-      number: lastAnswer.numberInput
+    if ( lastAnswer ) {
+      let _lastAnswer = {
+        text: lastAnswer.textInput,
+        number: lastAnswer.numberInput
+      }
+      this.postPartialAnswer( this.questionsToDisplay.length - 1, _lastAnswer, true )
     }
-    this.postPartialAnswer( this.questionsToDisplay.length - 1, _lastAnswer, true )
 
     return RequestHelper.post( postSurveyFinalUrl, finalData );
 
