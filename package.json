@@ -21,6 +21,7 @@
     "chai": "^4.1.1",
     "clean-webpack-plugin": "^0.1.16",
     "compression-webpack-plugin": "^1.0.0",
+    "copy-webpack-plugin": "^4.5.1",
     "css-loader": "^0.28.5",
     "exports-loader": "^0.6.4",
     "extract-text-webpack-plugin": "^3.0.0",

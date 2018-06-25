@@ -90,9 +90,12 @@ class DomSurvey {
 
   setupListeners() {
     let self = this;
+    console.log( self, 'before event' )
     let startSurvey = this.util.initListener( "click", ".act-cc-survey-start", function () {
+      console.log( 'start handler', self )
       if ( ( !self.util.hasClass( self.$startBtn, 'disabled' ) ) && ( self.ccsdk.surveyStatus != 'minimized' ) ) {
         let onSurveyClickEvent = new CustomEvent( Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken );
+        console.log( onSurveyClickEvent, 'custom click event' );
         document.dispatchEvent( onSurveyClickEvent );
         self.util.addClass( self.$startBtn, 'disabled' );
         self.showLoader();
@@ -103,9 +106,9 @@ class DomSurvey {
     } );
     this.domListeners.push( startSurvey );
 
-
     startSurvey.internalHandler = this.util.listener( this.$body, startSurvey.type, startSurvey.id, startSurvey.cb );
 
+    console.log( 'start survey event', startSurvey );
     let nextQue = this.util.initListener( "click", ".act-cc-button-next", function () {
       // alert("working");
       let onSurveyClickEvent = new CustomEvent( Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken );
@@ -465,6 +468,7 @@ class DomSurvey {
       this.util.addClass( startContainer, "show-slide" );
       this.util.addClass( bodyElement, "blurr" );
     }, 200 );
+    console.debug()
     this.$startBtn = document.querySelectorAll( ".act-cc-survey-start" )[ 0 ];
 
   }
@@ -507,6 +511,7 @@ class DomSurvey {
   loadQuestionSpecifics( q: HTMLElement, index: number ) {
     let self: DomSurvey = this;
     this.$questionContainer[ 0 ].innerHTML = "";
+    console.log( this.ccsdk );
     let compiledTemplate = this.ccsdk.survey.compileTemplate( this.ccsdk.survey.questionsToDisplay[ index ] );
     this.$questionContainer[ 0 ].innerHTML += compiledTemplate;
     let qType: string = this.$questionContainer[ 0 ].firstChild.getAttribute( 'data-type' );

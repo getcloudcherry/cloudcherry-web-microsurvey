@@ -115,10 +115,17 @@ class DomUtilities {
   }
 
   listener( el: any, evt: any, sel: any, handler: any ): any {
+    let selectorMatches = function ( el, selector ) {
+      var p = Element.prototype;
+      var f = p.matches || p.webkitMatchesSelector || ( <any>p ).mozMatchesSelector || p.msMatchesSelector || function ( s ) {
+        return [].indexOf.call( document.querySelectorAll( s ), this ) !== -1;
+      };
+      return f.call( el, selector );
+    }
     let internalHandler = function ( event ) {
       var t = event.target;
       while ( t && t !== this ) {
-        if ( t.matches( sel ) ) {
+        if ( selectorMatches( t, sel ) ) {
           handler.call( t, event );
         }
         t = t.parentNode;
@@ -127,6 +134,7 @@ class DomUtilities {
     el.addEventListener( evt, internalHandler );
     return internalHandler;
   }
+
 
 
 

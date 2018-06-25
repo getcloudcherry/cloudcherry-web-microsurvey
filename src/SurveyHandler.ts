@@ -43,6 +43,7 @@ class SurveyHandler {
   welcomeQuestionDisplayTime: any;
   domListeners: any;
   languageSelect: any;
+  private _prefillsPartiallyPosted = false;
   // isPartialAvailable : Boolean;
 
   constructor( ccsdk ) {
@@ -357,8 +358,6 @@ class SurveyHandler {
       self.util.addClassAll( submitBtn, 'act-cc-button-next' );
       self.ccsdk.dom.loadFirstQuestion();        // this.loadFirstQuestion();
       self.postPrefillPartialAnswer();
-
-
     } );
     this.domListeners.push( languageSelect2 );
 
@@ -493,7 +492,11 @@ class SurveyHandler {
 
   }
 
-  postPrefillPartialAnswer() {
+  postPrefillPartialAnswer( fullSubmission = false ) {
+    if ( !fullSubmission && this._prefillsPartiallyPosted ) {
+      return;
+    }
+    this._prefillsPartiallyPosted = true;
     let surveyPartialUrl = Config.SURVEY_PARTIAL_RESPONSE.replace( "{id}", this.surveyData.partialResponseId );
     surveyPartialUrl = surveyPartialUrl.replace( "{complete}", "false" );
     surveyPartialUrl = surveyPartialUrl.replace( "{tabletId}", "" + this.randomNumber );
@@ -534,6 +537,7 @@ class SurveyHandler {
   }
 
   postPartialAnswer( index: any, response: any, complete = false ) {
+    this.postPrefillPartialAnswer( complete );
     // let data = new FormData();
     //in case of file.
     // let input = document.querySelector('input[type="file"]') ;
@@ -1125,11 +1129,6 @@ class SurveyHandler {
           continue;
         }
         if ( !( this.isPrefillQuestion( question ) ) ) {
-
-          // if (this.isPrefillTags(question)) {
-          //   self.ccsdk.debug ? console.log(this.prefillResponses) : '';
-          //   continue;
-          // }
           if (
             question.conditionalFilter != null &&
             ( question.conditionalFilter.filterquestions == null

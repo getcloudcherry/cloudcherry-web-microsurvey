@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <script src="../polyfills/ccsdk.polyfill.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700" rel="stylesheet">
   <meta name="viewport" charset="utf-8" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height"
   />
@@ -27,7 +28,7 @@
     }
 
     #brand {
-      background: url(https://cx.getcloudcherry.com/microsurvey-assets/cloudcherry-login-logo.png);
+      /* background: url(https://cx.getcloudcherry.com/microsurvey-assets/cloudcherry-login-logo.png); */
       margin: 80px auto;
       width: 164px;
       text-indent: -10000px;
@@ -72,8 +73,8 @@
       s.async = true;
       // s.src = 'https://cx.getcloudcherry.com/preview/microsurvey/script/cc.en.bundle.js';
       s.src = "../cc.en.bundle.js"
-      var x = document.getElementsByTagName('script')[0];
-      x.parentNode.insertBefore(s, x);
+      var x = document.getElementsByTagName('head')[0];
+      x.appendChild(s);
       // execute your script immediately here
       //WW-02872
       //CH-88360
