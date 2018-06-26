@@ -70,7 +70,7 @@ class SurveyHandler {
     this.dom = ccsdk.dom;
     this.displayThankYouCb = ( e: any ) => {
       //perform final post
-      this.finalPost();
+      this.finalPost( null, null );
       let thankyouHtml: any = templates.thankyou;
       // thankyouHtml = thankyouHtml.replace("{{question}}", this.surveyData.thankyouText);
       // thankyouHtml = thankyouHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "thankyouText"));
@@ -112,14 +112,14 @@ class SurveyHandler {
         case 'scale':
           response.text = null;
           response.number = Number( data.data.number );
-          self.postPartialAnswer( data.index, response );
+          self.postPartialAnswer( data.index, response, false, null, null );
           self.ccsdk.dom.domSelectElements();
           // self.ccsdk.dom.nextQuestion();
           break;
         case 'nps':
           response.text = null;
           response.number = Number( data.data.number );
-          self.postPartialAnswer( data.index, response );
+          self.postPartialAnswer( data.index, response, false, null, null );
           self.ccsdk.dom.domSelectElements();
           // self.ccsdk.dom.nextQuestion();
           break;
@@ -127,28 +127,28 @@ class SurveyHandler {
           response.text = data.data.text;
           response.number = null;
           // response.number = Number(data.data.number);
-          self.postPartialAnswer( data.index, response );
+          self.postPartialAnswer( data.index, response, false, null, null );
           self.ccsdk.dom.domSelectElements();
           // self.ccsdk.dom.nextQuestion();
           break;
         case 'radioImage':
           response.text = data.data.text;
           response.number = null;
-          self.postPartialAnswer( data.index, response );
+          self.postPartialAnswer( data.index, response, false, null, null );
           self.ccsdk.dom.domSelectElements();
           // self.ccsdk.dom.nextQuestion();
           break;
         case 'smile':
           response.text = null;
           response.number = Number( data.data.number );
-          self.postPartialAnswer( data.index, response );
+          self.postPartialAnswer( data.index, response, false, null, null );
           self.ccsdk.dom.domSelectElements();
           // self.ccsdk.dom.nextQuestion();
           break;
         case 'star':
           response.text = null;
           response.number = Number( data.data.number );
-          self.postPartialAnswer( data.index, response );
+          self.postPartialAnswer( data.index, response, false, null, null );
           self.ccsdk.dom.domSelectElements();
           // self.ccsdk.dom.nextQuestion();
           break;
@@ -156,7 +156,7 @@ class SurveyHandler {
           response.text = data.data.text;
           response.number = null;
           // (window as any).ccsdkDebug?console.log(data):'';
-          self.postPartialAnswer( data.index, response );
+          self.postPartialAnswer( data.index, response, false, null, null );
           self.ccsdk.dom.domSelectElements();
           self.ccsdk.dom.setQIndex( data.index );
           // self.ccsdk.dom.nextQuestion();
@@ -165,7 +165,7 @@ class SurveyHandler {
           response.text = data.data.text;
           response.number = null;
           // (window as any).ccsdkDebug?console.log(data):'';
-          self.postPartialAnswer( data.index, response );
+          self.postPartialAnswer( data.index, response, false, null, null );
           self.ccsdk.dom.domSelectElements();
           self.ccsdk.dom.setQIndex( data.index );
           // self.ccsdk.dom.nextQuestion();
@@ -174,7 +174,7 @@ class SurveyHandler {
           response.text = null;
           response.number = Number( data.data.number );
           // (window as any).ccsdkDebug?console.log(data):'';
-          self.postPartialAnswer( data.index, response );
+          self.postPartialAnswer( data.index, response, false, null, null );
           self.ccsdk.dom.domSelectElements();
           self.ccsdk.dom.setQIndex( data.index );
           // self.ccsdk.dom.nextQuestion();
@@ -183,7 +183,7 @@ class SurveyHandler {
           response.text = data.data.text;
           response.number = null;
           // (window as any).ccsdkDebug?console.log(data):'';
-          self.postPartialAnswer( data.index, response );
+          self.postPartialAnswer( data.index, response, false, null, null );
           self.ccsdk.dom.domSelectElements();
           self.ccsdk.dom.setQIndex( data.index );
           // self.ccsdk.dom.nextQuestion();
@@ -192,7 +192,7 @@ class SurveyHandler {
           response.text = data.data.text;
           response.number = null;
           // (window as any).ccsdkDebug?console.log(data):'';
-          self.postPartialAnswer( data.index, response );
+          self.postPartialAnswer( data.index, response, false, null, null );
           self.ccsdk.dom.domSelectElements();
           self.ccsdk.dom.setQIndex( data.index );
           // self.ccsdk.dom.nextQuestion();
@@ -201,7 +201,7 @@ class SurveyHandler {
           response.text = data.data.text;
           response.number = Number( data.data.number );
           // (window as any).ccsdkDebug?console.log(data):'';
-          self.postPartialAnswer( data.index, response );
+          self.postPartialAnswer( data.index, response, false, null, null );
           self.ccsdk.dom.domSelectElements();
           self.ccsdk.dom.setQIndex( data.index );
           // self.ccsdk.dom.nextQuestion();
@@ -212,15 +212,14 @@ class SurveyHandler {
     }
   }
 
-  fetchQuestions() {
+  fetchQuestions( successcb, errorcb ) {
     this.randomNumber = parseInt( ( String )( Math.random() * 1000 ) );
     let surveyUrl = Config.SURVEY_BY_TOKEN.replace( "{token}", "" + this.surveyToken );
     // surveyUrl = surveyUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyUrl = Config.API_URL + surveyUrl;
-    let data = RequestHelper.get( surveyUrl );
+    RequestHelper.get( surveyUrl, successcb, errorcb );
 
     // (window as any).ccsdkDebug?console.log(data):'';
-    return data;
     // this.surveyData = data.then(function();
     // (window as any).ccsdkDebug?console.log(this.surveyData):'';
   }
@@ -357,7 +356,7 @@ class SurveyHandler {
       self.util.removeClassAll( submitBtn, 'act-cc-button-lang-next' );
       self.util.addClassAll( submitBtn, 'act-cc-button-next' );
       self.ccsdk.dom.loadFirstQuestion();        // this.loadFirstQuestion();
-      self.postPrefillPartialAnswer();
+      self.postPrefillPartialAnswer( false, null, null );
     } );
     this.domListeners.push( languageSelect2 );
 
@@ -492,7 +491,7 @@ class SurveyHandler {
 
   }
 
-  postPrefillPartialAnswer( fullSubmission = false ) {
+  postPrefillPartialAnswer( fullSubmission = false, successcb, errorcb ) {
     if ( !fullSubmission && this._prefillsPartiallyPosted ) {
       return;
     }
@@ -504,7 +503,7 @@ class SurveyHandler {
     ( window as any ).ccsdkDebug ? console.log( "Posting Prefill Responses to Server" ) : '';
     ( window as any ).ccsdkDebug ? console.log( this.prefillResponses ) : '';
     if ( typeof this.prefillResponses !== 'undefined' && this.prefillResponses.length > 0 ) {
-      return RequestHelper.post( surveyPartialUrl, this.prefillResponses );
+      RequestHelper.post( surveyPartialUrl, this.prefillResponses, successcb, errorcb );
     } else {
       // console.log('No Prefill data');
       return;
@@ -536,8 +535,8 @@ class SurveyHandler {
     }
   }
 
-  postPartialAnswer( index: any, response: any, complete = false ) {
-    this.postPrefillPartialAnswer( complete );
+  postPartialAnswer( index: any, response: any, complete = false, successcb, errorcb ) {
+    this.postPrefillPartialAnswer( complete, null, null );
     // let data = new FormData();
     //in case of file.
     // let input = document.querySelector('input[type="file"]') ;
@@ -573,20 +572,20 @@ class SurveyHandler {
     this.surveyAnswers[ question.id ] = data;
 
     data = [ data ];
-    // let result = RequestHelper.post(surveyPartialUrl, "[" + JSON.stringify(data) + "]");
+
     let onSurveyAnswerEvent = new CustomEvent( Constants.SURVEY_ANSWER_EVENT + "-" + this.surveyToken );
     document.dispatchEvent( onSurveyAnswerEvent );
     if ( question.id == this.questionsToDisplay[ this.questionsToDisplay.length - 1 ].id ) {
       //last question post moved to separate function
-      return RequestHelper.post( surveyPartialUrl, data );
+      RequestHelper.post( surveyPartialUrl, data, successcb, errorcb );
 
     } else {
-      return RequestHelper.post( surveyPartialUrl, data );
+      RequestHelper.post( surveyPartialUrl, data, successcb, errorcb );
     }
 
   }
 
-  finalPost() {
+  finalPost( successcb, errorcb ) {
     //last question
     let postSurveyFinalUrl = Config.POST_SURVEY_FINAL.replace( "{tokenId}", this.ccsdk.surveyToken );
     postSurveyFinalUrl = Config.API_URL + postSurveyFinalUrl;
@@ -619,10 +618,10 @@ class SurveyHandler {
         text: lastAnswer.textInput,
         number: lastAnswer.numberInput
       }
-      this.postPartialAnswer( this.questionsToDisplay.length - 1, _lastAnswer, true )
+      this.postPartialAnswer( this.questionsToDisplay.length - 1, _lastAnswer, true, null, null )
     }
 
-    return RequestHelper.post( postSurveyFinalUrl, finalData );
+    RequestHelper.post( postSurveyFinalUrl, finalData, successcb, errorcb );
 
   }
 
@@ -691,7 +690,7 @@ class SurveyHandler {
             let style = '';
             if ( question.attributes != null && question.attributes.scaleColor.length > 0 ) {
               tileColor = question.attributes.scaleColor;
-            } else if ( question.presentationMode != null && question.presentationMode.includes( "Color" ) ) {
+            } else if ( question.presentationMode != null && question.presentationMode.indexOf( "Color" ) !== -1 ) {
               tileColor = question.presentationMode.split( ':' )[ 1 ];
             }
             if ( tileColor.length > 0 ) {
@@ -852,9 +851,9 @@ class SurveyHandler {
             // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
             if ( checkOptionContainsImage
               && (
-                ( ( multiSelect1.length > 0 ) && multiSelect1[ 0 ].includes( "Male" ) )
-                || ( ( multiSelect1.length > 0 ) && multiSelect1[ 0 ].includes( "Yes" ) )
-                || ( ( multiSelect1.length > 1 ) && multiSelect1[ 1 ].includes( "Yes" ) ) )
+                ( ( multiSelect1.length > 0 ) && multiSelect1[ 0 ].indexOf( "Male" ) !== -1 )
+                || ( ( multiSelect1.length > 0 ) && multiSelect1[ 0 ].indexOf( "Yes" ) !== -1 )
+                || ( ( multiSelect1.length > 1 ) && multiSelect1[ 1 ].indexOf( "Yes" ) !== -1 ) )
 
             ) {
               // (window as any).ccsdkDebug?console.log('select type 2'):'';
@@ -886,7 +885,7 @@ class SurveyHandler {
             // acTemplate = templates.question_select;
             let options3 = self.util.generateSelectOptions( multiSelect1 );
 
-            if ( !self.ccsdk.config.language.includes( 'Default' ) ) {
+            if ( self.ccsdk.config.language.indexOf( 'Default' ) === -1 ) {
               if (
                 typeof question.translated !== 'undefined'
                 && question.translated != null
@@ -938,9 +937,9 @@ class SurveyHandler {
             // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
             if ( checkOptionContainsImage
               && (
-                ( ( multiSelect.length > 0 ) && multiSelect[ 0 ].includes( "Male" ) )
-                || ( ( multiSelect.length > 0 ) && multiSelect[ 0 ].includes( "Yes" ) )
-                || ( ( multiSelect.length > 1 ) && multiSelect[ 1 ].includes( "Yes" ) ) )
+                ( ( multiSelect.length > 0 ) && multiSelect[ 0 ].indexOf( "Male" ) !== -1 )
+                || ( ( multiSelect.length > 0 ) && multiSelect[ 0 ].indexOf( "Yes" ) !== -1 )
+                || ( ( multiSelect.length > 1 ) && multiSelect[ 1 ].indexOf( "Yes" ) !== -1 ) )
             ) {
               // (window as any).ccsdkDebug?console.log('select type 2'):'';
               acTemplate2 = templates.question_radio_image;
@@ -972,7 +971,7 @@ class SurveyHandler {
             // (window as any).ccsdkDebug?console.log('select type 3'):'';
             acTemplate1 = templates.question_select;
             options1 = self.util.generateSelectOptions( multiSelect );
-            if ( !self.ccsdk.config.language.includes( 'Default' ) ) {
+            if ( self.ccsdk.config.language.indexOf( 'Default' ) === -1 ) {
               if ( typeof question.translated !== 'undefined'
                 && question.translated != null
                 && typeof question.translated[ self.ccsdk.config.language ] !== 'undefined'

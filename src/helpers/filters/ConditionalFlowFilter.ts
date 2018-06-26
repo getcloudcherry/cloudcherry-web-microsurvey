@@ -73,7 +73,10 @@ class ConditionalFlowFilter {
   }
 
   private static isNumberCheck( filterQuestion: any ): boolean {
-    if ( filterQuestion.answerCheck[ 0 ].includes( "lt" ) || filterQuestion.answerCheck[ 0 ].includes( "gt" ) || filterQuestion.answerCheck[ 0 ].includes( "eq" ) ) {
+    if ( !filterQuestion ) {
+      return false;
+    }
+    if ( filterQuestion.answerCheck[ 0 ] === "lt" || filterQuestion.answerCheck[ 0 ] == "gt" || filterQuestion.answerCheck[ 0 ] === "eq" ) {
       return true;
     }
     return false;

@@ -291,7 +291,7 @@ class DomUtilities {
       let res: boolean = true;
       for ( i = 0; i < arr.length; i++ ) {
         let opt: any = arr[ i ];
-        res = res && opt.includes( ';' ) && opt.includes( '.' );
+        res = res && ( opt.indexOf( ';' ) !== -1 ) && ( opt.indexOf( '.' ) !== -1 );
       }
       return res;
     }
