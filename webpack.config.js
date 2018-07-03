@@ -16,7 +16,7 @@ var languages = {
 let config = Object.keys(languages).map(function (language) {
   return {
     entry: {
-      cc: './src/CCSDKEntry.ts',
+      cc: ['./src/polyfills/ccsdk.polyfill.ts', './src/CCSDKEntry.ts', ],
       // test : './test/ccsdk.test.ts'
     },
     devtool: 'source-map',
@@ -31,17 +31,15 @@ let config = Object.keys(languages).map(function (language) {
         sourceMap: true,
         ie8: false
       }),
+      // new webpack.optimize.LimitChunkCountPlugin({
+      //   maxChunks: 1,
+      // }),
       new CompressionPlugin({
         asset: "[path].gz[query]",
         algorithm: "gzip",
         test: /\.(js)$/,
         minRatio: 0.8
-      }),
-      new CopyWebpackPlugin([{
-        from: './src/polyfills',
-        test: 'polyfill.js',
-        to: './polyfills'
-      }])
+      })
     ],
     module: {
       rules: [{
@@ -105,11 +103,11 @@ let config = Object.keys(languages).map(function (language) {
     },
 
     output: {
-      filename: '[name].' + language + '.bundle.js',
+      filename: 'cc.' + language + '.bundle.js',
       path: path.resolve(__dirname, 'dist'),
-      library: '[name]',
-      libraryTarget: 'umd',
-      umdNamedDefine: true
+      // library: '[name]',
+      // libraryTarget: 'umd',
+      //umdNamedDefine: true
     },
     resolve: {
       modules: [

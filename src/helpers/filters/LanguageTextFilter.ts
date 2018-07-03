@@ -4,37 +4,27 @@ class LanguageTextFilter {
         if ( surveyHandler.ccsdk.config.language.indexOf( 'Default' ) === -1 ) {
             if ( question.translated != null &&
                 typeof question.translated[ surveyHandler.ccsdk.config.language ] !== 'undefined' ) {
-                if ( question.translated[ surveyHandler.ccsdk.config.language ].text != null ) {
+                if ( question.translated[ surveyHandler.ccsdk.config.language ].text ) {
                     let qText = question.translated[ surveyHandler.ccsdk.config.language ].text.split( ':' );
                     if ( question.translated[ surveyHandler.ccsdk.config.language ].text.indexOf( ":" ) !== -1 ) {
                         qText = qText[ 0 ] + ': <br><span class="text-normal">' + qText[ 1 ] + '</span>';
                     }
                     return qText;
-                } else {
-                    return question.translated[ surveyHandler.ccsdk.config.language ].text == null ? '' : question.translated[ surveyHandler.ccsdk.config.language ].text;
                 }
+                // else if ( question.translated[ surveyHandler.ccsdk.config.language ].text ) {
+                //     return question.translated[ surveyHandler.ccsdk.config.language ].text;
+                // }
                 // return question.translated[surveyHandler.ccsdk.config.language].text;
-            } else {
-                if ( question.text != null ) {
-                    let qText = question.text.split( ':' );
-                    if ( question.text.indexOf( ":" ) !== -1 ) {
-                        qText = qText[ 0 ] + ': <br><span class="text-normal">' + qText[ 1 ] + '</span>';
-                    }
-                    return qText;
-                } else {
-                    return question.text == null ? '' : question.text;
-                }
             }
+        }
+        if ( question.text ) {
+            let qText = question.text.split( ':' );
+            if ( question.text.indexOf( ":" ) !== -1 ) {
+                qText = qText[ 0 ] + ': <br><span class="text-normal">' + qText[ 1 ] + '</span>';
+            }
+            return qText;
         } else {
-            if ( question.text != null ) {
-                let qText = question.text.split( ':' );
-                if ( question.text.indexOf( ":" ) !== -1 ) {
-                    qText = qText[ 0 ] + ': <br><span class="text-normal">' + qText[ 1 ] + '</span>';
-                }
-                return qText;
-            } else {
-                return question.text == null ? '' : question.text;
-            }
+            return question.text == null ? '' : question.text;
         }
     }
 
@@ -72,8 +62,17 @@ class LanguageTextFilter {
     public static translateMultiSelect( surveyHandler: any, question: any ) {
         if ( surveyHandler.ccsdk.config.language.indexOf( 'Default' ) === -1 ) {
             if ( question.translated != null &&
-                typeof question.translated[ surveyHandler.ccsdk.config.language ] !== 'undefined' ) {
-                return question.translated[ surveyHandler.ccsdk.config.language ].multiSelect;
+                typeof question.translated[ surveyHandler.ccsdk.config.language ] !== 'undefined' &&
+                question.translated[ surveyHandler.ccsdk.config.language ].multiSelect
+            ) {
+                let translatedOptions = question.translated[ surveyHandler.ccsdk.config.language ].multiSelect;
+                return question.multiSelect.map( ( x, i ) => {
+                    if ( translatedOptions[ i ] ) {
+                        return translatedOptions[ i ];
+                    } else {
+                        return x;
+                    }
+                } );
             } else {
                 return question.multiSelect;
             }
@@ -84,7 +83,6 @@ class LanguageTextFilter {
 
     public static translateMultiSelectOption( surveyHandler: any, question: any, option: any ) {
         let effectiveMultiselect = this.translateMultiSelect( surveyHandler, question );
-        // console.log(effectiveMultiselect);
         if ( ( effectiveMultiselect instanceof Array ) && effectiveMultiselect.length > 0 ) {
             for ( let i = 0; i < question.multiSelect.length; i++ ) {
                 let opt: any = question.multiSelect[ i ].split( ';' )
@@ -96,8 +94,6 @@ class LanguageTextFilter {
             }
         }
         return option;
-
-
     }
 
 }

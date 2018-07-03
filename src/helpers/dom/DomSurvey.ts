@@ -108,7 +108,7 @@ class DomSurvey {
 
     startSurvey.internalHandler = this.util.listener( this.$body, startSurvey.type, startSurvey.id, startSurvey.cb );
 
-    console.log( 'start survey event', startSurvey );
+    // console.log( 'start survey event', startSurvey );
     let nextQue = this.util.initListener( "click", ".act-cc-button-next", function () {
       // alert("working");
       let onSurveyClickEvent = new CustomEvent( Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken );
@@ -355,6 +355,7 @@ class DomSurvey {
     // console.log(this.ccsdk.survey.questionsToDisplay);
     //go to next question
     this.qIndex++;
+    console.log( 'index', this.qIndex )
     //reset the post parameters
     // this.qResponse = typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined' ? JSON.parse(JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])) : {};
     // this.qResponse = {};
@@ -511,14 +512,15 @@ class DomSurvey {
   loadQuestionSpecifics( q: HTMLElement, index: number ) {
     let self: DomSurvey = this;
     this.$questionContainer[ 0 ].innerHTML = "";
-    console.log( this.ccsdk );
     let compiledTemplate = this.ccsdk.survey.compileTemplate( this.ccsdk.survey.questionsToDisplay[ index ] );
+    // console.log( compiledTemplate );
     this.$questionContainer[ 0 ].innerHTML += compiledTemplate;
     let qType: string = this.$questionContainer[ 0 ].firstChild.getAttribute( 'data-type' );
     let qId: string = this.$questionContainer[ 0 ].firstChild.getAttribute( 'data-id' );
     this.qResponse = {};
     // (window as any).ccsdkDebug?console.log("QTYIPE AND QID " , qType, qId):'';
     this.currentQuestionId = qId.substring( 2, qId.length );
+    // console.log( 'qtype', qType )
     switch ( qType ) {
       case 'scale':
         let allOptions1: any = document.querySelectorAll( '#' + qId + ' .option-number-item' );
@@ -736,16 +738,13 @@ class DomSurvey {
     let ref = this.util.initListener( 'click', '#' + qId + ' .cc-checkbox', function () {
       // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox input');
       // let rating : number = this.querySelectorAll('input')[0].value;
-      console.log( qId )
       let rating: string = [].filter.call( document.querySelectorAll( '#' + qId + ' .cc-checkbox input' ), function ( c ) {
         return c.checked;
-        console.log( c, 'control' )
       } ).map( function ( c ) {
         return c.value;
       } ).join( ',' );
 
       ( window as any ).ccsdkDebug ? console.log( 'Checkbox selected', rating ) : '';
-      console.log( 'Checkbox selected', rating );
 
       self.qResponse.type = 'checkbox';
       self.qResponse.text = rating;
@@ -1116,7 +1115,7 @@ class DomSurvey {
 
     ref.internalHandler = this.util.listener( this.$body, ref.type, ref.id, ref.cb );
 
-    console.log( 'singleline qResponse', self.qResponse );
+    // console.log( 'singleline qResponse', self.qResponse );
   }
 
   setupListenersQuestionNumber( index: number, qId: string ) {

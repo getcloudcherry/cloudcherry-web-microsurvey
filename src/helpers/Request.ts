@@ -5,14 +5,11 @@ function makeRequest( method: string, url: string, postParams: string, headers: 
   xhr.open( method, url );
   xhr.onload = function () {
     if ( ( this as any ).status >= 200 && ( this as any ).status < 300 ) {
-      console.log( 'server response', xhr.response )
       if ( xhr.response ) {
-        console.log( 'reponse found' )
       }
       let res: any = xhr.response ? JSON.parse( xhr.response ) : '';
       if ( successcb ) successcb( res );
     } else {
-      console.log( xhr.statusText )
       if ( errorcb ) {
         errorcb( {
           status: ( this as any ).status,
@@ -22,7 +19,6 @@ function makeRequest( method: string, url: string, postParams: string, headers: 
     }
   };
   xhr.onerror = function () {
-    console.log( xhr.statusText );
     if ( errorcb ) {
       errorcb( {
         status: ( this as any ).status,

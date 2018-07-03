@@ -9,6 +9,7 @@ class ConditionalFlowFilter {
 
     if ( surveyHandler.getAnswerForQuestionId( question.id ) != null ) {
       for ( let aQuestion of surveyHandler.getConditionalSurveyQuestions() ) {
+        // console.log( aQuestion );
         if ( aQuestion.conditionalFilter != null ) {
           let iSatisfied = false;
           let iFailed = false;
@@ -27,6 +28,7 @@ class ConditionalFlowFilter {
               }
             }
           }
+          console.log( aQuestion.sequence, iSatisfied, iFailed )
           if ( iSatisfied && !iFailed ) {
             if ( !surveyHandler.getSurveyQuestions().includes( aQuestion ) ) {
               surveyHandler.getSurveyQuestions().push( aQuestion );
@@ -89,6 +91,7 @@ class ConditionalFlowFilter {
    * @return
    */
   private static doesSatisfy( surveyHandler: any, filterQuestion: any ): boolean {
+    console.log( filterQuestion, surveyHandler );
     if ( ConditionalFlowFilter.isNumberCheck( filterQuestion ) ) {
       if ( filterQuestion.answerCheck[ 0 ].toLowerCase() == "lt" ) {
         if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ) != null )
@@ -115,9 +118,9 @@ class ConditionalFlowFilter {
         return false;
       }
       for ( let aAnswer of filterQuestion.answerCheck ) {
-        if ( question.multiSelect instanceof Array ) {
-          aAnswer = LanguageTextFilter.translateMultiSelectOption( surveyHandler, question, aAnswer );
-        }
+        // if ( question.multiSelect instanceof Array ) {
+        //   aAnswer = LanguageTextFilter.translateMultiSelectOption( surveyHandler, question, aAnswer );
+        // }
         //   console.log('hello', question.multiSelect instanceof Array,surveyHandler.getAnswerForQuestionId(filterQuestion.questionId), aAnswer);
         console.log( questionAnswerText, aAnswer );
 

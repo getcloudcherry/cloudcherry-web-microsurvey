@@ -19,10 +19,12 @@ class ConditionalTextFilter {
       return conditionalText;
     } else {
       for ( let fOption of question.leadingDisplayTexts ) {
+        console.log( 'fOption', fOption )
         if ( fOption != null && fOption.filter != null && fOption.filter.filterquestions != null ) {
           let iSatisfied: boolean = false;
           let iFailed: boolean = false;
           for ( let filterByQuestion of fOption.filter.filterquestions ) {
+            // console.log( filterByQuestion, surveyHandler );
             if ( ConditionalTextFilter.isAnd( filterByQuestion ) ) {
               if ( ConditionalTextFilter.doesSatisfy( surveyHandler, filterByQuestion ) && !iFailed ) {
                 iSatisfied = true;
@@ -36,6 +38,7 @@ class ConditionalTextFilter {
                 break;
               }
             }
+            // console.log( iSatisfied, iFailed );
           }
           if ( iSatisfied && !iFailed ) {
             let groupTitle;
@@ -45,6 +48,7 @@ class ConditionalTextFilter {
             } else {
               conditionalText = fOption.text;
             }
+            // console.log( conditionalText )
           }
         }
       }
@@ -75,6 +79,7 @@ class ConditionalTextFilter {
   }
 
   private static doesSatisfy( surveyHandler: any, filterQuestion: any ): boolean {
+    // console.log( 'filter', filterQuestion )
     if ( ConditionalTextFilter.isNumberCheck( filterQuestion ) ) {
       if ( filterQuestion.answerCheck[ 0 ].toLowerCase() == "lt" ) {
         if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ) != null )
@@ -104,6 +109,7 @@ class ConditionalTextFilter {
             break;
           }
       }
+      // console.log( 'conditions', filterQuestion.answerCheck, iFoundAll )
       if ( iFoundAll )
         return true;
     }

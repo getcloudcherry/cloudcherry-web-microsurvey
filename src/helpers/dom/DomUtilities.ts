@@ -261,12 +261,12 @@ class DomUtilities {
     return indexOf.call( this, needle ) > -1;
   }
 
-  generateSelectOptions( arr: any ) {
+  generateSelectOptions( arr: string[], translatedArr: string[] ) {
     if ( Array.isArray( arr ) ) {
       let i: number = 0;
       let res: string = '';
       for ( i = 0; i < arr.length; i++ ) {
-        res += '<option value="' + arr[ i ] + '">' + arr[ i ] + '</option>';
+        res += '<option value="' + arr[ i ] + '">' + ( translatedArr[ i ] || arr[ i ] ) + '</option>';
       }
       return res;
     }
@@ -297,19 +297,20 @@ class DomUtilities {
     }
   }
 
-  generateRadioImageOptions( arr: any, id: string ) {
+  generateRadioImageOptions( arr: string[], translatedArr: string[], id: string ) {
     if ( Array.isArray( arr ) ) {
       let i: number = 0;
       let res: string = '';
       for ( i = 0; i < arr.length; i++ ) {
         let optHtml: string = templates.option_radio_image;
         let opt: any = arr[ i ].split( ';' )
+        let translatedOpt = translatedArr[ i ].split( ';' )
         //  optHtml = optHtml.replace(/{{image}}/g, Config.CDN_URL+opt[1] );
         //  optHtml = optHtml.replace(/{{image}}/g, 'https://cx.getcloudcherry.com/microsurvey-assets/' + opt[0] + '_selected.svg');
         optHtml = optHtml.replace( /{{image}}/g, 'https://cx.getcloudcherry.com/microsurvey-assets/' + opt[ 1 ] );
         optHtml = optHtml.replace( /{{qId}}/g, "nm" + id );
-        optHtml = optHtml.replace( /{{label}}/g, opt[ 0 ] );
-        optHtml = optHtml.replace( /{{labelFor}}/g, opt[ 0 ].replace( /\s+/g, '-' ) );
+        optHtml = optHtml.replace( /{{label}}/g, translatedOpt[ 0 ] );
+        optHtml = optHtml.replace( /{{labelFor}}/g, translatedOpt[ 0 ].replace( /\s+/g, '-' ) );
         optHtml = optHtml.replace( /{{value}}/g, opt[ 0 ] );
         res += optHtml;
 
@@ -317,18 +318,19 @@ class DomUtilities {
       return res;
     }
   }
-  generateRadioIgnoreImageOptions( arr: any, id: string ) {
+  generateRadioIgnoreImageOptions( arr: string[], translatedArr: string[], id: string ) {
     if ( Array.isArray( arr ) ) {
       let i: number = 0;
       let res: string = '';
       for ( i = 0; i < arr.length; i++ ) {
         let optHtml: string = templates.option_radio;
-        let opt: any = arr[ i ].split( ';' )
+        let opt: any = arr[ i ].split( ';' );
+        let translatedOpt = translatedArr[ i ].split( ';' );
         //  optHtml = optHtml.replace(/{{image}}/g, Config.CDN_URL+opt[1] );
         //  optHtml = optHtml.replace(/{{image}}/g, 'https://cx.getcloudcherry.com/microsurvey-assets/' + opt[0] + '_selected.svg');
         optHtml = optHtml.replace( /{{qId}}/g, "nm" + id );
-        optHtml = optHtml.replace( /{{label}}/g, opt[ 0 ] );
-        optHtml = optHtml.replace( /{{labelFor}}/g, opt[ 0 ].replace( /\s+/g, '-' ) );
+        optHtml = optHtml.replace( /{{label}}/g, translatedOpt[ 0 ] );
+        optHtml = optHtml.replace( /{{labelFor}}/g, translatedOpt[ 0 ].replace( /\s+/g, '-' ) );
         optHtml = optHtml.replace( /{{value}}/g, opt[ 0 ] );
         res += optHtml;
 
@@ -338,16 +340,17 @@ class DomUtilities {
   }
 
 
-  generateRadioOptions( arr: any, id: string ) {
+  generateRadioOptions( arr: string, translatedArr: string[], id: string ) {
     if ( Array.isArray( arr ) ) {
       let i: number = 0;
       let res: string = '';
       for ( i = 0; i < arr.length; i++ ) {
         let optHtml: string = templates.option_radio;
-        let opt: any = arr[ i ].split( ';' )
+        let opt: any = arr[ i ].split( ';' );
+        let translatedOpt = translatedArr[ i ].split( ';' );
         optHtml = optHtml.replace( /{{qId}}/g, "nm" + id );
-        optHtml = optHtml.replace( /{{label}}/g, opt[ 0 ] );
-        optHtml = optHtml.replace( /{{labelFor}}/g, opt[ 0 ].replace( /\s+/g, '-' ) );
+        optHtml = optHtml.replace( /{{label}}/g, translatedOpt[ 0 ] );
+        optHtml = optHtml.replace( /{{labelFor}}/g, translatedOpt[ 0 ].replace( /\s+/g, '-' ) );
         optHtml = optHtml.replace( /{{value}}/g, opt[ 0 ] );
         res += optHtml;
 
@@ -355,19 +358,20 @@ class DomUtilities {
       return res;
     }
   }
-  generateCheckboxImageOptions( arr: any, id: string ) {
+  generateCheckboxImageOptions( arr: string[], translatedArr: string[], id: string ) {
     if ( Array.isArray( arr ) ) {
       let i: number = 0;
       let res: string = '';
       for ( i = 0; i < arr.length; i++ ) {
         let optHtml: string = templates.option_checkbox_image;
-        let opt: any = arr[ i ].split( ';' )
+        let opt: any = arr[ i ].split( ';' );
+        let translatedOpt = translatedArr[ i ].split( ';' );
         //  optHtml = optHtml.replace(/{{image}}/g, Config.CDN_URL+opt[1] );
         //  optHtml = optHtml.replace(/{{image}}/g, 'https://cx.getcloudcherry.com/microsurvey-assets/' + opt[0] + '_selected.svg');
         optHtml = optHtml.replace( /{{image}}/g, 'https://cx.getcloudcherry.com/microsurvey-assets/' + opt[ 1 ] );
         optHtml = optHtml.replace( /{{qId}}/g, "nm" + id );
-        optHtml = optHtml.replace( /{{label}}/g, opt[ 0 ] );
-        optHtml = optHtml.replace( /{{labelFor}}/g, opt[ 0 ].replace( /\s+/g, '-' ) );
+        optHtml = optHtml.replace( /{{label}}/g, translatedOpt[ 0 ] );
+        optHtml = optHtml.replace( /{{labelFor}}/g, translatedOpt[ 0 ].replace( /\s+/g, '-' ) );
         optHtml = optHtml.replace( /{{value}}/g, opt[ 0 ] );
         res += optHtml;
 
@@ -376,18 +380,20 @@ class DomUtilities {
     }
   }
 
-  generateCheckboxIgnoreImageOptions( arr: any, id: string ) {
+  generateCheckboxIgnoreImageOptions( arr: string[], translatedArr: string[], id: string ) {
     if ( Array.isArray( arr ) ) {
       let i: number = 0;
       let res: string = '';
       for ( i = 0; i < arr.length; i++ ) {
         let optHtml: string = templates.option_checkbox;
-        let opt: any = arr[ i ].split( ';' )
+        let opt: any = arr[ i ].split( ';' );
+        let translatedOpt = translatedArr[ i ].split( ';' );
+
         //  optHtml = optHtml.replace(/{{image}}/g, Config.CDN_URL+opt[1] );
         //  optHtml = optHtml.replace(/{{image}}/g, 'https://cx.getcloudcherry.com/microsurvey-assets/' + opt[0] + '_selected.svg');
         optHtml = optHtml.replace( /{{qId}}/g, "nm" + id );
-        optHtml = optHtml.replace( /{{label}}/g, opt[ 0 ] );
-        optHtml = optHtml.replace( /{{labelFor}}/g, opt[ 0 ].replace( /\s+/g, '-' ) );
+        optHtml = optHtml.replace( /{{label}}/g, translatedOpt[ 0 ] );
+        optHtml = optHtml.replace( /{{labelFor}}/g, translatedOpt[ 0 ].replace( /\s+/g, '-' ) );
         optHtml = optHtml.replace( /{{value}}/g, opt[ 0 ] );
         res += optHtml;
 
@@ -396,27 +402,25 @@ class DomUtilities {
     }
   }
 
-  generateCheckboxOptions( arr: any, id: string ) {
+  generateCheckboxOptions( arr: string[], translatedArr: string[], id: string ) {
     if ( Array.isArray( arr ) ) {
       let i: number = 0;
       let res: string = '';
       for ( i = 0; i < arr.length; i++ ) {
         let optHtml: string = templates.option_checkbox;
-        let opt: any = arr[ i ].split( ';' )
-        optHtml = optHtml.replace( /{{label}}/g, arr[ i ] );
-        optHtml = optHtml.replace( /{{labelFor}}/g, arr[ i ].replace( /\s+/g, '-' ) );
-        optHtml = optHtml.replace( /{{value}}/g, arr[ i ] );
+        let opt: any = arr[ i ].split( ';' );
+        let translatedOpt = translatedArr[ i ].split( ';' );
+        optHtml = optHtml.replace( /{{label}}/g, translatedOpt[ 0 ] );
+        optHtml = optHtml.replace( /{{labelFor}}/g, translatedOpt[ 0 ].replace( /\s+/g, '-' ) );
+        optHtml = optHtml.replace( /{{value}}/g, opt[ 0 ] );
 
         res += optHtml;
 
       }
-      console.log( res );
+      // console.log( res );
       return res;
     }
   }
-
-
-
 }
 
 
