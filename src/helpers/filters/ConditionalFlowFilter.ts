@@ -28,7 +28,6 @@ class ConditionalFlowFilter {
               }
             }
           }
-          console.log( aQuestion.sequence, iSatisfied, iFailed )
           if ( iSatisfied && !iFailed ) {
             if ( !surveyHandler.getSurveyQuestions().includes( aQuestion ) ) {
               surveyHandler.getSurveyQuestions().push( aQuestion );
@@ -91,7 +90,6 @@ class ConditionalFlowFilter {
    * @return
    */
   private static doesSatisfy( surveyHandler: any, filterQuestion: any ): boolean {
-    console.log( filterQuestion, surveyHandler );
     if ( ConditionalFlowFilter.isNumberCheck( filterQuestion ) ) {
       if ( filterQuestion.answerCheck[ 0 ].toLowerCase() == "lt" ) {
         if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ) != null )
@@ -122,7 +120,6 @@ class ConditionalFlowFilter {
         //   aAnswer = LanguageTextFilter.translateMultiSelectOption( surveyHandler, question, aAnswer );
         // }
         //   console.log('hello', question.multiSelect instanceof Array,surveyHandler.getAnswerForQuestionId(filterQuestion.questionId), aAnswer);
-        console.log( questionAnswerText, aAnswer );
 
         if ( question.displayType === 'MultiSelect' ) {
           let selectedOptions = questionAnswer.textInput.split( ',' );

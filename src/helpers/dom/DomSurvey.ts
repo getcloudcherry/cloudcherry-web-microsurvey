@@ -241,6 +241,7 @@ class DomSurvey {
   }
 
   nextQuestion() {
+    console.log( 'before next', this.qIndex );
     ( window as any ).ccsdkDebug ? console.log( 'next question q response init', this.qResponse ) : '';
     // console.log('next question q response init',this.qResponse);
     //empty the domListner
@@ -282,9 +283,6 @@ class DomSurvey {
         this.util.addClass( span, "hide" );
       }
 
-
-
-
       //check if validationRegex is set and is fulfilled
       let validationRegex = this.ccsdk.survey.questionsToDisplay[ this.qIndex ].validationRegex
       if ( validationRegex ) {
@@ -319,7 +317,7 @@ class DomSurvey {
             return;
           }
         }
-
+        console.log( 'after next', this.qIndex );
       }
 
 
@@ -405,6 +403,7 @@ class DomSurvey {
   }
 
   prevQuestion() {
+    console.log( 'before previous', this.qIndex )
     this.qIndex--;
     if ( !this.ccsdk.survey.questionsToDisplay.length || this.qIndex < 0 ) {
       this.qIndex = 0;
@@ -426,6 +425,8 @@ class DomSurvey {
       this.util.addClassAll( leftIcon, 'hide-slide' );
       this.util.removeClassAll( leftIcon, 'show-slide' );
     }
+
+    console.log( 'after previous', this.qIndex )
   }
 
   showLoader() {
@@ -866,7 +867,7 @@ class DomSurvey {
     if ( this.util.checkIfListenerExists( '#' + qId + ' .option-star-box', this.domListeners ) ) {
       //remove listeners
       ( window as any ).ccsdkDebug ? console.log( "smile question - previous listeners exists" ) : '';
-      this.removePrevListener( '#' + qId + ' .option-smile-box' );
+      this.removePrevListener( '#' + qId + ' .option-star-box' );
 
     }
     //set previous value
