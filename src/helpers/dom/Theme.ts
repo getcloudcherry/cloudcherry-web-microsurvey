@@ -19,7 +19,7 @@ class Theme {
 		.cc-sdk .cc-checkbox input[type="checkbox"]:checked + label:before {
 			background:${brandColor };
 		}
-		.overlay.glass{
+		.ccsdk-overlay.glass{
 			background-color:${this.util.hexToRGB( brandColor, .5 ) };
 		}
 		.cc-sdk .cc-checkbox input[type="checkbox"]:checked + label:after {
@@ -86,14 +86,14 @@ class Theme {
 				border: solid 1px ${brandColor };
 			}
 		 @media (max-width: 767px){
-	 			.overlay.glass{
+	 			.ccsdk-overlay.glass{
 	 			background-color:rgba(255,255,255,.85);
 	 			background-image:none;
 				}
 				.cc-sdk.cc-popup-container{
 					background-color : transparent;
 				}
-				.cc-sdk.cc-popup-container .overlay.glass{
+				.cc-sdk.cc-popup-container .ccsdk-overlay.glass{
 					background-color : ${this.util.hexToRGB( brandColor, .9 ) };
 				}
 				.cc-sdk.cc-popup-container .cc-message-box .cc-message-box__text{

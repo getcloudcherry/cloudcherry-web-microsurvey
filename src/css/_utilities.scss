@@ -1,180 +1,191 @@
 	/** Utilities **/
 
-.show{
-	display: block!important;
-}
-.show-inline{
-	display:inline-block!important;
-}
-.hide{
-	display: none!important;
-}
-.bottom{
-	bottom:0;
-}
-.right{
-	right:0;
-}
-.left{
-	left:0;
-}
-.top{
-	top:0;
-}
-
-/* Begin required CSS. */
-// .line-clamp
-// {
-// 	display            : block;
-// 	display            : -webkit-box;
-// 	-webkit-box-orient : vertical;
-// 	position           : relative;
-
-// 	line-height        : 1.2;
-// 	overflow           : hidden;
-// 	text-overflow      : ellipsis;
-// 	padding            : 0 !important;
-// }
-// .line-clamp:before{
-// 	content:" ";
-// 	display:inline-block;
-// 	vertical-align:middle;
-// 	height:100%;
-// 	margin-right:2px;
-// }
-
-// .line-clamp:after
-// {
-// 	content    : '...';
-// 	text-align : right;
-// 	bottom     : 0;
-// 	right      : 0;
-// 	width      : 25%;
-// 	display    : block;
-// 	position   : absolute;
-// 	height     : calc(1em * 1.2);
-// 	background : linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 75%);
-// }
-// @supports (-webkit-line-clamp: 1)
-// {
-// 	.line-clamp:after
-// 	{
-// 		display : none !important;
-// 	}
-// }
-// .line-clamp-1
-// {
-// 	-webkit-line-clamp : 1;
-// 	height             : calc(1em * 1.2 * 1);
-// }
-// .line-clamp-2
-// {
-// 	-webkit-line-clamp : 2;
-// 	height             : calc(1em * 1.2 * 2);
-// }
-// .line-clamp-3
-// {
-// 	-webkit-line-clamp : 3;
-// 	height             : calc(1em * 1.2 * 3);
-// }
-// .line-clamp-4
-// {
-// 	-webkit-line-clamp : 4;
-// 	height             : calc(1em * 1.2 * 4);
-// }
-// .line-clamp-5
-// {
-// 	-webkit-line-clamp : 5;
-// 	height             : calc(1em * 1.2 * 5);
-// }
-/* End required CSS. */
-
-// html[dir="rtl"] .submit-icon{
-//     left: 0;
-//     right: initial;
-// }
-
-
-.overlay{
-	background: #fff;
-	bottom: 0;
-	height: 100%;
-	left: 0;
-	position: absolute;
-	top: 0;
-	width: 100%;
-	z-index: 0;
-}
-.overlay.glass{
-	background-image: url(https://cx.getcloudcherry.com/microsurvey-assets/ww.png);
-	background-repeat: no-repeat;
-	background-size: cover;
-}
-
-.clearfix{
-	clear: both;
-	display: block;
-}
-.text-normal{
-	font-weight: 400;
-}
-.cc-sdk .form-control::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-	color: $color-1;
-	font-family: 'Open Sans';
-	font-size: 13px;
-	font-style: italic;
-	font-weight: normal;
-}
-.cc-sdk .form-control::-moz-placeholder { /* Firefox 19+ */
-	font-style: italic;
-	font-size: 13px;
-	font-weight: normal;
-	font-family: 'Open Sans';
-	color: $color-1;
-}
-.cc-sdk .form-control:-ms-input-placeholder { /* IE 10+ */
-	font-style: italic;
-	font-size: 13px;
-	font-weight: normal;
-	font-family: 'Open Sans';
-	color: $color-1;
-}
-.cc-sdk .form-control:-moz-placeholder { /* Firefox 18- */
-	font-style: italic;
-	font-size: 13px;
-	font-weight: normal;
-	font-family: 'Open Sans';
-	color: $color-1;
-}
-
-@media (min-width: 767px){
-	.desktop-hide{
-		display: none;
+	.show {
+		display: block !important;
 	}
-}
 
-@media (max-width: 767px){
-	.mobile-hide{
-		display: none;
+	.show-inline {
+		display: inline-block !important;
 	}
-	
-	.loader{
-		position: relative;
-		left: auto;
+
+	.hide {
+		display: none !important;
+	}
+
+	.bottom {
+		bottom: 0;
+	}
+
+	.right {
+		right: 0;
+	}
+
+	.left {
+		left: 0;
+	}
+
+	.top {
 		top: 0;
-		right: auto;
-	}
-	.overlay.welcome-overlay{
-		/*background-image: url(https://cx.getcloudcherry.com/microsurvey-assets/ww.png);*/
-		background: rgba(210, 42, 53, 0.87);
-	}
-	iframe, body.blurr > *:not(.cc-popup-container):not(.cc-survey){
-		-webkit-filter: blur(15px);
-		-moz-filter: blur(15px);
-		-ms-filter: blur(15px);
-		-o-filter: blur(15px);
-		filter: blur(15px);
 	}
 
+	/* Begin required CSS. */
 
-}
+	// .line-clamp
+	// {
+	// 	display            : block;
+	// 	display            : -webkit-box;
+	// 	-webkit-box-orient : vertical;
+	// 	position           : relative;
+	// 	line-height        : 1.2;
+	// 	overflow           : hidden;
+	// 	text-overflow      : ellipsis;
+	// 	padding            : 0 !important;
+	// }
+	// .line-clamp:before{
+	// 	content:" ";
+	// 	display:inline-block;
+	// 	vertical-align:middle;
+	// 	height:100%;
+	// 	margin-right:2px;
+	// }
+	// .line-clamp:after
+	// {
+	// 	content    : '...';
+	// 	text-align : right;
+	// 	bottom     : 0;
+	// 	right      : 0;
+	// 	width      : 25%;
+	// 	display    : block;
+	// 	position   : absolute;
+	// 	height     : calc(1em * 1.2);
+	// 	background : linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 75%);
+	// }
+	// @supports (-webkit-line-clamp: 1)
+	// {
+	// 	.line-clamp:after
+	// 	{
+	// 		display : none !important;
+	// 	}
+	// }
+	// .line-clamp-1
+	// {
+	// 	-webkit-line-clamp : 1;
+	// 	height             : calc(1em * 1.2 * 1);
+	// }
+	// .line-clamp-2
+	// {
+	// 	-webkit-line-clamp : 2;
+	// 	height             : calc(1em * 1.2 * 2);
+	// }
+	// .line-clamp-3
+	// {
+	// 	-webkit-line-clamp : 3;
+	// 	height             : calc(1em * 1.2 * 3);
+	// }
+	// .line-clamp-4
+	// {
+	// 	-webkit-line-clamp : 4;
+	// 	height             : calc(1em * 1.2 * 4);
+	// }
+	// .line-clamp-5
+	// {
+	// 	-webkit-line-clamp : 5;
+	// 	height             : calc(1em * 1.2 * 5);
+	// }
+	/* End required CSS. */
+
+	// html[dir="rtl"] .submit-icon{
+	//     left: 0;
+	//     right: initial;
+	// }
+	.ccsdk-overlay {
+		background: #fff;
+		bottom: 0;
+		height: 100%;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 100%;
+		z-index: 0;
+	}
+
+	.ccsdk-overlay.ccsdk-glass {
+		background-image: url(https://cx.getcloudcherry.com/microsurvey-assets/ww.png);
+		background-repeat: no-repeat;
+		background-size: cover;
+	}
+
+	.ccsdk-clearfix {
+		clear: both;
+		display: block;
+	}
+
+	.ccsdk-text-normal {
+		font-weight: 400;
+	}
+
+	.cc-sdk .form-control::-webkit-input-placeholder {
+		/* Chrome/Opera/Safari */
+		color: $color-1;
+		font-family: 'Open Sans';
+		font-size: 13px;
+		font-style: italic;
+		font-weight: normal;
+	}
+
+	.cc-sdk .form-control::-moz-placeholder {
+		/* Firefox 19+ */
+		font-style: italic;
+		font-size: 13px;
+		font-weight: normal;
+		font-family: 'Open Sans';
+		color: $color-1;
+	}
+
+	.cc-sdk .form-control:-ms-input-placeholder {
+		/* IE 10+ */
+		font-style: italic;
+		font-size: 13px;
+		font-weight: normal;
+		font-family: 'Open Sans';
+		color: $color-1;
+	}
+
+	.cc-sdk .form-control:-moz-placeholder {
+		/* Firefox 18- */
+		font-style: italic;
+		font-size: 13px;
+		font-weight: normal;
+		font-family: 'Open Sans';
+		color: $color-1;
+	}
+
+	@media (min-width: 767px) {
+		.desktop-hide {
+			display: none;
+		}
+	}
+
+	@media (max-width: 767px) {
+		.mobile-hide {
+			display: none;
+		}
+		.ccsdk-loader {
+			position: relative;
+			left: auto;
+			top: 0;
+			right: auto;
+		}
+		.ccsdk-overlay.welcome-overlay {
+			/*background-image: url(https://cx.getcloudcherry.com/microsurvey-assets/ww.png);*/
+			background: rgba(210, 42, 53, 0.87);
+		}
+		iframe,
+		body.blurr>*:not(.cc-popup-container):not(.cc-survey) {
+			-webkit-filter: blur(15px);
+			-moz-filter: blur(15px);
+			-ms-filter: blur(15px);
+			-o-filter: blur(15px);
+			filter: blur(15px);
+		}
+	}
