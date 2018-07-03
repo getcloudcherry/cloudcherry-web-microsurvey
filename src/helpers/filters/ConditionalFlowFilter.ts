@@ -29,12 +29,12 @@ class ConditionalFlowFilter {
             }
           }
           if ( iSatisfied && !iFailed ) {
-            if ( !surveyHandler.getSurveyQuestions().includes( aQuestion ) ) {
+            if ( surveyHandler.getSurveyQuestions().indexOf( aQuestion ) === -1 ) {
               surveyHandler.getSurveyQuestions().push( aQuestion );
               aAddedCount++;
             }
           } else {
-            if ( surveyHandler.getSurveyQuestions().includes( aQuestion ) ) {
+            if ( surveyHandler.getSurveyQuestions().indexOf( aQuestion ) !== -1 ) {
               aRemovedCount++;
               surveyHandler.getSurveyQuestions().splice( surveyHandler.getSurveyQuestions().indexOf( aQuestion ), 1 );
               // surveyHandler.removePartial(aQuestion.id);

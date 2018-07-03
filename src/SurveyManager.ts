@@ -11,6 +11,11 @@ class SurveyManager {
   static initializeSurvey( surveyId: string ) {
     //check if survey ran?
     //do survey initialization.
+    if ( !SurveyManager.surveyInstances || !SurveyManager.surveyInstances[ surveyId ] ) {
+      console.error( 'Microsurvey not properly set up. Contact Support.' );
+      return;
+    }
+
     SurveyManager.surveyInstances[ surveyId ].setupSurvey();
   }
 

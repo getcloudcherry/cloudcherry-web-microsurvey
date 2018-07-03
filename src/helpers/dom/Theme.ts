@@ -8,7 +8,6 @@ class Theme {
 		this.util = new DomUtilities();
 		this.brandColorDark = this.util.shadeBlendConvert( -0.3, brandColor, undefined );
 		this.brandColorWhite = this.util.shadeBlendConvert( 0.1, brandColor, undefined );
-		console.log( brandColor );
 		let css: string = `
 		.cc-sdk #progressBar{
 			background : ${this.brandColorDark };

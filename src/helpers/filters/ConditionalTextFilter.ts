@@ -5,7 +5,7 @@ class ConditionalTextFilter {
     let conditionalText = question.text == null ? '' : LanguageTextFilter.translateQuestionText( surveyHandler, question );
     if ( question.text != null ) {
       let conditionalText: string = question.text.split( ':' );
-      if ( question.setName && question.text.includes( ":" ) ) {
+      if ( question.setName && question.text.indexOf( ":" ) !== -1 ) {
         conditionalText = conditionalText[ 0 ] + ': <br><span class="text-normal">' + conditionalText[ 1 ] + '</span>';
       } else {
         conditionalText = conditionalText[ 0 ];
@@ -68,7 +68,7 @@ class ConditionalTextFilter {
   }
 
   private static isNumberCheck( filterQuestion: any ): boolean {
-    if ( filterQuestion.answerCheck[ 0 ].includes( "lt" ) || filterQuestion.answerCheck[ 0 ].includes( "gt" ) || filterQuestion.answerCheck[ 0 ].includes( "eq" ) ) {
+    if ( filterQuestion.answerCheck[ 0 ] === "lt" || filterQuestion.answerCheck[ 0 ] === "gt" || filterQuestion.answerCheck[ 0 ] === "eq" ) {
       return true;
     }
     return false;
@@ -97,7 +97,7 @@ class ConditionalTextFilter {
       let iFoundAll: boolean = false;
       for ( let aAnswer of filterQuestion.answerCheck ) {
         if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ) != null )
-          if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).textInput != null && surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).textInput.includes( aAnswer ) ) {
+          if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).textInput != null && surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).textInput.indexOf( aAnswer ) == -1 ) {
             iFoundAll = true;
             break;
           } else {

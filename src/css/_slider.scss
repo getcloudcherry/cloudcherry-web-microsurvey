@@ -1,82 +1,92 @@
 .cc-sdk .range {
- -webkit-appearance: none;
- -moz-appearance: none;
- width: 500px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 500px;
 }
 
 .cc-sdk input[type=range]::-webkit-slider-runnable-track {
- -webkit-appearance: none;
- background: #ff403d ;
+    -webkit-appearance: none;
+    background: #ff403d;
     background: -moz-linear-gradient(-45deg, #ff403d 0%, #992a28 100%);
-    background: -webkit-linear-gradient(-45deg, #ff403d 0%,#992a28 100%);
-    background: linear-gradient(135deg, #ff403d 0%,#992a28 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff403d ', endColorstr='#992a28 ',GradientType=1 );
- height: 1px;
-//  box-sizing: border-box;
-//  margin-left: -25px;
- 
+    background: -webkit-linear-gradient(-45deg, #ff403d 0%, #992a28 100%);
+    background: linear-gradient(135deg, #ff403d 0%, #992a28 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff403d ', endColorstr='#992a28 ', GradientType=1);
+    height: 1px; //  box-sizing: border-box;
+    //  margin-left: -25px;
 }
 
 .cc-sdk input[type=range]:focus {
- outline: none;
+    outline: none;
 }
 
 .cc-sdk input[type=range]::-moz-range-track {
- -moz-appearance: none;
- background: #ff403d ;
+    -moz-appearance: none;
+    background: #ff403d;
     background: -moz-linear-gradient(-45deg, #ff403d 0%, #992a28 100%);
-    background: -webkit-linear-gradient(-45deg, #ff403d 0%,#992a28 100%);
-    background: linear-gradient(135deg, #ff403d 0%,#992a28 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff403d ', endColorstr='#992a28 ',GradientType=1 );
- height: 1px;
+    background: -webkit-linear-gradient(-45deg, #ff403d 0%, #992a28 100%);
+    background: linear-gradient(135deg, #ff403d 0%, #992a28 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff403d ', endColorstr='#992a28 ', GradientType=1);
+    height: 1px;
+}
+
+.cc-sdk input[type=range]::-ms-track {
+    height: 1px; // width: 500px;
+    background-color: #ff403d;
 }
 
 .cc-sdk input[type=range]::-webkit-slider-thumb {
- -webkit-appearance: none;
- border: 1px solid #ff403d ;
- border-radius: 50%;
- height:32px;
- width:32px;
- max-width: 80px;
- position: relative;
- bottom: 16px;
- background-color: #fff;
- cursor: -webkit-grab;
- 
- 
+    -webkit-appearance: none;
+    border: 1px solid #ff403d;
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    max-width: 80px;
+    position: relative;
+    bottom: 16px;
+    background-color: #fff;
+    cursor: -webkit-grab;
+}
+
+.cc-sdk input[type=range]::-ms-thumb {
+    border: 1px solid #ff403d;
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    box-sizing: border-box;
+    cursor: pointer;
 }
 
 .cc-sdk input[type=range]::-moz-range-thumb {
- -moz-appearance: none;
- border: 1px solid #ff403d ;
- border-radius: 50%;
- height: 32px;
- width: 32px;
- max-width: 80px;
- position: relative;
- bottom: 16px;
- background-color: #fff;
- cursor: -moz-grab;
+    -moz-appearance: none;
+    border: 1px solid #ff403d;
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    max-width: 80px;
+    position: relative;
+    bottom: 16px;
+    background-color: #fff;
+    cursor: -moz-grab;
 }
 
-.cc-sdk input[type=range]::-moz-range-thumb:before{
-    content:'asd';
+.cc-sdk input[type=range]::-moz-range-thumb:before {
+    content: 'asd';
 }
-
 
 .cc-sdk input[type=range]::-webkit-slider-thumb:active {
- cursor: -webkit-grabbing;
+    cursor: -webkit-grabbing;
 }
 
 .cc-sdk input[type=range]::-moz-range-thumb:active {
- cursor: -moz-grabbing;
+    cursor: -moz-grabbing;
 }
 
 .cc-sdk .cc-question-container__content.range-slider {
-   height: 50px;
-   padding-top: 9px;
+    height: 50px;
+    padding-top: 9px;
 }
-.cc-sdk .slider-tip{
+
+.cc-sdk .slider-tip {
     background: #eb1c23;
     padding: 8px 9px 9px 9px;
     position: absolute;
@@ -98,19 +108,19 @@
     text-align: center;
     font-weight: bold;
 }
-.cc-sdk .slider-tip:after{
+
+.cc-sdk .slider-tip:after {
     border-width: 5px 5px 0;
     border-top-color: #000;
 }
 
-
-@media(max-width: 1024px){
-    .cc-sdk .range{
-       width: 100%;
+@media(max-width: 1024px) {
+    .cc-sdk .range {
+        width: 100%;
     }
 }
 
 .cc-sdk input.range.blue::-moz-range-track,
-.cc-sdk input.range.blue::-webkit-slider-runnable-track  {
-    background:blue;
+.cc-sdk input.range.blue::-webkit-slider-runnable-track {
+    background: blue;
 }

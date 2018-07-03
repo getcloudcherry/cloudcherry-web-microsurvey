@@ -922,7 +922,6 @@ class SurveyHandler {
           let multiSelect;
           //get text question template and compile it.
           multiSelect = Array.prototype.slice.call( LanguageTextFilter.translateMultiSelect( this, question ) );
-          console.log( multiSelect, question )
           if ( question.presentationMode == 'Invert' ) {
             // console.log('selection option before reverse', multiSelect);
             multiSelect.reverse();
@@ -954,7 +953,6 @@ class SurveyHandler {
               acTemplate2 = templates.question_radio_image;
               options2 = self.util.generateRadioIgnoreImageOptions( question.multiSelect, multiSelect, question.id );
               // (window as any).ccsdkDebug?console.log(options2):'';
-              console.log( options2 )
               questionTemplate = acTemplate2;
               questionTemplate = questionTemplate.replace( /{{options}}/g, options2 );
             } else {
@@ -1174,7 +1172,6 @@ class SurveyHandler {
             this.fillPrefillQuestion( question.id, "Width:" + window.innerWidth + "px / Height:" + window.innerHeight + "px", "text" );
             return true;
           default:
-            console.log( "isPrefillTags", typeof this.prefillWithTags[ tag.toLowerCase() ] );
             if ( typeof this.prefillWithTags[ tag.toLowerCase() ] != 'undefined' ) {
               let type = this.getAnswerTypeFromDisplayType( question.displayType );
               this.fillPrefillQuestion( question.id, this.prefillWithTags[ tag.toLowerCase() ], type );
