@@ -39,11 +39,9 @@ if ( typeof ( window as any ).CCSDK !== 'undefined' ) {
   ( window as any ).CCSDK = function () {
     if ( arguments && arguments.length == 0 ) {
       var time = new Date();
-      // console.log(this.time);
     } else {
       ( window as any ).ccsdkDebug ? console.log( arguments ) : '';
       var args = ( Array as any ).from( arguments );
-      // console.log(arguments);
       //Call this functions as ccsdk('functionName', ['argument1', 'argument2']);
       var functionName = args.splice( 0, 1 )[ 0 ];
       ( window as any ).ccsdkDebug ? console.log( functionName ) : '';
@@ -66,7 +64,6 @@ if ( typeof ( window as any ).CCSDK !== 'undefined' ) {
 export function init( surveyToken: any ) {
   //config options can be set in arguments[1]
   //available config options : themeColor
-  // console.log(arguments[arguments.length - 1]);
   let config = ( typeof arguments[ 1 ] === 'object' ) ? arguments[ 1 ] : {};
   //create survey instance
   if ( typeof Cookie.get( surveyToken + '-finish' ) !== 'undefined' && Cookie.get( surveyToken + '-finish' ) ) {

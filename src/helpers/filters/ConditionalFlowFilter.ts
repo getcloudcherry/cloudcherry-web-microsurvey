@@ -1,6 +1,6 @@
 import { isArray } from "util";
 import { LanguageTextFilter } from "./LanguageTextFilter";
-
+import { isAnd, isOr, doesSatisfy, questionCompare } from './filter-utils';
 
 class ConditionalFlowFilter {
   public static filterQuestion( surveyHandler: any, question: any ) {
@@ -14,15 +14,15 @@ class ConditionalFlowFilter {
           let iSatisfied = false;
           let iFailed = false;
           for ( let aFilterByQuestion of aQuestion.conditionalFilter.filterquestions ) {
-            if ( ConditionalFlowFilter.isAnd( aFilterByQuestion ) ) {
-              if ( ConditionalFlowFilter.doesSatisfy( surveyHandler, aFilterByQuestion ) && !iFailed ) {
+            if ( isAnd( aFilterByQuestion ) ) {
+              if ( doesSatisfy( surveyHandler, aFilterByQuestion ) && !iFailed ) {
                 iSatisfied = true;
               } else {
                 iFailed = true;
                 break;
               }
-            } else if ( ConditionalFlowFilter.isOr( aFilterByQuestion ) ) {
-              if ( ConditionalFlowFilter.doesSatisfy( surveyHandler, aFilterByQuestion ) ) {
+            } else if ( isOr( aFilterByQuestion ) ) {
+              if ( doesSatisfy( surveyHandler, aFilterByQuestion ) ) {
                 iSatisfied = true;
                 break;
               }
@@ -46,95 +46,13 @@ class ConditionalFlowFilter {
       }
     }
     if ( aAddedCount > 0 || aRemovedCount > 0 ) {
-      surveyHandler.getSurveyQuestions().sort( ConditionalFlowFilter.questionCompare );
+      surveyHandler.getSurveyQuestions().sort( questionCompare );
       // surveyHandler.sendConditionalFLowQuestionsData(surveyHandler.getSurveyQuestions().size());
       return true;
     } else {
       // return false;
     }
     ( window as any ).ccsdkDebug ? console.log( surveyHandler.getSurveyQuestions() ) : '';
-  }
-
-  private static questionCompare( a: any, b: any ) {
-    return a.sequence - b.sequence;
-  }
-
-  private static isAnd( filterQuestion: any ): boolean {
-    if ( filterQuestion.groupBy == null || filterQuestion.groupBy.toUpperCase() == "AND" ) {
-      return true;
-    }
-    return false;
-  }
-
-  private static isOr( filterQuestion: any ): boolean {
-    if ( filterQuestion.groupBy != null && filterQuestion.groupBy.toUpperCase() == "OR" ) {
-      return true;
-    }
-    return false;
-  }
-
-  private static isNumberCheck( filterQuestion: any ): boolean {
-    if ( !filterQuestion ) {
-      return false;
-    }
-    if ( filterQuestion.answerCheck[ 0 ] === "lt" || filterQuestion.answerCheck[ 0 ] == "gt" || filterQuestion.answerCheck[ 0 ] === "eq" ) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Contains logic to control conditional flow and whether to show or hide the questions based on the user input
-   *
-   * @param filterQuestion
-   * @return
-   */
-  private static doesSatisfy( surveyHandler: any, filterQuestion: any ): boolean {
-    if ( ConditionalFlowFilter.isNumberCheck( filterQuestion ) ) {
-      if ( filterQuestion.answerCheck[ 0 ].toLowerCase() == "lt" ) {
-        if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ) != null )
-          if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).numberInput != null && surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).numberInput < filterQuestion.number ) {
-            return true;
-          }
-      } else if ( filterQuestion.answerCheck[ 0 ].toLowerCase() == ( "gt" ) ) {
-        if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ) != null )
-          if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).numberInput != null && surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).numberInput > filterQuestion.number ) {
-            return true;
-          }
-      } else if ( filterQuestion.answerCheck[ 0 ].toLowerCase() == ( "eq" ) ) {
-        if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ) != null )
-          if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).numberInput != null && surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).numberInput == filterQuestion.number ) {
-            return true;
-          }
-      }
-    } else {
-      let iFoundAll = false;
-      let question = surveyHandler.getQuestionById( filterQuestion.questionId );
-      let questionAnswer = surveyHandler.getAnswerForQuestionId( filterQuestion.questionId );
-      let questionAnswerText = questionAnswer != null && questionAnswer.textInput != null ? questionAnswer.textInput : '';
-      if ( !questionAnswer ) {
-        return false;
-      }
-      for ( let aAnswer of filterQuestion.answerCheck ) {
-        // if ( question.multiSelect instanceof Array ) {
-        //   aAnswer = LanguageTextFilter.translateMultiSelectOption( surveyHandler, question, aAnswer );
-        // }
-        //   console.log('hello', question.multiSelect instanceof Array,surveyHandler.getAnswerForQuestionId(filterQuestion.questionId), aAnswer);
-
-        if ( question.displayType === 'MultiSelect' ) {
-          let selectedOptions = questionAnswer.textInput.split( ',' );
-          if ( selectedOptions.indexOf( aAnswer ) !== -1 ) {
-            iFoundAll = true;
-          }
-        } else if ( questionAnswerText === aAnswer ) {
-          iFoundAll = true;
-        }
-      }
-
-      return iFoundAll;
-    }
-
-    return false;
   }
 }
 

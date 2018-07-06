@@ -1,5 +1,7 @@
 
 import { LanguageTextFilter } from './LanguageTextFilter';
+import { isAnd, doesSatisfy, isOr } from './filter-utils';
+
 class ConditionalTextFilter {
   public static filterText( surveyHandler: any, question: any ): string {
     let conditionalText = question.text == null ? '' : LanguageTextFilter.translateQuestionText( surveyHandler, question );
@@ -23,15 +25,15 @@ class ConditionalTextFilter {
           let iSatisfied: boolean = false;
           let iFailed: boolean = false;
           for ( let filterByQuestion of fOption.filter.filterquestions ) {
-            if ( ConditionalTextFilter.isAnd( filterByQuestion ) ) {
-              if ( ConditionalTextFilter.doesSatisfy( surveyHandler, filterByQuestion ) && !iFailed ) {
+            if ( isAnd( filterByQuestion ) ) {
+              if ( doesSatisfy( surveyHandler, filterByQuestion ) && !iFailed ) {
                 iSatisfied = true;
               } else {
                 iFailed = true;
                 break;
               }
-            } else if ( ConditionalTextFilter.isOr( filterByQuestion ) ) {
-              if ( ConditionalTextFilter.doesSatisfy( surveyHandler, filterByQuestion ) ) {
+            } else if ( isOr( filterByQuestion ) ) {
+              if ( doesSatisfy( surveyHandler, filterByQuestion ) ) {
                 iSatisfied = true;
                 break;
               }
@@ -51,66 +53,6 @@ class ConditionalTextFilter {
     }
 
     return conditionalText;
-  }
-
-  private static isAnd( filterQuestion: any ): boolean {
-    if ( filterQuestion.groupBy == null || filterQuestion.groupBy.toUpperCase() == "AND" ) {
-      return true;
-    }
-    return false;
-  }
-
-  private static isOr( filterQuestion: any ): boolean {
-    if ( filterQuestion.groupBy != null && filterQuestion.groupBy.toUpperCase() == "OR" ) {
-      return true;
-    }
-    return false;
-  }
-
-  private static isNumberCheck( filterQuestion: any ): boolean {
-    if ( filterQuestion.answerCheck[ 0 ] === "lt" || filterQuestion.answerCheck[ 0 ] === "gt" || filterQuestion.answerCheck[ 0 ] === "eq" ) {
-      return true;
-    }
-    return false;
-  }
-
-  private static doesSatisfy( surveyHandler: any, filterQuestion: any ): boolean {
-    // console.log( 'filter', filterQuestion )
-    if ( ConditionalTextFilter.isNumberCheck( filterQuestion ) ) {
-      if ( filterQuestion.answerCheck[ 0 ].toLowerCase() == "lt" ) {
-        if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ) != null )
-          if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).numberInput != null && surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).numberInput < filterQuestion.number ) {
-            return true;
-          }
-      } else if ( filterQuestion.answerCheck[ 0 ].toLowerCase() == "gt" ) {
-        if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ) != null )
-          if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).numberInput != null && surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).numberInput > filterQuestion.number ) {
-            return true;
-          }
-      } else if ( filterQuestion.answerCheck[ 0 ].toLowerCase() == "eq" ) {
-        if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ) != null )
-          if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).numberInput != null && surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).numberInput == filterQuestion.number ) {
-            return true;
-          }
-      }
-    } else {
-      let iFoundAll: boolean = false;
-      for ( let aAnswer of filterQuestion.answerCheck ) {
-        if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ) != null )
-          if ( surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).textInput != null && surveyHandler.getAnswerForQuestionId( filterQuestion.questionId ).textInput.indexOf( aAnswer ) == -1 ) {
-            iFoundAll = true;
-            break;
-          } else {
-            iFoundAll = false;
-            break;
-          }
-      }
-      // console.log( 'conditions', filterQuestion.answerCheck, iFoundAll )
-      if ( iFoundAll )
-        return true;
-    }
-
-    return false;
   }
 }
 

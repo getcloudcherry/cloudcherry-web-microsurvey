@@ -90,12 +90,9 @@ class DomSurvey {
 
   setupListeners() {
     let self = this;
-    console.log( self, 'before event' )
     let startSurvey = this.util.initListener( "click", ".act-cc-survey-start", function () {
-      console.log( 'start handler', self )
       if ( ( !self.util.hasClass( self.$startBtn, 'disabled' ) ) && ( self.ccsdk.surveyStatus != 'minimized' ) ) {
         let onSurveyClickEvent = new CustomEvent( Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken );
-        console.log( onSurveyClickEvent, 'custom click event' );
         document.dispatchEvent( onSurveyClickEvent );
         self.util.addClass( self.$startBtn, 'disabled' );
         self.showLoader();
@@ -108,7 +105,6 @@ class DomSurvey {
 
     startSurvey.internalHandler = this.util.listener( this.$body, startSurvey.type, startSurvey.id, startSurvey.cb );
 
-    // console.log( 'start survey event', startSurvey );
     let nextQue = this.util.initListener( "click", ".act-cc-button-next", function () {
       // alert("working");
       let onSurveyClickEvent = new CustomEvent( Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken );
@@ -213,7 +209,7 @@ class DomSurvey {
       //start survey
       //check if only one language is configured
       ( window as any ).ccsdkDebug ? console.log( this.ccsdk.surveyData ) : '';
-      if ( typeof this.ccsdk.surveyData.translated == undefined || Object.keys( this.ccsdk.surveyData.translated ).length < 1 ) {
+      if ( this.ccsdk.surveyData.translated && Object.keys( this.ccsdk.surveyData.translated ).length < 1 ) {
         this.loadFirstQuestion();
       } else {
         this.ccsdk.survey.displayLanguageSelector();
@@ -241,7 +237,6 @@ class DomSurvey {
   }
 
   nextQuestion() {
-    console.log( 'before next', this.qIndex );
     ( window as any ).ccsdkDebug ? console.log( 'next question q response init', this.qResponse ) : '';
     // console.log('next question q response init',this.qResponse);
     //empty the domListner
@@ -291,7 +286,6 @@ class DomSurvey {
         let pattern = validationRegex.match( new RegExp( '^/(.*?)/([gimy]*)$' ) );
         let regex = new RegExp( validationRegex );
         if ( this.qResponse.text ) {
-          console.log( 'test regex text', regex.test( this.qResponse.text ) );
           if ( regex.test( this.qResponse.text ) ) {
             this.util.removeClass( validationSpan, "show" );
             this.util.addClass( validationSpan, "hide" );
@@ -317,7 +311,6 @@ class DomSurvey {
             return;
           }
         }
-        console.log( 'after next', this.qIndex );
       }
 
 
@@ -353,7 +346,6 @@ class DomSurvey {
     // console.log(this.ccsdk.survey.questionsToDisplay);
     //go to next question
     this.qIndex++;
-    console.log( 'index', this.qIndex )
     //reset the post parameters
     // this.qResponse = typeof this.ccsdk.survey.answers[this.currentQuestionId] !== 'undefined' ? JSON.parse(JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])) : {};
     // this.qResponse = {};
@@ -403,7 +395,6 @@ class DomSurvey {
   }
 
   prevQuestion() {
-    console.log( 'before previous', this.qIndex )
     this.qIndex--;
     if ( !this.ccsdk.survey.questionsToDisplay.length || this.qIndex < 0 ) {
       this.qIndex = 0;
@@ -425,8 +416,6 @@ class DomSurvey {
       this.util.addClassAll( leftIcon, 'hide-slide' );
       this.util.removeClassAll( leftIcon, 'show-slide' );
     }
-
-    console.log( 'after previous', this.qIndex )
   }
 
   showLoader() {
@@ -468,7 +457,7 @@ class DomSurvey {
       let bodyElement = <HTMLElement>document.
         getElementsByTagName( "body" )[ 0 ];
       this.util.addClass( startContainer, "show-slide" );
-      this.util.addClass( bodyElement, "blurr" );
+      // this.util.addClass( bodyElement, "blurr" );
     }, 200 );
     console.debug()
     this.$startBtn = document.querySelectorAll( ".act-cc-survey-start" )[ 0 ];
@@ -482,7 +471,7 @@ class DomSurvey {
       let bodyElement = <HTMLElement>document.
         getElementsByTagName( "body" )[ 0 ];
       this.util.addClass( startContainer, "show-slide" );
-      this.util.addClass( bodyElement, "blurr" );
+      // this.util.addClass( bodyElement, "blurr" );
     }, 200 );
     let self = this;
     if ( this.util.checkIfListenerExists( '.cc-language-select', this.domListeners ) ) {
@@ -1083,7 +1072,6 @@ class DomSurvey {
       //remove listeners
       ( window as any ).ccsdkDebug ? console.log( "singleline question - previous listeners exists" ) : '';
       this.removePrevListener( '#' + qId );
-
     }
     //set previous value
     let questionId: any;
@@ -1229,7 +1217,8 @@ class DomSurvey {
 
     if ( typeof this.ccsdk.survey.answers[ questionId ] !== 'undefined' && this.ccsdk.survey.answers[ questionId ] !== '' ) {
       if ( this.ccsdk.survey.answers[ questionId ].text ) {
-        self.select.setValue( this.ccsdk.survey.answers[ questionId ].text );
+        let question = this.ccsdk.survey.getQuestionById(questionId);
+        self.select.setValue( this.ccsdk.survey.answers[ questionId ].text, question, this.ccsdk.survey );
         self.select.selectOptions( this.ccsdk.survey.answers[ questionId ].text );
         self.qResponse.type = 'select';
         self.qResponse.text = this.ccsdk.survey.answers[ questionId ].text;
@@ -1242,7 +1231,7 @@ class DomSurvey {
     let selectRes: string = '';
     let ref = this.util.initListener( 'click', '#' + qId + " .cc-select-options .cc-select-option", function () {
       // selectRes = this.getAttribute('data-value');
-      selectRes = document.querySelectorAll( '#' + qId + " .cc-select-trigger" )[ 0 ].innerHTML;
+      selectRes = document.querySelectorAll( '#' + qId + " .cc-select-trigger" )[ 0 ].getAttribute('data-selection-value');
       // (window as any).ccsdkDebug?console.log(selectRes):'';
       self.qResponse.type = 'select';
       self.qResponse.text = selectRes;

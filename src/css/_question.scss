@@ -58,6 +58,7 @@
 	height: 32px;
 	padding: 6px 0;
 	width: 124px;
+	text-align: center;
 }
 
 .cc-sdk.cc-popup-container .cc-popup-container__close {
@@ -425,13 +426,13 @@
 		top: 0;
 	}
 	.cc-sdk .cc-popup-container-2__icons.cc-right-icon {
-		left: initial;
+		left: auto;
 		right: 0;
 		padding: 0;
 	}
 	.cc-sdk .cc-popup-container-2__icons.cc-left-icon {
 		left: 0;
-		right: initial;
+		right: auto;
 		padding: 0;
 	}
 	.cc-sdk .cc-big-list-container .cc-question-container__list li {
@@ -532,6 +533,9 @@
 		height: 100%;
 		position: relative;
 	}
+	.cc-sdk .cc-message-box__btn {
+		margin-left: 20px;
+	}
 }
 
 @media(max-width: 767px) {
@@ -569,7 +573,7 @@
 	.cc-sdk.cc-popup-container .cc-message-box .submit-icon {
 		position: absolute;
 		bottom: -100%;
-		top: initial;
+		top: auto;
 		left: 0;
 		margin: 0 14px;
 	}

@@ -8,11 +8,12 @@
   left: 0;
   width: 40px;
   height: 40px;
-  transform: rotateY(-180deg)   rotateZ(-90deg);
+  transform: rotateY(-180deg) rotateZ(-90deg);
 }
-html[dir="rtl"] .cc-sdk svg.timer{
-    right: 0;
-    left: initial
+
+html[dir="rtl"] .cc-sdk svg.timer {
+  right: 0;
+  left: auto;
 }
 
 .cc-sdk svg.timer circle {

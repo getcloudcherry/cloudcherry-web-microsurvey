@@ -266,7 +266,9 @@ class DomUtilities {
       let i: number = 0;
       let res: string = '';
       for ( i = 0; i < arr.length; i++ ) {
-        res += '<option value="' + arr[ i ] + '">' + ( translatedArr[ i ] || arr[ i ] ) + '</option>';
+        let translatedOpt = ( translatedArr[ i ] || arr[ i ] ).split( ';' );
+        let arrOpt = arr[ i ].split( ';' );
+        res += '<option value="' + arrOpt[ 0 ] + '">' + ( translatedOpt[ 0 ] ) + '</option>';
       }
       return res;
     }

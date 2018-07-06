@@ -4,19 +4,21 @@ html[dir="rtl"] .cc-sdk .cc-select-trigger {
     background-repeat: no-repeat;
     text-align: right;
 }
+
 html[dir="rtl"] .cc-sdk .cc-select-trigger:after {
-    top: 50%; 
+    top: 50%;
     left: 2px;
-    right:initial;
+    right: auto;
 }
-html[dir="rtl"] .cc-sdk .cc-select-option{
+
+html[dir="rtl"] .cc-sdk .cc-select-option {
     text-align: right;
-}    
+}
+
 html[dir="rtl"] .cc-sdk .cc-select-option:first-of-type {
     border-radius: 4px 0px 0 4px;
 }
+
 html[dir="rtl"] .cc-sdk .cc-select-option:last-of-type {
     border-radius: 0 4px 4px 0px;
 }
-
-

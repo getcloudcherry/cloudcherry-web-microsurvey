@@ -13,7 +13,6 @@ describe( 'SurveyHandler', function () {
       // let surveyJson = await survey.fetchQuestions();
       // (window as any).ccsdkDebug?console.log(surveyJson):'';
       // assert.notEqual(surveyJson, undefined);
-      // console.log("test");
       //assert from others.
       // help();
     } );
