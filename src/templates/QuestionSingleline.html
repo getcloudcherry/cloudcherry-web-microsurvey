@@ -1,11 +1,12 @@
 <div class="cc-question-container single-line" data-required="{{isRequired}}" data-type="singleline" data-id="{{questionId}}">
   <div class="cc-question-container__text">
-    <p class=""><span class="cc-question-container__required-label">{{requiredLabel}}</span>{{question}}</p>
+    <p class="">
+      <span class="cc-question-container__required-label">{{requiredLabel}}</span>{{question}}</p>
     <span class="cc-question-container__required">Mandatory Question</span>
     <span class="cc-question-container__validation">{{validationHint}}</span>
-    
+
   </div>
   <div class="cc-question-container__content">
-    <input type="text" name="" id="{{questionId}}" placeholder="Enter.." class="form-control">
+    <input type="text" name="" id="{{questionId}}" placeholder="Enter.." class="cc-sdk-form-control">
   </div>
 </div>

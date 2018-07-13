@@ -1,24 +1,22 @@
-html[dir="rtl"] .cc-sdk .cc-select-trigger {
-    padding: 0 22px 0 84px;
-    background-position: 97% center;
-    background-repeat: no-repeat;
-    text-align: right;
-}
-
-html[dir="rtl"] .cc-sdk .cc-select-trigger:after {
-    top: 50%;
-    left: 2px;
-    right: auto;
-}
-
-html[dir="rtl"] .cc-sdk .cc-select-option {
-    text-align: right;
-}
-
-html[dir="rtl"] .cc-sdk .cc-select-option:first-of-type {
-    border-radius: 4px 0px 0 4px;
-}
-
-html[dir="rtl"] .cc-sdk .cc-select-option:last-of-type {
-    border-radius: 0 4px 4px 0px;
+[dir="rtl"].cc-sdk {
+    .cc-select-trigger {
+        padding: 0 22px 0 84px;
+        background-position: 97% center;
+        background-repeat: no-repeat;
+        text-align: right;
+    }
+    .cc-select-trigger:after {
+        top: 50%;
+        left: 2px;
+        right: auto;
+    }
+    .cc-select-option {
+        text-align: right;
+    }
+    .cc-select-option:first-of-type {
+        border-radius: 4px 0px 0 4px;
+    }
+    .cc-select-option:last-of-type {
+        border-radius: 0 4px 4px 0px;
+    }
 }

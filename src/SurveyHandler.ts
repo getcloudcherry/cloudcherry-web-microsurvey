@@ -689,7 +689,7 @@ class SurveyHandler {
           } else {
             let tileColor = '';
             let style = '';
-            if ( question.attributes != null && question.attributes.scaleColor.length > 0 ) {
+            if ( question.attributes != null && question.attributes.scaleColor && question.attributes.scaleColor.length > 0 ) {
               tileColor = question.attributes.scaleColor;
             } else if ( question.presentationMode != null && question.presentationMode.indexOf( "Color" ) !== -1 ) {
               tileColor = question.presentationMode.split( ':' )[ 1 ];

@@ -28,7 +28,7 @@
 	background: $cc-brand-1-color;
 }
 
-.cc-sdk .yellow .form-control:focus {
+.cc-sdk .yellow .cc-sdk-form-control:focus {
 	border-color: #fcaf18;
 }
 
@@ -62,7 +62,7 @@
 	background: $cc-brand-2-color;
 }
 
-.cc-sdk .red .form-control:focus {
+.cc-sdk .red .cc-sdk-form-control:focus {
 	border-color: $cc-brand-2-color;
 }
 

@@ -172,10 +172,14 @@ class Survey {
   }
 
   setHtmlTextDirection() {
-    let htmlDir: string = document.getElementsByTagName( 'html' )[ 0 ].getAttribute( 'dir' );
+    let ccSDKElement = document.querySelector( '.cc-sdk' );
+    if ( !ccSDKElement ) {
+      return;
+    }
+    let ccSDKDir: string = ccSDKElement.getAttribute( 'dir' );
     let direction: string = ( this.config && this.config.textDirection ) ?
-      this.config.textDirection : ( htmlDir ? htmlDir : "ltr" );
-    document.getElementsByTagName( 'html' )[ 0 ].setAttribute( 'dir', direction );
+      this.config.textDirection : ( ccSDKDir ? ccSDKDir : "ltr" );
+    ccSDKElement.setAttribute( 'dir', direction );
   }
 
   setDisplayOptions() {
