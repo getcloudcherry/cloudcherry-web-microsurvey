@@ -53,8 +53,8 @@
     border-right-style: none;
     border-top-style: none;
     height: 7px;
+    top: calc(50% - 8.5px);
     left: 4px;
-    top: -3px;
     transform: rotate(-45deg);
     width: 12px;
 }
@@ -152,7 +152,7 @@
         padding-left: 0;
     }
     .cc-sdk .radio-toggle .cc-question-container__list li {
-        display: inline-block;
+        display: block;
         padding-right: 50px;
     }
 }
