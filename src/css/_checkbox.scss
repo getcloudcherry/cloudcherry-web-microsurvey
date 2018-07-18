@@ -1,26 +1,33 @@
 /** Checkbox **/
+
 .cc-sdk .cc-checkbox {
     display: table-cell;
-    position: relative;
-    text-align: left;
     vertical-align: middle;
+    position: relative;
+    text-align: center;
 }
+
 .cc-sdk .cc-checkbox label {
     cursor: pointer;
+    display: block; // position: absolute;
+    height: 25px;
 }
-.cc-sdk .cc-checkbox + span label img{
-  width:40px;
-      display: inline-block;
+
+.cc-sdk .cc-checkbox+span label img {
+    width: 40px;
+    display: inline-block;
     vertical-align: middle;
 }
-.cc-sdk .cc-checkbox label:before, .cc-sdk .cc-checkbox label:after {
-    bottom: 0;
+
+.cc-sdk .cc-checkbox label:before,
+.cc-sdk .cc-checkbox label:after {
     content: "";
     left: 0;
     margin: auto;
     position: absolute;
-    top: 0;
+    top: calc(50% - 12.5px);
 }
+
 .cc-sdk .cc-checkbox label:before {
     background: transparent;
     border-radius: 2px;
@@ -30,16 +37,18 @@
     transition: background .3s;
     width: 20px;
 }
+
 .cc-sdk .cc-checkbox input[type="checkbox"] {
-    margin-right: 10px;
     opacity: 0;
     outline: 0;
 }
-.cc-sdk .cc-checkbox input[type="checkbox"]:checked + label:before {
+
+.cc-sdk .cc-checkbox input[type="checkbox"]:checked+label:before {
     background: $cc-brand-1-color;
     border: none;
 }
-.cc-sdk .cc-checkbox input[type="checkbox"]:checked + label:after {
+
+.cc-sdk .cc-checkbox input[type="checkbox"]:checked+label:after {
     border: 3px solid #222;
     border-right-style: none;
     border-top-style: none;
@@ -49,25 +58,39 @@
     transform: rotate(-45deg);
     width: 12px;
 }
+
 /*radio*/
+
 .cc-sdk .cc-checkbox.cc-radio label:before {
     background: transparent;
     border: 1px solid rgb(66, 66, 66);
     cursor: pointer;
     height: 25px;
-    transition: background .3s;
+    transition: background-color .3s;
     width: 25px;
 }
+
 .cc-sdk .cc-checkbox input[type="radio"] {
-    margin-right: 10px;
+    // margin-right: 10px;
     opacity: 0;
     outline: 0;
 }
-.cc-sdk .cc-checkbox input[type="radio"]:checked + label:before {
+
+.cc-sdk .cc-checkbox input[type="radio"]:checked+label:before {
     background: transparent;
     border-color: $cc-brand-1-color;
 }
-.cc-sdk .cc-checkbox input[type="radio"]:checked + label:after {
+
+.cc-sdk .cc-question-container__list li {
+    display: inline-table;
+    margin-bottom: 0;
+    .cc-sdk .cc-checkbox,
+    .cc-radio {
+        width: 30px;
+    }
+}
+
+.cc-sdk .cc-checkbox input[type="radio"]:checked+label:after {
     -moz-transform: scale(.8);
     -ms-transform: scale(.8);
     -o-transform: scale(.8);
@@ -78,42 +101,57 @@
     transform: scale(.8);
     width: 25px;
 }
-.cc-sdk .cc-radio label:before{
+
+.cc-sdk .cc-radio label:before {
     border-radius: 30px;
 }
-.cc-sdk .radio-toggle--more-option li span{
+
+.cc-sdk .radio-toggle--more-option li span {
     padding-left: 25px !important;
     width: 125px !important;
 }
-.cc-sdk .radio-toggle .cc-question-container__list li{
+
+.cc-sdk .radio-toggle .cc-question-container__list li {
     padding-left: 15px;
 }
-.cc-sdk .radio-toggle .cc-question-container__list li span{
-    padding: 10px;
-    // width: auto;
-}
-@media(min-width:1000px){
-    .cc-sdk .radio-toggle .cc-question-container__list li span label{
-		overflow:hidden;
-		max-height:100px;
-		display: block;
-	}
+
+@media(min-width:1000px) {
+    .cc-sdk .radio-toggle .cc-question-container__list li span label {
+        overflow: hidden;
+        max-height: 100px;
+        display: block;
+    }
 }
 
-@media (min-width: 767px) and (max-width: 992px){
+@media (min-width: 769px) and (max-width: 992px) {
     .cc-sdk .radio-toggle .cc-question-container__list li {
         padding-left: 10px;
     }
     .cc-sdk .radio-toggle .cc-question-container__list li span {
-        padding: 10px;
+        .label {
+            display: block;
+            max-height: 50px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+    .cc-sdk .radio-toggle .cc-question-container__list li span label {
+        overflow: hidden;
+        max-height: 50px;
+        display: block;
+        text-overflow: ellipsis;
     }
 }
 
-@media (max-width: 767px){
+@media screen and (min-width: 769px) {
+    .cc-sdk .cc-checkbox {}
+}
+
+@media (max-width: 768px) {
     .cc-sdk .radio-toggle .cc-question-container__list li {
         padding-left: 0;
     }
-    .cc-sdk .radio-toggle .cc-question-container__list li{
+    .cc-sdk .radio-toggle .cc-question-container__list li {
         display: inline-block;
         padding-right: 50px;
     }

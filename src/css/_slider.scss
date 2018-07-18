@@ -1,7 +1,9 @@
-.cc-sdk .range {
+.cc-sdk .ccsdk-range {
     -webkit-appearance: none;
     -moz-appearance: none;
     width: 500px;
+    height: 36px;
+    background: transparent;
 }
 
 .cc-sdk input[type=range]::-webkit-slider-runnable-track {
@@ -24,7 +26,7 @@
     background: #ff403d;
     background: -moz-linear-gradient(-45deg, #ff403d 0%, #992a28 100%);
     background: -webkit-linear-gradient(-45deg, #ff403d 0%, #992a28 100%);
-    background: linear-gradient(135deg, #ff403d 0%, #992a28 100%);
+    background: linear-gradient(135deg, #7a0806 0%, #992a28 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff403d ', endColorstr='#992a28 ', GradientType=1);
     height: 1px;
 }
@@ -81,7 +83,7 @@
     cursor: -moz-grabbing;
 }
 
-.cc-sdk .cc-question-container__content.range-slider {
+.cc-sdk .cc-question-container__content.ccsdk-range-slider {
     height: 50px;
     padding-top: 9px;
 }
@@ -115,12 +117,12 @@
 }
 
 @media(max-width: 1024px) {
-    .cc-sdk .range {
+    .cc-sdk .ccsdk-range {
         width: 100%;
     }
 }
 
-.cc-sdk input.range.blue::-moz-range-track,
-.cc-sdk input.range.blue::-webkit-slider-runnable-track {
+.cc-sdk input.cc-sdk-range.cc-blue::-moz-range-track,
+.cc-sdk input.cc-sdk-range.cc-blue::-webkit-slider-runnable-track {
     background: blue;
 }

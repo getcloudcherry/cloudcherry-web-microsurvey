@@ -76,7 +76,7 @@
     }
 }
 
-@media (min-width: 767px) and (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1024px) {
     [dir="rtl"].cc-sdk {
         .cc-big-list-container .cc-question-container__list,
         .cc-question-container__list {
@@ -88,7 +88,7 @@
     }
 }
 
-@media (min-width: 767px) and (max-width: 992px) {
+@media (min-width: 769px) and (max-width: 992px) {
     [dir="rtl"].cc-sdk {
         .cc-question-container__text {
             padding-left: 20px;
@@ -101,7 +101,7 @@
     }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 768px) {
     [dir="rtl"].cc-sdk {
         .cc-popup-container-2__icons.cc-right-icon {
             left: 0;

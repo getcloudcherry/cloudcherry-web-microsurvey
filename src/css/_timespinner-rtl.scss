@@ -1,16 +1,16 @@
 [dir="rtl"].cc-sdk {
-	.chart canvas {
+	.cc-sdk-chart canvas {
 		right: 0;
 		left: auto;
 	}
-	.loader {
+	.cc-sdk-loader {
 		right: 28px;
 		left: auto;
 	}
 }
 
-@media (min-width: 767px) {
-	[dir="rtl"].cc-sdk .chart canvas {
+@media (min-width: 768px) {
+	[dir="rtl"].cc-sdk .cc-sdk-chart canvas {
 		margin-right: 10px;
 		margin-left: 0;
 	}

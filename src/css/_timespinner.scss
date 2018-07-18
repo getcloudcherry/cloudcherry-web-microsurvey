@@ -9,17 +9,20 @@
 	vertical-align: top;
 	width: 21px;
 }
-.cc-sdk .chart span {
+
+.cc-sdk .cc-sdk-chart span {
 	display: block;
 	font-size: 2em;
 	font-weight: normal;
 }
-.cc-sdk .chart canvas {
+
+.cc-sdk .cc-sdk-chart canvas {
 	left: 0;
 	position: absolute;
 	top: 0;
 }
-.cc-sdk .loader{
+
+.cc-sdk .cc-sdk-loader {
 	height: 21px;
 	left: 28px;
 	position: absolute;
@@ -27,14 +30,14 @@
 	width: 21px;
 }
 
-@media (min-width: 767px){
-	.cc-sdk .chart canvas{
+@media (min-width: 769px) {
+	.cc-sdk .cc-sdk-chart canvas {
 		margin-left: 10px;
 	}
 }
 
-@media (max-width: 767px){
-	.cc-sdk .loader{
+@media (max-width: 768px) {
+	.cc-sdk .cc-sdk-loader {
 		position: relative;
 		left: auto;
 		top: 0;

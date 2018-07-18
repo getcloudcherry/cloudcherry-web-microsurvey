@@ -90,17 +90,17 @@
 		color: $color-1;
 	}
 
-	@media (min-width: 767px) {
+	@media (min-width: 769px) {
 		.desktop-hide {
 			display: none;
 		}
 	}
 
-	@media (max-width: 767px) {
+	@media (max-width: 768px) {
 		.mobile-hide {
 			display: none;
 		}
-		.ccsdk-loader {
+		.cc-sdk-loader {
 			position: relative;
 			left: auto;
 			top: 0;

@@ -12,6 +12,7 @@ import { LanguageTextFilter } from "./helpers/filters/LanguageTextFilter";
 import { Select } from './helpers/dom/Select';
 import { Cookie } from './helpers/Cookie';
 import { ConditionalFlowFilter } from './helpers/filters/ConditionalFlowFilter';
+import { dirname } from "path";
 
 
 class SurveyHandler {
@@ -768,10 +769,14 @@ class SurveyHandler {
             }
             let initial = 0.0;
             let optionStyle = '';
-            // console.log((window as any).isMobile);
+            let legendDimension;
             if ( ( window as any ).isMobile ) {
-              if ( endRange > 6 && endRange < 11 ) {
-                optionStyle = 'width:' + ( ( 100 / ( endRange - startRange + 1 ) ) - .5 ) + '%';
+              if ( endRange < 11 ) {
+                let parentContainer = window.innerWidth - 40;
+                let dimension = ( ( 100 / ( endRange - startRange + 1 ) ) - .5 ) * parentContainer / 100;
+                dimension = dimension > 48 ? 48 : dimension;
+                legendDimension = ( endRange - startRange + 1 ) * ( dimension + 1 );
+                optionStyle = `width:${ dimension }px;height:${ dimension }px;padding:${ ( dimension - 15 ) / 2 }px;`;
               }
             } else {
               imageVisibility010 = 'hide';
@@ -779,7 +784,6 @@ class SurveyHandler {
               scaleVisibility = 'show-inline';
               scaleImageContainer = '';
               mobileImageUrl = "";
-
             }
             for ( let initial = startRange; initial <= endRange; initial += divider ) {
               options += '<span data-rating="' + initial + '" class="option-number-item option-scale ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
@@ -790,9 +794,11 @@ class SurveyHandler {
               var optionMaxWidth = ( ( ( endRange - startRange + 1 ) * 38 / 2 ) - 5 ) + 'px';
               // console.log(optionMaxWidth);
             }
+            questionTemplate = questionTemplate.replace( "{{legendStyle}}", `style="position:relative;width:${ mobileImageUrl ? '100%' : legendDimension + 'px' };min-height: 20px;"` )
+            questionTemplate = questionTemplate.replace( /\{\{radialLegend\}\}/g, mobileImageUrl ? 'radial-legend' : 'unknown-class' );
             questionTemplate = questionTemplate.replace( "{{optionsRange}}", options );
             // questionTemplate = questionTemplate.replace("{{maxWidth}}", optionMaxWidth);
-            questionTemplate = questionTemplate.replace( /maxWidth/g, optionMaxWidth );
+            questionTemplate = questionTemplate.replace( /maxWidth/g, mobileImageUrl ? '35%;width:35%' : optionMaxWidth );
             questionTemplate = questionTemplate.replace( /{{optionLeftExtraClass}}/g, optionLeftExtraClass );
             questionTemplate = questionTemplate.replace( /{{optionRightExtraClass}}/g, optionRightExtraClass );
             questionTemplate = questionTemplate.replace( "{{leftLabel}}", startRangeLabel );

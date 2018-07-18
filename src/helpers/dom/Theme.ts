@@ -84,7 +84,7 @@ class Theme {
 			.cc-sdk .cc-checkbox label:hover:before{
 				border: solid 1px ${brandColor };
 			}
-		 @media (max-width: 767px){
+		 @media (max-width: 768px){
 	 			.ccsdk-overlay.glass{
 	 			background-color:rgba(255,255,255,.85);
 	 			background-image:none;

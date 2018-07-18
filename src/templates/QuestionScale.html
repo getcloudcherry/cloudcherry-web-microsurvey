@@ -8,7 +8,7 @@
     <div class="cc-question-container__list">
       {{optionsRange}}
       <div class="circle-image circle-image-scale-010-neutral desktop-hide {{imageVisibility010}}">
-        <img src="{{mobileImageUrl}}" class="cc-nps-image" alt="" usemap="#Map" />
+        <img src={{mobileImageUrl}} class="cc-nps-image" alt="" usemap="#Map" />
         <map name="Map" id="Map">
           <area target="" alt="0" title="0" href="#" class="option-number-item" data-rating="0" coords="83,193,62,228,38,212,23,193,57,167"
             shape="poly">
@@ -36,7 +36,7 @@
         <span class="cc-nps-selected-rating act-cc-nps-selected-rating  desktop-hide">0</span>
       </div>
       <div class="circle-image circle-image-scale-010-neutral desktop-hide {{imageVisibility110}}">
-        <img src="{{mobileImageUrl}}" class="cc-nps-image" alt="" usemap="#Map2" />
+        <img src={{mobileImageUrl}} class="cc-nps-image" alt="" usemap="#Map2" />
         <map name="Map2" id="Map2">
           <area target="" alt="1" title="1" href="#" class="option-number-item" data-rating="1" coords="67,180,40,210,26,195,15,176,11,169,47,152"
             shape="poly">
@@ -61,9 +61,10 @@
         </map>
         <span class="cc-nps-selected-rating act-cc-nps-selected-rating  desktop-hide">0</span>
       </div>
-      <span class="ccsdk-clearfix"></span>
-      <span class="option-left-rating-text {{optionLeftExtraClass}}" style="max-width:maxWidth;">{{leftLabel}}</span>
-      <span class="option-right-rating-text {{optionRightExtraClass}}" style="max-width:maxWidth;">{{rightLabel}}</span>
+      <div class="legend-container" {{legendStyle}}>
+        <span class="option-left-rating-text {{optionLeftExtraClass}} {{radialLegend}}-left" style="max-width:maxWidth;">{{leftLabel}}</span>
+        <span class="option-right-rating-text {{optionRightExtraClass}} {{radialLegend}}-right" style="max-width:maxWidth;">{{rightLabel}}</span>
+      </div>
       <input type="hidden" value="" class="option-number-input">
     </div>
   </div>

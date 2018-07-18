@@ -2,17 +2,19 @@
     position: relative;
     display: inline-block;
     user-select: none;
-    z-index:11;
+    z-index: 11;
 }
+
 .cc-sdk .cc-select-wrapper select {
     display: none;
 }
+
 .cc-sdk .cc-select {
     position: relative;
     display: inline-block;
-    margin-left : 70px;
-    
+    margin-left: 70px;
 }
+
 .cc-sdk .cc-select-trigger {
     position: relative;
     display: block;
@@ -29,8 +31,7 @@
     width: 300px;
     border-bottom: 1px solid #6d6d6d;
     display: inline-block;
-    text-align: left;
-    // padding: 5px;
+    text-align: left; // padding: 5px;
     padding: 5px 20px 5px 5px;
     position: relative;
     /*background-image: url(../images/arrow-down.black.svg);*/
@@ -39,12 +40,15 @@
     max-height: 50px;
     overflow: hidden;
 }
+
 .cc-sdk .cc-select-trigger:after {
     position: absolute;
     display: block;
     content: '';
-    width: 10px; height: 10px;
-    top: 50%; right: 5px;
+    width: 10px;
+    height: 10px;
+    top: 50%;
+    right: 5px;
     margin-top: -3px;
     border-bottom: 1px solid #222;
     border-right: 1px solid #222;
@@ -52,10 +56,12 @@
     transition: all .2s ease-in-out;
     transform-origin: 50% 0;
 }
+
 .cc-sdk .cc-select.opened .cc-select-trigger:after {
     margin-top: 3px;
     transform: rotate(-135deg) translateY(-50%);
 }
+
 .cc-sdk .cc-select-options-container {
     position: absolute;
     display: block;
@@ -67,21 +73,20 @@
     border: 1px solid #b5b5b5;
     border-radius: 4px;
     box-sizing: border-box;
-    box-shadow: 0 2px 1px rgba(0,0,0,.07);
+    box-shadow: 0 2px 1px rgba(0, 0, 0, .07);
     background: #fff;
     transition: all .2s ease-in-out;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transform: translateY(calc( -100% - 65px ));
-    // height: 150px;
+    transform: translateY(calc( -100% - 65px)); // height: 150px;
     height: auto;
     max-height: 150px;
     overflow: hidden;
     overflow-y: scroll;
 }
 
-.cc-sdk .cc-select-options{
+.cc-sdk .cc-select-options {
     /*  max-height: 150px;
     overflow-y: scroll; */
     // overflow: scroll;
@@ -90,6 +95,7 @@
     height: 100%;
     width: 110%;
 }
+
 .cc-sdk .cc-select.opened .cc-select-options-container {
     opacity: 1;
     visibility: visible;
@@ -98,7 +104,7 @@
 }
 
 .cc-sdk .cc-popup-container-2.top .cc-select-options-container,
-.cc-sdk .cc-popup-container-2.top .cc-select.opened .cc-select-options-container{
+.cc-sdk .cc-popup-container-2.top .cc-select.opened .cc-select-options-container {
     transform: translateY(-100%) translateY(75px);
 }
 
@@ -115,9 +121,11 @@
     transform: rotate(45deg);
     transition: all .4s ease-in-out; */
 }
+
 .cc-sdk .option-hover:before {
     background: #f9f9f9;
 }
+
 .cc-sdk .cc-select-option {
     position: relative;
     display: block;
@@ -133,29 +141,32 @@
     margin: 0;
     width: 100%;
 }
+
 .cc-sdk .cc-select-option:first-of-type {
     border-radius: 4px 4px 0 0;
 }
+
 .cc-sdk .cc-select-option:last-of-type {
     border-bottom: 0;
     border-radius: 0 0 4px 4px;
 }
+
 .cc-sdk .cc-select-option:hover,
 .cc-sdk .cc-select-option.selection {
     // background: #f9f9f9;
-    background: #eaeaea;
-    // margin: 0;
+    background: #eaeaea; // margin: 0;
     // width: 100%;
 }
 
 .cc-sdk .cc-select-wrapper.down .cc-select-options-container {
-    transform: translateY(calc( 20px ));
-}
-.cc-sdk .cc-select-wrapper.down .cc-select.opened .cc-select-options-container {
-    transform: translateY(calc( 20px ));
+    transform: translateY(calc( 20px));
 }
 
-.cc-sdk .option-yes-no.No{
+.cc-sdk .cc-select-wrapper.down .cc-select.opened .cc-select-options-container {
+    transform: translateY(calc( 20px));
+}
+
+.cc-sdk .option-yes-no.No {
     // background:url('https://cx.getcloudcherry.com/microsurvey-assets/Star_selected.svg') no-repeat;	
     // background-size:100%;
     // position: relative;
@@ -163,19 +174,17 @@
 }
 
 .cc-sdk .cc-question-container[data-type="nps"] .cc-question-container__content,
-.cc-sdk .cc-question-container[data-type="scale"] .cc-question-container__content{
+.cc-sdk .cc-question-container[data-type="scale"] .cc-question-container__content {
     width: 40%;
 }
 
-
-
-@media (max-width: 767px){
+@media (max-width: 768px) {
     .cc-sdk .cc-select,
-    .cc-sdk .cc-select-wrapper{
+    .cc-sdk .cc-select-wrapper {
         min-width: 100%;
     }
-    .cc-sdk .cc-select{
-        margin-left : 0px;
+    .cc-sdk .cc-select {
+        margin-left: 0px;
     }
     .cc-sdk .cc-select-trigger {
         min-width: 100%;
