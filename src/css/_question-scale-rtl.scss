@@ -85,34 +85,36 @@
 }
 
 @media (min-width: 769px) and (max-width: 992px) {
-	.option-smile-box img,
-	.option-star-box img {
-		margin-left: 0px;
-		margin-right: 10px;
-	}
-	.cc-question-container__content.rating-color {
-		margin-right: 10px;
-		margin-left: 86px !important;
-	}
-	.cc-question-container[data-type="nps"] .option-right-rating-text {
-		left: 17px;
-		right: auto !important;
-	}
-	.cc-question-container[data-type="smile"] .option-right-rating-text,
-	.cc-question-container[data-type="star"] .option-right-rating-text {
-		// left: calc(100% - 453px);
-		left: 7px;
-		right: auto !important;
-	}
-	.cc-question-container[data-type="smile"] .option-left-rating-text,
-	.cc-question-container[data-type="star"] .option-left-rating-text {
-		right: 20px;
-		left: auto !important;
-	}
-	.option-csat.option-smile-box.selected,
-	.option-csat.option-smile-box:hover,
-	.option-csat.option-smile-box {
-		width: auto;
+	[dir="rtl"].cc-sdk {
+		.option-smile-box img,
+		.option-star-box img {
+			margin-left: 0px;
+			margin-right: 10px;
+		}
+		.cc-question-container__content.rating-color {
+			margin-right: 10px;
+			margin-left: 86px !important;
+		}
+		.cc-question-container[data-type="nps"] .option-right-rating-text {
+			left: 17px;
+			right: auto !important;
+		}
+		.cc-question-container[data-type="smile"] .option-right-rating-text,
+		.cc-question-container[data-type="star"] .option-right-rating-text {
+			// left: calc(100% - 453px);
+			left: 7px;
+			right: auto !important;
+		}
+		.cc-question-container[data-type="smile"] .option-left-rating-text,
+		.cc-question-container[data-type="star"] .option-left-rating-text {
+			right: 20px;
+			left: auto !important;
+		}
+		.option-csat.option-smile-box.selected,
+		.option-csat.option-smile-box:hover,
+		.option-csat.option-smile-box {
+			width: auto;
+		}
 	}
 }
 
@@ -161,6 +163,19 @@
 		.cc-question-container[data-type="scale"] .option-right-rating-text {
 			left: 13px;
 			width: auto !important;
+		}
+		.cc-question-container {
+			&[data-type="scale"],
+			&[data-type="nps"] {
+				.radial-legend-right {
+					left: auto !important;
+					right: 10px !important;
+				}
+				.radial-legend-left {
+					right: auto !important;
+					left: 10px !important;
+				}
+			}
 		}
 	}
 }

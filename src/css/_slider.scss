@@ -1,8 +1,8 @@
-.cc-sdk .ccsdk-range {
+.cc-sdk .cc-sdk-range {
     -webkit-appearance: none;
     -moz-appearance: none;
     width: 500px;
-    height: 36px;
+    height: 60px;
     background: transparent;
 }
 
@@ -32,7 +32,8 @@
 }
 
 .cc-sdk input[type=range]::-ms-track {
-    height: 1px; // width: 500px;
+    height: 1px;
+    width: 500px;
     background-color: #ff403d;
 }
 
@@ -54,8 +55,9 @@
     border-radius: 50%;
     height: 32px;
     width: 32px;
+    background: #e08692;
     box-sizing: border-box;
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 .cc-sdk input[type=range]::-moz-range-thumb {
@@ -83,7 +85,7 @@
     cursor: -moz-grabbing;
 }
 
-.cc-sdk .cc-question-container__content.ccsdk-range-slider {
+.cc-sdk .cc-question-container__content.cc-sdk-range-slider {
     height: 50px;
     padding-top: 9px;
 }
@@ -92,7 +94,6 @@
     background: #eb1c23;
     padding: 8px 9px 9px 9px;
     position: absolute;
-    top: 51px;
     left: 0px;
     right: 0;
     margin: 0 auto;
@@ -117,7 +118,7 @@
 }
 
 @media(max-width: 1024px) {
-    .cc-sdk .ccsdk-range {
+    .cc-sdk .cc-sdk-range {
         width: 100%;
     }
 }

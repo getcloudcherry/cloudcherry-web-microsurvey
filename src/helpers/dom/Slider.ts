@@ -10,7 +10,7 @@ class Slider {
   util: any
 
   constructor() {
-    this.inputRange = document.getElementsByClassName( 'ccsdk-range' )[ 0 ];
+    this.inputRange = document.getElementsByClassName( 'cc-sdk-range' )[ 0 ];
     this.rangeTip = this.inputRange.parentNode.querySelectorAll( ".act-slider-tip" )[ 0 ];
     this.util = new DomUtilities();
     //  this.maxValue = 100; // the higher the smoother when dragging

@@ -414,7 +414,7 @@
 	}
 }
 
-@media (max-width: 769px) {
+@media (max-width: 768px) {
 	.cc-sdk .cc-survey-container,
 	.cc-sdk .cc-survey-content {
 		height: 100%;
@@ -434,8 +434,11 @@
 		right: auto;
 		padding: 0;
 	}
-	.cc-sdk .cc-big-list-container .cc-question-container__list li {
-		display: block;
+	.cc-sdk,
+	.cc-sdk[dir="rtl"] {
+		.cc-big-list-container .cc-question-container__list li {
+			display: block;
+		}
 	}
 	.cc-sdk .radio-toggle--more-option li span {
 		width: 84% !important;
