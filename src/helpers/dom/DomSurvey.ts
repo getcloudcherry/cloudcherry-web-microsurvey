@@ -1011,7 +1011,7 @@ class DomSurvey {
       self.qResponse.text = null;
       self.qResponse.number = rating;
       self.qResponse.questionId = qId;
-
+      console.log( 'dispatching event in csat', this )
       let onSurveyClickEvent = new CustomEvent( Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken );
       document.dispatchEvent( onSurveyClickEvent );
       //move to next question automagically
@@ -1217,7 +1217,7 @@ class DomSurvey {
 
     if ( typeof this.ccsdk.survey.answers[ questionId ] !== 'undefined' && this.ccsdk.survey.answers[ questionId ] !== '' ) {
       if ( this.ccsdk.survey.answers[ questionId ].text ) {
-        let question = this.ccsdk.survey.getQuestionById(questionId);
+        let question = this.ccsdk.survey.getQuestionById( questionId );
         self.select.setValue( this.ccsdk.survey.answers[ questionId ].text, question, this.ccsdk.survey );
         self.select.selectOptions( this.ccsdk.survey.answers[ questionId ].text );
         self.qResponse.type = 'select';
@@ -1231,7 +1231,7 @@ class DomSurvey {
     let selectRes: string = '';
     let ref = this.util.initListener( 'click', '#' + qId + " .cc-select-options .cc-select-option", function () {
       // selectRes = this.getAttribute('data-value');
-      selectRes = document.querySelectorAll( '#' + qId + " .cc-select-trigger" )[ 0 ].getAttribute('data-selection-value');
+      selectRes = document.querySelectorAll( '#' + qId + " .cc-select-trigger" )[ 0 ].getAttribute( 'data-selection-value' );
       // (window as any).ccsdkDebug?console.log(selectRes):'';
       self.qResponse.type = 'select';
       self.qResponse.text = selectRes;

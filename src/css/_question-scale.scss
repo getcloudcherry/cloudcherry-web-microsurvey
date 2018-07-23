@@ -19,7 +19,8 @@
 		padding-top: 10px;
 		text-align: center;
 		width: 8.5%;
-		margin: 0 .25%;
+		margin-left: 1px;
+		margin-right: 0;
 		cursor: pointer;
 		&.option-zero {
 			background: #853838;
@@ -100,7 +101,7 @@
 		}
 	}
 	.cc-question-container[data-type="nps"] .option-number-item {
-		width: 8.4%;
+		width: calc(9.09% - 1px);
 	}
 	.cc-question-container[data-type="scale"].scale-image-container .option-number-item {
 		width: 8.4%;
@@ -131,7 +132,7 @@
 		// top: 45px;
 	}
 	.option-left-rating-text-small-container-smile {
-		max-width: 57px;
+		width: 40%;
 		text-align: left;
 		max-height: 37px;
 		overflow: hidden;
@@ -139,7 +140,7 @@
 		top: 57px;
 	}
 	.option-right-rating-text-small-container-smile {
-		max-width: 57px;
+		width: 40%;
 		text-align: right;
 		max-height: 37px;
 		overflow: hidden;
@@ -149,7 +150,8 @@
 	.cc-question-container[data-type="smile"] .option-left-rating-text,
 	.cc-question-container[data-type="star"] .option-left-rating-text {
 		left: 4px;
-		bottom: -12px;
+		width: 40%;
+		text-align: left; // bottom: 4px;
 	}
 	.option-right-rating-text {
 		left: auto;
@@ -157,8 +159,9 @@
 	}
 	.cc-question-container[data-type="smile"] .option-right-rating-text,
 	.cc-question-container[data-type="star"] .option-right-rating-text {
-		right: 4px;
-		bottom: -12px;
+		right: 4px; // bottom: 4px;
+		text-align: right;
+		width: 40%;
 	}
 	.cc-question-container[data-type="scale"] .option-number-item {
 		width: 38px;
@@ -288,6 +291,9 @@
 			/* min-height: 32px; */
 			width: 100%;
 		}
+		.cc-checkbox label {
+			pointer-events: none;
+		}
 	}
 	.option-star-box {
 		background: url('https://cx.getcloudcherry.com/microsurvey-assets/Star.svg') no-repeat;
@@ -300,6 +306,12 @@
 	}
 	.cc-question-container[data-type="slider"] .option-left-rating-text {
 		left: 4px;
+		width: 40%;
+		text-align: left;
+	}
+	.cc-question-container[data-type="slider"] .option-right-rating-text {
+		width: 40%;
+		text-align: right;
 	}
 	.cc-question-container[data-type="smile"] .cc-question-container__list,
 	.cc-question-container[data-type="star"] .cc-question-container__list {
@@ -494,10 +506,12 @@
 		.cc-question-container[data-type="scale"] span.radial-legend-right {
 			text-align: left;
 			width: 35%;
+			right: 0;
 		}
 		.radial-legend-left {
 			width: 35%;
 			text-align: right;
+			left: 0;
 		}
 	}
 }
