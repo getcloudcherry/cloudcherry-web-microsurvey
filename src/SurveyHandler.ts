@@ -1090,10 +1090,16 @@ class SurveyHandler {
       case "Select":
         type = "text";
         break;
+      case "Dropdown":
+        type = "text";
+        break;
       case "Smile-5":
         type = "number";
         break;
       case "Star-5":
+        type = "number";
+        break;
+      case "Date":
         type = "number";
         break;
       default:
