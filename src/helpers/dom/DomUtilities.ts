@@ -355,7 +355,6 @@ class DomUtilities {
         optHtml = optHtml.replace( /{{labelFor}}/g, translatedOpt[ 0 ].replace( /\s+/g, '-' ) );
         optHtml = optHtml.replace( /{{value}}/g, opt[ 0 ] );
         res += optHtml;
-
       }
       return res;
     }
@@ -376,7 +375,6 @@ class DomUtilities {
         optHtml = optHtml.replace( /{{labelFor}}/g, translatedOpt[ 0 ].replace( /\s+/g, '-' ) );
         optHtml = optHtml.replace( /{{value}}/g, opt[ 0 ] );
         res += optHtml;
-
       }
       return res;
     }

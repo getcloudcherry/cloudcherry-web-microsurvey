@@ -1,5 +1,15 @@
 /** Themes **/
 
+/** Prefetch icons **/
+
+.cc-sdk::before {
+	width: 0px;
+	height: 0px;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1; // content: url('https://cx.getcloudcherry.com/microsurvey-assets/Smilie_1.svg') url('https://cx.getcloudcherry.com/microsurvey-assets/Smilie_2.svg') url('https://cx.getcloudcherry.com/microsurvey-assets/Smilie_3.svg') url('https://cx.getcloudcherry.com/microsurvey-assets/Smilie_4.svg') url('https://cx.getcloudcherry.com/microsurvey-assets/Smilie_5.svg') url('https://cx.getcloudcherry.com/microsurvey-assets/Smilie_1_Selected.svg') url('https://cx.getcloudcherry.com/microsurvey-assets/Smilie_2_Selected.svg') url('https://cx.getcloudcherry.com/microsurvey-assets/Smilie_3_Selected.svg') url('https://cx.getcloudcherry.com/microsurvey-assets/Smilie_4_Selected.svg') url('https://cx.getcloudcherry.com/microsurvey-assets/Smilie_5_Selected.svg');
+}
+
 .cc-sdk .yellow .progress-bar {
 	background: #a47c2b;
 }

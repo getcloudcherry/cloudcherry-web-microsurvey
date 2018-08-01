@@ -497,12 +497,23 @@ class SurveyHandler {
       return;
     }
     this._prefillsPartiallyPosted = true;
+    if ( !this.surveyData.partialResponseId ) {
+      return;
+    }
     let surveyPartialUrl = Config.SURVEY_PARTIAL_RESPONSE.replace( "{id}", this.surveyData.partialResponseId );
     surveyPartialUrl = surveyPartialUrl.replace( "{complete}", "false" );
     surveyPartialUrl = surveyPartialUrl.replace( "{tabletId}", "" + this.randomNumber );
     surveyPartialUrl = Config.API_URL + surveyPartialUrl;
     ( window as any ).ccsdkDebug ? console.log( "Posting Prefill Responses to Server" ) : '';
     ( window as any ).ccsdkDebug ? console.log( this.prefillResponses ) : '';
+
+    if ( !this.surveyData.partialResponseId ) {
+      // run successCB if there is one.
+      if ( successcb ) {
+        successcb();
+      }
+      return;
+    }
     if ( typeof this.prefillResponses !== 'undefined' && this.prefillResponses.length > 0 ) {
       RequestHelper.post( surveyPartialUrl, this.prefillResponses, successcb, errorcb );
     } else {
@@ -542,6 +553,7 @@ class SurveyHandler {
     //in case of file.
     // let input = document.querySelector('input[type="file"]') ;
     // data.append('file', input.files[0]);
+
     let question: any = this.questionsToDisplay[ index ];
     if ( typeof question === 'undefined' ) {
       //now?
@@ -576,10 +588,18 @@ class SurveyHandler {
 
     let onSurveyAnswerEvent = new CustomEvent( Constants.SURVEY_ANSWER_EVENT + "-" + this.surveyToken );
     document.dispatchEvent( onSurveyAnswerEvent );
+
+    if ( !this.surveyData.partialResponseId ) {
+      // run success callback and return
+      if ( successcb ) {
+        successcb();
+      }
+      return;
+    }
+
     if ( question.id == this.questionsToDisplay[ this.questionsToDisplay.length - 1 ].id ) {
       //last question post moved to separate function
       RequestHelper.post( surveyPartialUrl, data, successcb, errorcb );
-
     } else {
       RequestHelper.post( surveyPartialUrl, data, successcb, errorcb );
     }
