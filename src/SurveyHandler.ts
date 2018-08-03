@@ -711,7 +711,11 @@ class SurveyHandler {
             let tileColor = '';
             let style = '';
             if ( question.attributes != null && question.attributes.scaleColor && question.attributes.scaleColor.length > 0 ) {
-              tileColor = question.attributes.scaleColor;
+              if ( question.attributes.scaleColor !== 'Gradient' ) {
+                tileColor = question.attributes.scaleColor;
+              } else {
+                tileColor = "#02BAEE"
+              }
             } else if ( question.presentationMode != null && question.presentationMode.indexOf( "Color" ) !== -1 ) {
               tileColor = question.presentationMode.split( ':' )[ 1 ];
             }
@@ -1162,9 +1166,10 @@ class SurveyHandler {
         }
         if ( !( this.isPrefillQuestion( question ) ) ) {
           if (
-            question.conditionalFilter != null &&
-            ( question.conditionalFilter.filterquestions == null
-              || question.conditionalFilter.filterquestions.length == 0 )
+            question.conditionalFilter === null ||
+            ( question.conditionalFilter != null &&
+              ( question.conditionalFilter.filterquestions == null
+                || question.conditionalFilter.filterquestions.length == 0 ) )
           ) {
             //check supported display types
             let supportedDisplayTypes = "Slider, Scale, Text, Number, MultilineText, MultiSelect, Smile-5, Star-5";
@@ -1189,6 +1194,7 @@ class SurveyHandler {
     }
     //re condition questions.
     for ( let question of this.questions ) {
+      // console.log(this.questionsToDisplay);
       ConditionalFlowFilter.filterQuestion( this, question );
     }
 
