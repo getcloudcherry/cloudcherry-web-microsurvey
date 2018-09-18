@@ -314,7 +314,10 @@ class SurveyHandler {
     let options1: string;
     let qId = 'languageSelector';
     let cTemplate1 = templates.language_selector;
-    this.surveyData.translated ? options1 = this.util.generateLanguageSelectOptions( [ "default" ].concat( Object.keys( this.surveyData.translated ) ) ) : options1 = this.util.generateLanguageSelectOptions( [ "default" ]);
+    options1 = this.util.generateLanguageSelectOptions( [ "default" ]);
+    if(this.surveyData.translated){
+      options1 = this.util.generateLanguageSelectOptions( [ "default" ].concat( Object.keys( this.surveyData.translated ) ) );
+    }
     cTemplate1 = cTemplate1.replace( /{{questionId}}/g, qId );
     cTemplate1 = cTemplate1.replace( "{{options}}", options1 );
     cTemplate1 = cTemplate1.replace( "{{requiredLabel}}", true ? "*" : "" );
