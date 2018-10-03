@@ -130,6 +130,10 @@
 	width: 20%;
 	position: relative;
 }
+//CSAT question overlap --fix
+.cc-sdk .cc-question-container[data-type='csat'] .cc-question-container__text {
+    width: 11em;
+}
 
 .cc-sdk .cc-question-container__required,
 .cc-sdk .cc-question-container__validation {
@@ -325,7 +329,12 @@
 		display: block;
 	}
 	.cc-sdk .cc-question-container__content {
-		max-height: 100px; // overflow:hidden;
+		// max-height: 100px; // overflow:hidden;
+	}
+}
+@media (min-width: 769px) and (max-width: 875px) {
+	.cc-sdk .cc-question-container__list li {
+		padding-left: 0px !important;
 	}
 }
 
