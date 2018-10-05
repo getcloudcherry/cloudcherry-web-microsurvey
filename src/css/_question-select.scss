@@ -102,11 +102,13 @@
     pointer-events: all;
     transform: translateY(-100%) translateY(-65px);
 }
-
-.cc-sdk .cc-popup-container-2.top .cc-select-options-container,
-.cc-sdk .cc-popup-container-2.top .cc-select.opened .cc-select-options-container {
-    transform: translateY(-100%) translateY(75px);
+@media(min-width: 769px) {
+    .cc-sdk .cc-popup-container-2.top .cc-select-options-container,
+    .cc-sdk .cc-popup-container-2.top .cc-select.opened .cc-select-options-container {
+        transform: translateY(-19px);
+    }
 }
+
 
 .cc-sdk .cc-select-options:before {
     /*       position: absolute;

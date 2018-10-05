@@ -8,7 +8,7 @@
 	max-width: 500px;
 	max-height: 500px;
 	z-index: 1111;
-	padding: 10px;
+	// padding: 10px;
 }
 
 .cc-sdk.cc-popup-container.bottom {
@@ -129,6 +129,15 @@
 	vertical-align: middle;
 	width: 20%;
 	position: relative;
+}
+//CSAT question overlap --fix
+.cc-sdk .cc-question-container[data-type='csat'] {
+	.cc-question-container__text {
+		width: 11em;
+	}
+	.cc-question-container__list {
+		width: 64vw;
+	}
 }
 
 .cc-sdk .cc-question-container__required,
@@ -325,7 +334,12 @@
 		display: block;
 	}
 	.cc-sdk .cc-question-container__content {
-		max-height: 100px; // overflow:hidden;
+		// max-height: 100px; // overflow:hidden;
+	}
+}
+@media (min-width: 769px) and (max-width: 875px) {
+	.cc-sdk .cc-question-container__list li {
+		padding-left: 0px !important;
 	}
 }
 
