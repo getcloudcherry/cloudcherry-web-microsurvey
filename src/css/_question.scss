@@ -11,6 +11,11 @@
 	// padding: 10px;
 }
 
+@media(min-width: 768px){
+	.cc-sdk.cc-popup-container {
+		padding: 10px;
+	}
+}
 .cc-sdk.cc-popup-container.bottom {
 	margin-bottom: 9px;
 }
