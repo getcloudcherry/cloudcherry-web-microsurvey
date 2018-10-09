@@ -242,7 +242,7 @@ class SurveyHandler {
   }
 
   setupPrefill(){
-    if(this.surveyData.preFill && this.surveyData.preFill.length> 0){
+    if(this.surveyData && this.surveyData.preFill && this.surveyData.preFill.length> 0){
       this.surveyData.preFill.map(response => {
         this.fillPrefillQuestionObject(response.questionId, response);
       })
