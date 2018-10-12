@@ -459,7 +459,7 @@ class DomSurvey {
       this.util.addClass( startContainer, "show-slide" );
       // this.util.addClass( bodyElement, "blurr" );
     }, 200 );
-    console.debug()
+    // console.debug()
     this.$startBtn = document.querySelectorAll( ".act-cc-survey-start" )[ 0 ];
 
   }

@@ -232,12 +232,21 @@ class SurveyHandler {
 
   attachSurvey( surveyData: any ) {
     this.surveyData = surveyData;
+    this.setupPrefill();
     this.setupSurveyContainer();
     //clean survey
     this.cleanSurvey();
     this.displayQuestions();
     this.displayThankYou();
     this.destroySurvey();
+  }
+
+  setupPrefill(){
+    if(this.surveyData && this.surveyData.preFill && this.surveyData.preFill.length> 0){
+      this.surveyData.preFill.map(response => {
+        this.fillPrefillQuestionObject(response.questionId, response);
+      })
+    }
   }
 
   cleanSurvey() {
