@@ -84,8 +84,8 @@ class SurveyHandler {
       let thankyouContainer: any = this.util.get( "#cc-thankyou-container" );
       ( window as any ).ccsdkDebug ? console.log( thankyouContainer ) : '';
       this.util.addClass( thankyouContainer[ 0 ], 'show-thankyou-slide' );
-      // let onSurveyEndEvent = new CustomEvent(Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken);
-      // document.dispatchEvent(onSurveyEndEvent);
+      let onSurveyEndEvent = new CustomEvent( Constants.SURVEY_END_EVENT + "-" + this.ccsdk.surveyToken );
+      document.dispatchEvent( onSurveyEndEvent );
       //set done cookie for 30 days.
       Cookie.set( this.surveyToken + '-finish', 'true', 30, '/' );
       setTimeout( () => {
@@ -241,11 +241,11 @@ class SurveyHandler {
     this.destroySurvey();
   }
 
-  setupPrefill(){
-    if(this.surveyData && this.surveyData.preFill && this.surveyData.preFill.length> 0){
-      this.surveyData.preFill.map(response => {
-        this.fillPrefillQuestionObject(response.questionId, response);
-      })
+  setupPrefill() {
+    if ( this.surveyData && this.surveyData.preFill && this.surveyData.preFill.length > 0 ) {
+      this.surveyData.preFill.map( response => {
+        this.fillPrefillQuestionObject( response.questionId, response );
+      } )
     }
   }
 
@@ -323,8 +323,8 @@ class SurveyHandler {
     let options1: string;
     let qId = 'languageSelector';
     let cTemplate1 = templates.language_selector;
-    options1 = this.util.generateLanguageSelectOptions( [ "default" ]);
-    if(this.surveyData.translated){
+    options1 = this.util.generateLanguageSelectOptions( [ "default" ] );
+    if ( this.surveyData.translated ) {
       options1 = this.util.generateLanguageSelectOptions( [ "default" ].concat( Object.keys( this.surveyData.translated ) ) );
     }
     cTemplate1 = cTemplate1.replace( /{{questionId}}/g, qId );
@@ -1339,9 +1339,9 @@ class SurveyHandler {
     document.removeEventListener( 'ccdone', this.displayThankYouCb );
     document.removeEventListener( 'q-answered', this.acceptAnswersCb );
     ( window as any ).globalSurveyRunning = false;
-    let bodyElement = <HTMLElement>document.
-      getElementsByTagName( "body" )[ 0 ];
-    this.util.removeClass( bodyElement, "blurr" );
+    // let bodyElement = <HTMLElement>document.
+    //   getElementsByTagName( "body" )[ 0 ];
+    // this.util.removeClass( bodyElement, "blurr" );
 
   }
 }

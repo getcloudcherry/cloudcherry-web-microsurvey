@@ -28,15 +28,16 @@ class ConditionalFlowFilter {
               }
             }
           }
+          const surveyQuestions = surveyHandler.getSurveyQuestions();
           if ( iSatisfied && !iFailed ) {
-            if ( surveyHandler.getSurveyQuestions().indexOf( aQuestion ) === -1 ) {
-              surveyHandler.getSurveyQuestions().push( aQuestion );
+            if ( surveyQuestions.indexOf( aQuestion ) === -1 ) {
+              surveyQuestions.push( aQuestion );
               aAddedCount++;
             }
           } else {
-            if ( surveyHandler.getSurveyQuestions().indexOf( aQuestion ) !== -1 ) {
+            if ( surveyQuestions.indexOf( aQuestion ) !== -1 ) {
               aRemovedCount++;
-              surveyHandler.getSurveyQuestions().splice( surveyHandler.getSurveyQuestions().indexOf( aQuestion ), 1 );
+              surveyQuestions.splice( surveyQuestions.indexOf( aQuestion ), 1 );
               // surveyHandler.removePartial(aQuestion.id);
               //removing from partial requires not posting partial after each question rather than posting them all at once.
               surveyHandler.removeAnswer( aQuestion.id );
