@@ -237,7 +237,11 @@ class Survey {
       let event = new CustomEvent( Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken, { detail: JSON.parse( JSON.stringify( surveyData ) ) } );
       document.dispatchEvent( event );
       self.dom.hideLoader();
-      self.initSurveyQuestions();
+      if(self.surveyData) {
+        self.initSurveyQuestions();
+      } else {
+        self.survey.displayWelcomeQuestion("The Survey has been expired");
+      }
     };
     let errorcb = null;
     this.survey.fetchQuestions( successcb, errorcb );
