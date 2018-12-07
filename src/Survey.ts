@@ -237,10 +237,10 @@ class Survey {
       let event = new CustomEvent( Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken, { detail: JSON.parse( JSON.stringify( surveyData ) ) } );
       document.dispatchEvent( event );
       self.dom.hideLoader();
-      if(self.surveyData) {
+      if ( self.surveyData ) {
         self.initSurveyQuestions();
       } else {
-        self.survey.displayWelcomeQuestion("The Survey has been expired");
+        self.survey.displayWelcomeQuestion( "The Survey has been expired" );
       }
     };
     let errorcb = null;
@@ -260,8 +260,9 @@ class Survey {
     // self.survey.attachSurvey(this.surveyData);
     // self.config.language = "हिन्दी";
     self.config.language = "default";
-
-    self.survey.displayWelcomeQuestion();
+    if ( self.surveyToken && decodeURIComponent( self.surveyToken ).trim() !== '' ) {
+      self.survey.displayWelcomeQuestion();
+    }
     self.dom.setupListeners();
     // self.survey.displayLanguageSelector();
     //survey start event.
