@@ -215,7 +215,7 @@ class SurveyHandler {
 
   fetchQuestions( successcb, errorcb ) {
     this.randomNumber = parseInt( ( String )( Math.random() * 1000 ) );
-    let surveyUrl = Config.SURVEY_BY_TOKEN.replace( "{token}", "" + this.surveyToken );
+    let surveyUrl = Config.SURVEY_BY_TOKEN.replace( "{token}", "" + decodeURIComponent( this.surveyToken ).trim() );
     // surveyUrl = surveyUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyUrl = Config.API_URL + surveyUrl;
     RequestHelper.get( surveyUrl, successcb, errorcb );
@@ -268,7 +268,7 @@ class SurveyHandler {
 
   }
 
-  displayWelcomeQuestion() {
+  displayWelcomeQuestion( warningWelcomeText?: string ) {
     //call this with true when welcome container is clicked.
     // this.ccsdk.addThrottlingEntries(false);
     let onSurveyImpressionEvent = new CustomEvent( Constants.SURVEY_IMPRESSION_EVENT + "-" + this.surveyToken );
@@ -279,10 +279,18 @@ class SurveyHandler {
     welcomeHtml = welcomeHtml.replace( "{{surveyToken}}", this.surveyToken );
     // welcomeHtml = welcomeHtml.replace("{{question}}", this.surveyData.welcomeText);
     let welcomeText = this.ccsdk.config.welcomeText ? this.ccsdk.config.welcomeText : 'Welcome';
-    welcomeHtml = welcomeHtml.replace( "{{question}}", welcomeText );
     // welcomeHtml = welcomeHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "welcomeText"));
     let startText = this.ccsdk.config.startButtonText ? this.ccsdk.config.startButtonText : 'Start';
-    welcomeHtml = welcomeHtml.replace( "{{button}}", startText );
+    if ( warningWelcomeText ) {
+      document.getElementById( this.surveyToken + "-welcome" ).remove();
+      welcomeHtml = welcomeHtml.replace( "{{question}}", warningWelcomeText );
+      welcomeHtml = welcomeHtml.replace( "{{button}}", "Close" );
+      welcomeHtml = welcomeHtml.replace( "{{action}}", "button-close" );
+    } else {
+      welcomeHtml = welcomeHtml.replace( "{{question}}", welcomeText );
+      welcomeHtml = welcomeHtml.replace( "{{button}}", startText );
+      welcomeHtml = welcomeHtml.replace( "{{action}}", "survey-start" );
+    }
     welcomeHtml = welcomeHtml.replace( "{{location}}", this.surveyDisplay.position );
     welcomeHtml = welcomeHtml.replace( "{{animation}}", this.surveyDisplay.welcomePopupAnimation );
     // (window as any).ccsdkDebug?console.log("Appending in body"):'';

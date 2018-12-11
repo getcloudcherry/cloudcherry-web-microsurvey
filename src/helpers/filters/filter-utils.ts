@@ -85,3 +85,10 @@ export function doesSatisfy( surveyHandler: any, filterQuestion: any ): boolean 
 export function questionCompare( a: any, b: any ) {
   return a.sequence - b.sequence;
 }
+
+export function checkLanguage(surveyHandler, fOption) {
+  if (surveyHandler.ccsdk.config && surveyHandler.ccsdk.config.language) {
+    return fOption.language === surveyHandler.ccsdk.config.language 
+  }
+  return false;
+}
