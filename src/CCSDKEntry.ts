@@ -64,6 +64,7 @@ if ( typeof ( window as any ).CCSDK !== 'undefined' ) {
 export function init( surveyToken: any ) {
   //config options can be set in arguments[1]
   //available config options : themeColor
+  surveyToken = decodeURIComponent( surveyToken ).trim();
   let config = ( typeof arguments[ 1 ] === 'object' ) ? arguments[ 1 ] : {};
   //create survey instance
   if ( typeof Cookie.get( surveyToken + '-finish' ) !== 'undefined' && Cookie.get( surveyToken + '-finish' ) ) {

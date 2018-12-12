@@ -215,7 +215,7 @@ class SurveyHandler {
 
   fetchQuestions( successcb, errorcb ) {
     this.randomNumber = parseInt( ( String )( Math.random() * 1000 ) );
-    let surveyUrl = Config.SURVEY_BY_TOKEN.replace( "{token}", "" + decodeURIComponent( this.surveyToken ).trim() );
+    let surveyUrl = Config.SURVEY_BY_TOKEN.replace( "{token}", "" + this.surveyToken );
     // surveyUrl = surveyUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyUrl = Config.API_URL + surveyUrl;
     RequestHelper.get( surveyUrl, successcb, errorcb );
