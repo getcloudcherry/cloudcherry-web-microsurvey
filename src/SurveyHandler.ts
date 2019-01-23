@@ -881,6 +881,7 @@ class SurveyHandler {
           questionTemplate = questionTemplate.replace( /{{questionId}}/g, "id" + question.id );
           questionTemplate = questionTemplate.replace( "{{isRequired}}", question.isRequired ? "true" : "false" );
           questionTemplate = questionTemplate.replace( "{{requiredLabel}}", question.isRequired ? "*" : "" );
+          questionTemplate = questionTemplate.replace( "{{characterLimit}}", question.attributes && question.attributes.characterLimit ? question.attributes.characterLimit : "" );
           questionTemplate = questionTemplate.replace( "{{validationHint}}", question.validationHint ? question.validationHint : "" );
 
           break;
@@ -1222,7 +1223,7 @@ class SurveyHandler {
   }
 
   isPrefillTags( question: any ) {
-    if ( typeof question.questionTags !== 'undefined' && question.questionTags.length > 0 ) {
+    if ( typeof question.questionTags !== 'undefined' && question.questionTags && question.questionTags.length > 0 ) {
       for ( let tag of question.questionTags ) {
         switch ( tag.toLowerCase() ) {
           case "screensize":

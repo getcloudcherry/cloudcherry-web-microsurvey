@@ -10,6 +10,8 @@ import { Slider } from "./helpers/dom/Slider";
 import { SurveyManager } from "./SurveyManager";
 import { Triggers } from './Triggers';
 import { Survey } from "./Survey";
+import { RequestHelper } from "./helpers/Request";
+import { Config } from "./Config";
 /**
  * functions that are exposed to SDK User are written here.
  * Entry point for CCSDK.
@@ -70,13 +72,32 @@ export function init( surveyToken: any ) {
   if ( typeof Cookie.get( surveyToken + '-finish' ) !== 'undefined' && Cookie.get( surveyToken + '-finish' ) ) {
     return;
   }
+  if ( typeof Cookie.get( surveyToken + '-coolDown' ) !== 'undefined' && Cookie.get( surveyToken + '-coolDown' ) ) {
+    return;
+  }
+
   if ( typeof config.isActive !== 'undefined' && config.isActive ) {
+    setCoolDownPeriod( surveyToken );
     SurveyManager.surveyInstances[ surveyToken ] = ( SurveyManager.surveyInstances[ surveyToken ] ) ? SurveyManager.surveyInstances[ surveyToken ] : new Survey( surveyToken, config );
     return SurveyManager.surveyInstances[ surveyToken ];
   } else {
     //do nothing
   }
 
+}
+
+export function setCoolDownPeriod( surveyToken ) {
+
+  RequestHelper.get( Config.API_URL + Config.GET_CAMPAIGN.replace( '{token}', surveyToken ), ( campaign ) => {
+    if ( campaign && campaign.coolDownPeriod && campaign.coolDownPeriod != 0 ) {
+      Cookie.set( surveyToken + '-coolDown', 'true', campaign.coolDownPeriod / 86400, '/' );
+    } else {
+      Cookie.set( surveyToken + '-coolDown', 'true', 1, '/' );
+    }
+  },
+    () => {
+      console.log( 'err' );
+    } )
 }
 
 export function destroy( surveyToken: string ) {
