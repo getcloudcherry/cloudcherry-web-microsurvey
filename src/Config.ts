@@ -11,6 +11,7 @@ class Config {
   static POST_THROTTLING = "/api/Throttling";
   static POST_THROTTLING_ADD_ENTRIES = "/api/Throttling/AddEntries";
   static POST_SURVEY_FINAL = "/api/surveybytoken/{tokenId}"
+  static GET_CAMPAIGN = "/api/SurveyToken/Campaign/{token}/"
 }
 
 export { Config };
