@@ -53,7 +53,7 @@ class ConditionalFlowFilter {
     } else {
       // return false;
     }
-    ( window as any ).ccsdkDebug ? console.log( surveyHandler.getSurveyQuestions() ) : '';
+    // ( window as any ).ccsdkDebug ? console.log( surveyHandler.getSurveyQuestions() ) : '';
   }
 }
 

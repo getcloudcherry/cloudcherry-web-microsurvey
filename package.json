@@ -42,11 +42,12 @@
     "uglifyjs-webpack-plugin": "^0.4.6",
     "url-loader": "^1.1.2",
     "webpack": "^3.5.5",
-    "webpack-dev-server": "^3.1.10",
+    "webpack-dev-server": "^2.1.10",
     "webpack-rtl-plugin": "^1.6.0"
   },
   "dependencies": {
     "@types/es6-promise": "0.0.33",
-    "@types/mocha": "^2.2.42"
+    "@types/mocha": "^2.2.42",
+    "webpack-cli": "^3.2.1"
   }
 }

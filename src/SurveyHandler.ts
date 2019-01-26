@@ -972,20 +972,26 @@ class SurveyHandler {
           let multiSelect;
           //get text question template and compile it.
           multiSelect = Array.prototype.slice.call( LanguageTextFilter.translateMultiSelect( this, question ) );
+          let invertedMultiSelect;
           if ( question.presentationMode == 'Invert' ) {
             // console.log('selection option before reverse', multiSelect);
+            invertedMultiSelect = question.multiSelect ? question.multiSelect.slice().reverse() : [];
             multiSelect.reverse();
             // console.log('selection option after reverse', multiSelect);
             // console.log('selection api option', question.multiSelect);
+          } else {
+            invertedMultiSelect = question.multiSelect;
           }
+          console.log( multiSelect, question.displayStyle );
           if ( ( question.displayStyle == 'radiobutton/checkbox' ) && ( multiSelect.length < 6 ) ) {
             // if(question.displayStyle == 'radiobutton/checkbox'){
             // (window as any).ccsdkDebug?console.log('select type 1'):'';
             // (window as any).ccsdkDebug?console.log(question.displayStyle):'';
             // acTemplate1 = templates.question_radio;
             // questionTemplate = acTemplate1;
+
             let checkOptionContainsImage: boolean = self.util.checkOptionContainsImage( multiSelect );
-            // (window as any).ccsdkDebug?console.log('select radio image',checkOptionContainsImage):'';
+            ( window as any ).ccsdkDebug ? console.log( 'select radio image', checkOptionContainsImage ) : '';
             if ( checkOptionContainsImage
               && (
                 ( ( multiSelect.length > 0 ) && multiSelect[ 0 ].indexOf( "Male" ) !== -1 )
@@ -994,34 +1000,42 @@ class SurveyHandler {
             ) {
               // (window as any).ccsdkDebug?console.log('select type 2'):'';
               acTemplate2 = templates.question_radio_image;
-              options2 = self.util.generateRadioImageOptions( question.multiSelect, multiSelect, question.id );
-              // (window as any).ccsdkDebug?console.log(options2):'';
+
+              options2 = self.util.generateRadioImageOptions( invertedMultiSelect, multiSelect, question.id );
+              ( window as any ).ccsdkDebug ? console.log( { options2 } ) : '';
               questionTemplate = acTemplate2;
               questionTemplate = questionTemplate.replace( /{{options}}/g, options2 );
             } else if ( checkOptionContainsImage ) {
               // (window as any).ccsdkDebug?console.log('select type 2'):'';
               acTemplate2 = templates.question_radio_image;
-              options2 = self.util.generateRadioIgnoreImageOptions( question.multiSelect, multiSelect, question.id );
+              options2 = self.util.generateRadioIgnoreImageOptions( invertedMultiSelect, multiSelect, question.id );
               // (window as any).ccsdkDebug?console.log(options2):'';
               questionTemplate = acTemplate2;
               questionTemplate = questionTemplate.replace( /{{options}}/g, options2 );
             } else {
               acTemplate1 = templates.question_radio;
               questionTemplate = acTemplate1;
-              options1 = self.util.generateRadioOptions( question.multiSelect, multiSelect, question.id );
+
+              options1 = self.util.generateRadioOptions( invertedMultiSelect, multiSelect, question.id );
               questionTemplate = questionTemplate.replace( "{{options}}", options1 );
             }
           } else if ( ( question.displayStyle == 'icon' ) && ( multiSelect.length < 6 ) ) {
             acTemplate1 = templates.question_radio;
             questionTemplate = acTemplate1;
-            options1 = self.util.generateRadioOptions( question.multiSelect, multiSelect, question.id );
+            let invertedMultiSelect;
+            if ( question.presentationMode == 'Invert' ) {
+              invertedMultiSelect = question.multiSelect ? question.multiSelect.slice().reverse() : [];
+            } else {
+              invertedMultiSelect = question.multiSelect;
+            }
+            options1 = self.util.generateRadioOptions( invertedMultiSelect, multiSelect, question.id );
             questionTemplate = questionTemplate.replace( "{{options}}", options1 );
 
           } else {
 
-            // (window as any).ccsdkDebug?console.log('select type 3'):'';
+            ( window as any ).ccsdkDebug ? console.log( 'select type 3' ) : '';
             acTemplate1 = templates.question_select;
-            options1 = self.util.generateSelectOptions( question.multiSelect, multiSelect );
+            options1 = self.util.generateSelectOptions( invertedMultiSelect, multiSelect );
             if ( self.ccsdk.config.language.indexOf( 'Default' ) === -1 ) {
               if ( typeof question.translated !== 'undefined'
                 && question.translated != null
@@ -1033,7 +1047,7 @@ class SurveyHandler {
                 if ( question.presentationMode == 'Invert' ) {
                   multiSelect.reverse();
                 }
-                options1 = self.util.generateSelectOptions( question.multiSelect, multiSelect );
+                options1 = self.util.generateSelectOptions( invertedMultiSelect, multiSelect );
               }
             }
             questionTemplate = acTemplate1;
@@ -1041,6 +1055,7 @@ class SurveyHandler {
 
 
           }
+          // console.log( questionTemplate );
           questionTemplate = questionTemplate.replace( "{{question}}", ConditionalTextFilter.filterText( this, question ) );
           questionTemplate = questionTemplate.replace( /{{questionId}}/g, "id" + question.id );
           questionTemplate = questionTemplate.replace( "{{isRequired}}", question.isRequired ? "true" : "false" );

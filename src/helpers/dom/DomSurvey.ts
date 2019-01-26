@@ -209,7 +209,7 @@ class DomSurvey {
       //start survey
       //check if only one language is configured
       ( window as any ).ccsdkDebug ? console.log( this.ccsdk.surveyData ) : '';
-      if ( this.ccsdk.surveyData.translated === null || ( this.ccsdk.surveyData.translated && Object.keys( this.ccsdk.surveyData.translated ).length < 1) ) {
+      if ( this.ccsdk.surveyData.translated === null || ( this.ccsdk.surveyData.translated && Object.keys( this.ccsdk.surveyData.translated ).length < 1 ) ) {
         this.loadFirstQuestion();
       } else {
         this.ccsdk.survey.displayLanguageSelector();
@@ -370,7 +370,7 @@ class DomSurvey {
         this.qIndex = 0;
       }
       //repopulate qResponse based on answers.
-      ( window as any ).ccsdkDebug ? console.log( 'previous answer', this.ccsdk.survey.answers[ this.currentQuestionId ] ) : '';
+      // ( window as any ).ccsdkDebug ? console.log( 'previous answer', this.ccsdk.survey.answers[ this.currentQuestionId ] ) : '';
       this.qResponse = typeof this.ccsdk.survey.answers[ this.currentQuestionId ] !== 'undefined' ? JSON.parse( JSON.stringify( this.ccsdk.survey.answers[ this.currentQuestionId ] ) ) : {};
       // this.util.removeClassAll(this.$questionContainer[0].firstChild, 'show-slide');
       // this.util.addClass(nextQ, 'show-slide');
@@ -389,7 +389,7 @@ class DomSurvey {
       this.util.addClass( leftIcon[ 0 ], 'show-slide' );
       this.util.removeClass( leftIcon[ 0 ], 'hide-slide' );
     }
-    ( window as any ).ccsdkDebug ? console.log( 'next question q response end', this.qResponse ) : '';
+    // ( window as any ).ccsdkDebug ? console.log( 'next question q response end', this.qResponse ) : '';
     // this.qResponse = {};
 
   }
@@ -401,7 +401,7 @@ class DomSurvey {
       return;
       // this.qIndex = this.$questionContainer.length - 1;
     }
-    ( window as any ).ccsdkDebug ? console.log( this.qIndex ) : '';
+    // ( window as any ).ccsdkDebug ? console.log( this.qIndex ) : '';
     let onSurveyQuestionEvent = new CustomEvent( Constants.SURVEY_QUESTION_EVENT + "-" + this.ccsdk.surveyToken );
     document.dispatchEvent( onSurveyQuestionEvent );
     //re populate qResponse based on answers.
@@ -476,7 +476,7 @@ class DomSurvey {
     let self = this;
     if ( this.util.checkIfListenerExists( '.cc-language-select', this.domListeners ) ) {
       // return;
-      ( window as any ).ccsdkDebug ? console.log( "language select - previous listeners exists" ) : '';
+      // ( window as any ).ccsdkDebug ? console.log( "language select - previous listeners exists" ) : '';
       this.removePrevListener( '.cc-language-select' );
     }
     let languageSelect = this.util.initListener( "click", ".cc-language-select", function () {
@@ -571,18 +571,18 @@ class DomSurvey {
     //add id too.
     if ( this.util.checkIfListenerExists( '#' + qId + ' .option-number-item', this.domListeners ) ) {
       // return;
-      ( window as any ).ccsdkDebug ? console.log( "scale question - previous listeners exists" ) : '';
+      // ( window as any ).ccsdkDebug ? console.log( "scale question - previous listeners exists" ) : '';
       this.removePrevListener( '#' + qId + ' .option-number-item' );
     }
 
     //set previous value
     let questionId: any;
     questionId = qId.substring( 2, qId.length );
-    ( window as any ).ccsdkDebug ? console.log( 'scale question', this.ccsdk.survey.answers[ questionId ] ) : '';
+    // ( window as any ).ccsdkDebug ? console.log( 'scale question', this.ccsdk.survey.answers[ questionId ] ) : '';
     if ( typeof this.ccsdk.survey.answers[ questionId ] !== 'undefined' && this.ccsdk.survey.answers[ questionId ] !== '' ) {
       let previousValue = this.ccsdk.survey.answers[ questionId ].number;
       let previousSelection = document.querySelectorAll( '#' + qId + ' .option-number-item[data-rating="' + previousValue + '"]' )[ 0 ];
-      ( window as any ).ccsdkDebug ? console.log( 'scale previous selection', previousSelection ) : '';
+      // ( window as any ).ccsdkDebug ? console.log( 'scale previous selection', previousSelection ) : '';
       if ( typeof previousSelection !== 'undefined' ) {
         this.util.addClass( previousSelection, "selected" );
         self.qResponse.type = 'scale';
@@ -637,7 +637,7 @@ class DomSurvey {
     //add id too.
     if ( this.util.checkIfListenerExists( '#' + qId + ' .option-number-item', this.domListeners ) ) {
       //remove listeners
-      ( window as any ).ccsdkDebug ? console.log( "nps question - previous listeners exists" ) : '';
+      // ( window as any ).ccsdkDebug ? console.log( "nps question - previous listeners exists" ) : '';
       this.removePrevListener( '#' + qId + ' .option-number-item' );
 
     }
