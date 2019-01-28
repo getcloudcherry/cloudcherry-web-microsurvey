@@ -1,33 +1,35 @@
 	/** Utilities **/
 
-	.show {
-		display: block !important;
-	}
-
-	.show-inline {
-		display: inline-block !important;
-	}
-
-	.hide {
-		display: none !important;
-	}
-
-	.bottom {
-		bottom: 0;
+	.cc-sdk{
+		.show {
+			display: block !important;
+		}
+		
+		.show-inline {
+			display: inline-block !important;
+		}
+		
+		.hide {
+			display: none !important;
+		}
+		
+		&.bottom {
+			bottom: 0;
+		}
 	}
 
 	.cc-sdk {
 		&.right, & .right {
 			right: 0;
 		}
-	}
-
-	.left {
-		left: 0;
-	}
-
-	.top {
-		top: 0;
+		
+		.left {
+			left: 0;
+		}
+		
+		.top {
+			top: 0;
+		}
 	}
 
 	.ccsdk-overlay {
@@ -113,13 +115,5 @@
 		.ccsdk-overlay.welcome-overlay {
 			/*background-image: url(https://cx.getcloudcherry.com/microsurvey-assets/ww.png);*/
 			background: rgba(210, 42, 53, 0.87);
-		}
-
-		body.blurr>*:not(.cc-popup-container):not(.cc-survey) {
-			-webkit-filter: blur(15px);
-			-moz-filter: blur(15px);
-			-ms-filter: blur(15px);
-			-o-filter: blur(15px);
-			filter: blur(15px);
 		}
 	}

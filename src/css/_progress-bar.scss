@@ -1,16 +1,17 @@
-.cc-sdk .progress-bar{
-	width: 100%;
-	position: absolute;
-	background: #a47c2b;
-	z-index: 1;
-	height: 8px;
-	left: 0;
-}
-
-.cc-sdk .progress-line{
-	background: $cc-brand-1-color;
-	height: 100%;
-	display: block;
-	width: 0%;
-	transition: all .4s ease-in;
+.cc-sdk{
+	.progress-bar{
+		width: 100%;
+		position: absolute;
+		background: #a47c2b;
+		z-index: 1;
+		height: 8px;
+		left: 0;
+	}
+	.progress-line{
+		background: $cc-brand-1-color;
+		height: 100%;
+		display: block;
+		width: 0%;
+		transition: all .4s ease-in;
+	}
 }
