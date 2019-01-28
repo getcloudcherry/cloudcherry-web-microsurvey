@@ -17,11 +17,7 @@
 	}
 
 	.cc-sdk {
-		&.right {
-			right: 0;
-		}
-
-		.right {
+		&.right, & .right {
 			right: 0;
 		}
 	}
