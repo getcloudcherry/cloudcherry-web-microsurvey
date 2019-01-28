@@ -7,7 +7,7 @@ function makeRequest( method: string, url: string, postParams: string, headers: 
     if ( ( this as any ).status >= 200 && ( this as any ).status < 300 ) {
       if ( xhr.response ) {
       }
-      let res: any = xhr.response ? JSON.parse( xhr.response ) : '';
+      let res: any = xhr.response && typeof xhr.response === 'string' && !xhr.response.match( 'GIF' ) ? JSON.parse( xhr.response ) : '';
       if ( successcb ) successcb( res );
     } else {
       if ( errorcb ) {

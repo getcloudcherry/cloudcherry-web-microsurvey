@@ -12,8 +12,8 @@ import { TriggerManager } from "./TriggerManager";
 import { Triggers } from './Triggers';
 import { RequestHelper } from './helpers/Request';
 import { Config } from './Config';
-
-import { templates } from "./helpers/templates"
+import { MatomoTracker } from './helpers/tracking';
+import { templates } from "./helpers/templates";
 
 class Survey {
   survey: SurveyHandler;
@@ -34,6 +34,7 @@ class Survey {
   debug: false;
   surveyStartTime: number;
   requester = new RequestHelper();
+  tracking: MatomoTracker;
 
   constructor( surveyToken: string, config: CCSDKConfig ) {
     this.isThrottled = true;
@@ -43,10 +44,12 @@ class Survey {
     this.config = config;
     this.surveyRunning = false;
     this.thorttlingLogic = null;
+    this.tracking = new MatomoTracker();
+    this.tracking.token = surveyToken;
     if ( typeof this.config.textDirection === 'undefined' ) {
       this.config.textDirection = "ltr";
     }
-    // this.setupSurvey();
+
     this.triggers = new Triggers( this );
     TriggerManager.addSurvey( this.surveyToken, this.triggers );
     this.survey = new SurveyHandler( this );
@@ -77,31 +80,6 @@ class Survey {
     // this.login(function() {
     //on login
     // });
-  }
-
-  login( cb ) {
-    let loginURL = Config.API_URL + Config.POST_LOGIN_TOKEN;
-    let self = this;
-    let successcb = function ( logindata ) {
-      self.debug ? console.log( logindata ) : '';
-      self.loginData = logindata;
-      if ( self.isThrottled ) {
-        self.getSurveyThrottlingLogic( cb );
-      } else {
-        cb();
-        return;
-      }
-    }
-
-    RequestHelper.post( loginURL,
-      {
-        grant_type: Constants.GRANT_TYPE,
-        username: this.config.username,
-        password: this.config.password
-      }
-      , successcb, null );
-
-    this.debug ? console.log( "login" ) : '';
   }
 
   getSurveyThrottlingLogic( cb ) {
@@ -233,7 +211,19 @@ class Survey {
       // console.log(surveyData);
 
       self.surveyData = surveyData;
-      //copy data.
+
+      self.tracking.username = surveyData.questions[ 0 ].user;
+
+      self.tracking.token = self.surveyToken;
+
+      console.log( self );
+      self.tracking.trackEvent( 'Login Success', {
+        data: {
+          name: 'Token',
+          action: self.surveyToken
+        }
+      }, console.log, console.error )
+
       let event = new CustomEvent( Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken, { detail: JSON.parse( JSON.stringify( surveyData ) ) } );
       document.dispatchEvent( event );
       self.dom.hideLoader();
@@ -293,6 +283,12 @@ class Survey {
     //do show and hide things.
     SurveyManager.setSurveyRunning();
     //show survey
+    this.tracking.trackEvent( 'Popped Up', {
+      data: {
+        name: null,
+        action: null
+      }
+    }, null, null )
     this.setupSurvey();
 
   }

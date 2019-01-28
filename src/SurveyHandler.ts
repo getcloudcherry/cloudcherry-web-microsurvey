@@ -12,7 +12,7 @@ import { LanguageTextFilter } from "./helpers/filters/LanguageTextFilter";
 import { Select } from './helpers/dom/Select';
 import { Cookie } from './helpers/Cookie';
 import { ConditionalFlowFilter } from './helpers/filters/ConditionalFlowFilter';
-import { dirname } from "path";
+
 
 
 class SurveyHandler {

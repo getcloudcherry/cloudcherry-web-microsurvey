@@ -79,6 +79,12 @@ export function init( surveyToken: any ) {
   if ( typeof config.isActive !== 'undefined' && config.isActive ) {
     setCoolDownPeriod( surveyToken );
     SurveyManager.surveyInstances[ surveyToken ] = ( SurveyManager.surveyInstances[ surveyToken ] ) ? SurveyManager.surveyInstances[ surveyToken ] : new Survey( surveyToken, config );
+    SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Init MicroSurvey', {
+      data: {
+        name: 'Token',
+        action: surveyToken
+      }
+    } );
     return SurveyManager.surveyInstances[ surveyToken ];
   } else {
     //do nothing
@@ -147,6 +153,7 @@ export function prefillByNote( surveyToken: string, questionNote: string, answer
 
 export function show( surveyToken: string ) {
   if ( typeof SurveyManager.surveyInstances[ surveyToken ] != 'undefined' ) {
+    console.log( 'showing pop up' )
     SurveyManager.surveyInstances[ surveyToken ].show();
   }
 }
