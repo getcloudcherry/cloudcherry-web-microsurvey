@@ -40,10 +40,11 @@ class ConditionalTextFilter {
             }
           }
           if ( iSatisfied && !iFailed ) {
-            if (checkLanguage( surveyHandler, fOption )
-            || (surveyHandler.ccsdk.config && surveyHandler.ccsdk.config.language 
-                && surveyHandler.ccsdk.config.language.toLowerCase().includes('default') 
-                && fOption.language === null)) {
+            if ( checkLanguage( surveyHandler, fOption )
+              || ( surveyHandler.ccsdk.config && surveyHandler.ccsdk.config.language
+                && surveyHandler.ccsdk.config.language.toLowerCase().includes( 'default' )
+                && fOption.language === null )
+              || ( surveyHandler.ccsdk.config && !surveyHandler.ccsdk.config.language && fOption.language === null ) ) {
               let groupTitle;
               if ( question.setName && conditionalText.indexOf( ':' ) !== -1 ) {
                 groupTitle = conditionalText.split( ':' )[ 0 ];
@@ -51,7 +52,8 @@ class ConditionalTextFilter {
               } else {
                 conditionalText = fOption.text;
               }
-            }      
+            }
+            conditionalText;
           }
         }
       }

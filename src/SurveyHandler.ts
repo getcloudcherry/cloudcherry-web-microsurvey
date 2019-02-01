@@ -79,6 +79,7 @@ class SurveyHandler {
       let startText = this.ccsdk.config.startButtonText ? this.ccsdk.config.startButtonText : 'Start';
       thankyouHtml = thankyouHtml.replace( "{{question}}", thankyouText );
       thankyouHtml = thankyouHtml.replace( "{{button}}", startText );
+      thankyouHtml = thankyouHtml.replace( "{{branding}}", this.surveyData.branding && this.surveyData.branding.toUpperCase() === 'NONE' ? 'no-branding' : 'full-branding' )
       this.ccsdk.dom.replaceInQuestionsContainer( thankyouHtml );
       //TODO : Fix this Add class not working???
       let thankyouContainer: any = this.util.get( "#cc-thankyou-container" );
@@ -983,7 +984,6 @@ class SurveyHandler {
           } else {
             invertedMultiSelect = question.multiSelect;
           }
-          console.log( multiSelect, question.displayStyle );
           if ( ( question.displayStyle == 'radiobutton/checkbox' ) && ( multiSelect.length < 6 ) ) {
             // if(question.displayStyle == 'radiobutton/checkbox'){
             // (window as any).ccsdkDebug?console.log('select type 1'):'';

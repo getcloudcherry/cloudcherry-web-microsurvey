@@ -3,8 +3,7 @@
 
 <head>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700" rel="stylesheet">
-  <meta name="viewport" charset="utf-8" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height"
-  />
+  <meta name="viewport" charset="utf-8" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
   <title>Survey</title>
   <style type="text/css">
     body {
@@ -62,50 +61,49 @@
   <script>
     var token = getQueryString("t");
     var color = decodeURIComponent(getQueryString("c"));
-    console.log(token, color);
     document.getElementsByTagName('button')[0].style.background = color;;
     (function () {
-        // add a queue event here
-        window.CCSDK = window.CCSDK || function () {
-          (window.CCSDK.q = window.CCSDK.q || []).push(arguments);
-        };
-        var s = document.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = "../cc.en.bundle.js";
-        var x = document.getElementsByTagName('script')[0];
-        x.parentNode.insertBefore(s, x);
-        // execute your script immediately here
-        //WW-02872
-        //CH-88360
-        var ins = window.CCSDK("init", token, {
-            // themeColor : "rgb(235, 28, 35)",
-            // themeColor : color,
-            textDirection: 'ltr',
-            isActive: false, //boolean,    // Whether a microsurvey is enabled or disabled, true for enabled
-            welcomeText: 'Hey There! Help us improve :)', // Welcome message
-            thankyouText: 'Thank you for taking the survey', // Thank you message
-            brandColor: color, // Theme color
-            // top right or right top
-            // left top or top left 
-            // bottom right or right bottom
-            // bottom left or left bottom
-            'position': 'bottom right',
-            // write it in fashion of from-to
-            // right-left
-            // left-right
-            // top-bottom
-            // bottom-top
-            'welcomePopupAnimation': 'right-left',
-            'surveyPopupAnimation': 'right-left'
-          }
+      // add a queue event here
+      window.CCSDK = window.CCSDK || function () {
+        (window.CCSDK.q = window.CCSDK.q || []).push(arguments);
+      };
+      var s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.async = true;
+      s.src = "../cc.en.bundle.js";
+      var x = document.getElementsByTagName('script')[0];
+      x.parentNode.insertBefore(s, x);
+      // execute your script immediately here
+      //WW-02872
+      //CH-88360
+      var ins = window.CCSDK("init", token, {
+        // themeColor : "rgb(235, 28, 35)",
+        // themeColor : color,
+        textDirection: 'ltr',
+        isActive: false, //boolean,    // Whether a microsurvey is enabled or disabled, true for enabled
+        welcomeText: 'Hey There! Help us improve :)', // Welcome message
+        thankyouText: 'Thank you for taking the survey', // Thank you message
+        brandColor: color, // Theme color
+        // top right or right top
+        // left top or top left 
+        // bottom right or right bottom
+        // bottom left or left bottom
+        'position': 'bottom right',
+        // write it in fashion of from-to
+        // right-left
+        // left-right
+        // top-bottom
+        // bottom-top
+        'welcomePopupAnimation': 'right-left',
+        'surveyPopupAnimation': 'right-left'
+      }
         });
       // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
 
       //click trigger
       //pass id or class...currently works on first element of class
 
-    })();
+    }) ();
 
     // document.addEventListener('ccready',function(){
     //   ccSurvey = window.CCSDK("init", "WW-02872",{
