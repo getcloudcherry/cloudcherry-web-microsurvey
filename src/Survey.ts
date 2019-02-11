@@ -201,6 +201,14 @@ class Survey {
         break;
     }
     this.survey.surveyDisplay.welcomePopupAnimation = welcomePopupAnimation;
+    this.tracking.trackEvent( 'Welcome Pop up Position', {
+      token: this.tracking.token,
+      data: {
+        name: this.survey.surveyDisplay.position,
+        action: null
+      }
+    }, null, null );
+
     this.survey.surveyDisplay.surveyPosition = this.config.position.search( /bottom/gi ) == -1 ? "top" : "bottom";
   }
 
@@ -211,13 +219,15 @@ class Survey {
       // console.log(surveyData);
 
       self.surveyData = surveyData;
-
-      self.tracking.username = surveyData.questions[ 0 ].user;
+      if ( surveyData && surveyData.questions && surveyData.questions[ 0 ] ) {
+        self.tracking.username = surveyData.questions[ 0 ].user;
+      }
 
       self.tracking.token = self.surveyToken;
 
       console.log( self );
       self.tracking.trackEvent( 'Login Success', {
+        token: self.tracking.token,
         data: {
           name: 'Token',
           action: self.surveyToken
@@ -230,6 +240,13 @@ class Survey {
       if ( self.surveyData ) {
         self.initSurveyQuestions();
       } else {
+        this.tracking.trackEvent( 'Expired Survey', {
+          token: this.tracking.token,
+          data: {
+            name: null,
+            action: null
+          }
+        }, null, null );
         self.survey.displayWelcomeQuestion( "The Survey has been expired" );
       }
     };
@@ -284,6 +301,7 @@ class Survey {
     SurveyManager.setSurveyRunning();
     //show survey
     this.tracking.trackEvent( 'Popped Up', {
+      token: this.tracking.token,
       data: {
         name: null,
         action: null
@@ -296,6 +314,13 @@ class Survey {
   public hide() {
     SurveyManager.unsetSurveyRunning();
     this.survey.destroy();
+    this.tracking.trackEvent( 'Survey Destroyed', {
+      token: this.tracking.token,
+      data: {
+        name: null,
+        action: null
+      }
+    }, null, null );
   }
 
   public destroy() {

@@ -16,8 +16,7 @@ import { Config } from "./Config";
  * functions that are exposed to SDK User are written here.
  * Entry point for CCSDK.
  */
-
-
+declare var Sentry: any;
 let localCCSDK = {
   init: init,
   destroy: destroy,
@@ -60,7 +59,13 @@ if ( typeof ( window as any ).CCSDK !== 'undefined' ) {
   let eventCCReady: Event = document.createEvent( 'Event' );
   eventCCReady.initEvent( 'ccready', true, true );
   document.dispatchEvent( eventCCReady );
-
+  let sentry = document.createElement( 'script' );
+  sentry.src = "https://browser.sentry-cdn.com/4.5.3/bundle.min.js";
+  sentry.crossOrigin = "anonymous";
+  sentry.onload = () => {
+    Sentry.init( { dsn: 'https://49d72b03f26d4936a104ceb51cd1f669@sentry.io/1391030' } );
+  }
+  document.head.appendChild( sentry );
 }
 
 export function init( surveyToken: any ) {
@@ -80,11 +85,12 @@ export function init( surveyToken: any ) {
     setCoolDownPeriod( surveyToken );
     SurveyManager.surveyInstances[ surveyToken ] = ( SurveyManager.surveyInstances[ surveyToken ] ) ? SurveyManager.surveyInstances[ surveyToken ] : new Survey( surveyToken, config );
     SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Init MicroSurvey', {
+      token: surveyToken,
       data: {
-        name: 'Token',
+        name: ( <any>window ).isMobile ? 'Mobile Mode' : 'Desktop Mode',
         action: surveyToken
       }
-    } );
+    }, null, null );
     return SurveyManager.surveyInstances[ surveyToken ];
   } else {
     //do nothing
@@ -93,7 +99,6 @@ export function init( surveyToken: any ) {
 }
 
 export function setCoolDownPeriod( surveyToken ) {
-
   RequestHelper.get( Config.API_URL + Config.GET_CAMPAIGN.replace( '{token}', surveyToken ), ( campaign ) => {
     if ( campaign && campaign.coolDownPeriod && campaign.coolDownPeriod != 0 ) {
       Cookie.set( surveyToken + '-coolDown', 'true', campaign.coolDownPeriod / 86400, '/' );
@@ -121,7 +126,15 @@ export function destroy( surveyToken: string ) {
 //
 export function trigger( surveyToken: string, type: string, target: string ) {
   ( window as any ).ccsdkDebug ? console.log( SurveyManager.surveyInstances ) : '';
+
   if ( typeof SurveyManager.surveyInstances[ surveyToken ] != 'undefined' ) {
+    SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Trigger Type', {
+      token: surveyToken,
+      data: {
+        name: type,
+        action: surveyToken
+      }
+    }, null, null );
     SurveyManager.surveyInstances[ surveyToken ].trigger( type, target );
   }
   //tell trigger manager to register trigger.
@@ -129,24 +142,52 @@ export function trigger( surveyToken: string, type: string, target: string ) {
 
 export function on( surveyToken: string, type: string, callback: any ) {
   if ( typeof SurveyManager.surveyInstances[ surveyToken ] != 'undefined' ) {
+    SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Event Listeners', {
+      token: surveyToken,
+      data: {
+        name: type,
+        action: surveyToken
+      }
+    }, null, null );
     SurveyManager.surveyInstances[ surveyToken ].on( type, callback );
   }
 }
 
 export function prefill( surveyToken: string, questionId: string, answerObject: any ) {
   if ( typeof SurveyManager.surveyInstances[ surveyToken ] != 'undefined' ) {
+    SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Prefill', {
+      token: surveyToken,
+      data: {
+        name: questionId,
+        action: surveyToken
+      }
+    }, null, null );
     SurveyManager.surveyInstances[ surveyToken ].prefill( questionId, answerObject );
   }
 }
 
 export function prefillByTag( surveyToken: string, questionTag: string, answer: any ) {
   if ( typeof SurveyManager.surveyInstances[ surveyToken ] != 'undefined' ) {
+    SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Prefill by tag', {
+      token: surveyToken,
+      data: {
+        name: questionTag,
+        action: surveyToken
+      }
+    }, null, null );
     SurveyManager.surveyInstances[ surveyToken ].fillPrefill( questionTag, answer );
   }
 }
 
 export function prefillByNote( surveyToken: string, questionNote: string, answer: any ) {
   if ( typeof SurveyManager.surveyInstances[ surveyToken ] != 'undefined' ) {
+    SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Prefill by Note', {
+      token: surveyToken,
+      data: {
+        name: questionNote,
+        action: surveyToken
+      }
+    }, null, null );
     SurveyManager.surveyInstances[ surveyToken ].fillPrefillByNote( questionNote, answer );
   }
 }
@@ -165,15 +206,3 @@ export function hide( surveyToken: string ) {
     SurveyManager.surveyInstances[ surveyToken ].hide();
   }
 }
-
-//on exit detect
-
-
-//
-// export function prefill(id : string, value : string, valueType : string) {
-//   SurveyManager.surveyInstances[this.surveyToken].prefill(id, value, valueType);
-// }
-
-// setInterval(function() {
-//   //collect data and add to cookies.
-// }, 1000);

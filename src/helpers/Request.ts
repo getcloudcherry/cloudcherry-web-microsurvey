@@ -49,7 +49,7 @@ class RequestHelper {
   }
 
   static postWithHeaders( url: string, data: Object, headers: any, successcb: any, errorcb: any ) {
-    headers[ "Content-Type" ] = "application/json; charset=utf-8";
+    headers[ "Content-Type" ] = "application/json;charset=utf-8";
     return makeRequest( "POST", url, JSON.stringify( data ), headers, successcb, errorcb );
 
   }
@@ -87,7 +87,7 @@ class RequestHelper {
     //consider, file upload?
     // (window as any).ccsdkDebug?console.log("[" + JSON.stringify(data) + "]"):'';
     ( window as any ).ccsdkDebug ? console.log( "Sending : " + data ) : '';
-    return makeRequest( "POST", url, JSON.stringify( data ), { "Content-Type": "application/json; charset=utf-8" }, successcb, errorcb );
+    return makeRequest( "POST", url, JSON.stringify( data ), {}, successcb, errorcb );
     // let request : Request = new Request( (url as any), {
     //   method : "POST",
     //   headers : {

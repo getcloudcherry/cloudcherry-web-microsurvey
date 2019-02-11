@@ -19,14 +19,14 @@ export class MatomoTracker {
       action_url: window.location.href,
       uid: this.username,
       _cvar: { '1': [ 'Token', payload.token ] },
-      new_visit: event === 'Popped Up' ? 1 : 0,
+      new_visit: event === 'Welcome Pop up Position' ? 1 : 0,
       e_c: event,
       e_a: payload.data.action,
       e_n: payload.data.name,
       rand: Math.ceil( Math.random() * 100 )
     };
     Object.keys( searchParams ).forEach( x => {
-      url.searchParams.set( x, searchParams[ x ] );
+      url.searchParams.set( x, JSON.stringify( searchParams[ x ] ) );
     } )
     return RequestHelper.post( url.toString(), null, successCb, errorCb );
   }

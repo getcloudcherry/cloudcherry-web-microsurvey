@@ -72,6 +72,14 @@ class SurveyHandler {
     this.displayThankYouCb = ( e: any ) => {
       //perform final post
       this.finalPost( null, null );
+      this.ccsdk.tracking.trackEvent( 'Completed Survey', {
+        token: this.ccsdk.tracking.token,
+        data: {
+          name: null,
+          action: null
+        }
+      }, null, null );
+
       let thankyouHtml: any = templates.thankyou;
       // thankyouHtml = thankyouHtml.replace("{{question}}", this.surveyData.thankyouText);
       // thankyouHtml = thankyouHtml.replace("{{question}}", LanguageTextFilter.translateMessages(this, "thankyouText"));
@@ -536,7 +544,7 @@ class SurveyHandler {
       return;
     }
     if ( typeof this.prefillResponses !== 'undefined' && this.prefillResponses.length > 0 ) {
-      RequestHelper.post( surveyPartialUrl, this.prefillResponses, successcb, errorcb );
+      RequestHelper.postWithHeaders( surveyPartialUrl, this.prefillResponses, {}, successcb, errorcb );
     } else {
       // console.log('No Prefill data');
       return;
@@ -581,7 +589,6 @@ class SurveyHandler {
       // return (window as any).ccsdkDebug?console.log("No Partial Remaining"):'';
     }
     let data: any = {
-      comparator: 0,
       questionId: question.id,
       questionText: question.text,
       textInput: response.text,
@@ -620,9 +627,9 @@ class SurveyHandler {
 
     if ( question.id == this.questionsToDisplay[ this.questionsToDisplay.length - 1 ].id ) {
       //last question post moved to separate function
-      RequestHelper.post( surveyPartialUrl, data, successcb, errorcb );
+      RequestHelper.postWithHeaders( surveyPartialUrl, data, {}, successcb, errorcb );
     } else {
-      RequestHelper.post( surveyPartialUrl, data, successcb, errorcb );
+      RequestHelper.postWithHeaders( surveyPartialUrl, data, {}, successcb, errorcb );
     }
 
   }
@@ -639,8 +646,11 @@ class SurveyHandler {
       return;
     }
     for ( let answer in this.surveyAnswers ) {
-      answersAll.push( this.surveyAnswers[ answer ] );
-      lastAnswer = this.surveyAnswers[ answer ];
+      let response = this.surveyAnswers[ answer ];
+      if ( response && ( response.textInput !== null || response.numberInput !== null ) ) {
+        answersAll.push( response );
+        lastAnswer = response;
+      }
     }
     for ( let answer in this.prefillResponses ) {
       answersAll.push( this.prefillResponses[ answer ] );
@@ -663,7 +673,11 @@ class SurveyHandler {
       this.postPartialAnswer( this.questionsToDisplay.length - 1, _lastAnswer, true, null, null )
     }
 
-    RequestHelper.post( postSurveyFinalUrl, finalData, successcb, errorcb );
+    if ( finalData.responses && finalData.responses.length > 0 ) {
+      RequestHelper.postWithHeaders( postSurveyFinalUrl, finalData, {}, successcb, errorcb );
+    } else {
+      successcb();
+    }
 
   }
 
