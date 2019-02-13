@@ -206,6 +206,15 @@ class Triggers {
         }
       }
       if ( isEnabled ) {
+        if ( this.ccsdk && this.ccsdk.tracking ) {
+          this.ccsdk.tracking.trackEvent( 'Popped Up', {
+            token: this.ccsdk.tracking.token,
+            data: {
+              name: null,
+              action: null
+            }
+          }, null, null )
+        }
         SurveyManager.addSurvey( this.ccsdk.surveyToken );
       }
     } else {

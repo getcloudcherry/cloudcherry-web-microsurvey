@@ -311,13 +311,6 @@ class Survey {
     //do show and hide things.
     SurveyManager.setSurveyRunning();
     //show survey
-    this.tracking.trackEvent( 'Popped Up', {
-      token: this.tracking.token,
-      data: {
-        name: null,
-        action: null
-      }
-    }, null, null )
     this.setupSurvey();
 
   }

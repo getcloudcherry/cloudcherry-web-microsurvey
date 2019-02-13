@@ -189,7 +189,6 @@ export function prefillByNote( surveyToken: string, questionNote: string, answer
 
 export function show( surveyToken: string ) {
   if ( typeof SurveyManager.surveyInstances[ surveyToken ] != 'undefined' ) {
-    console.log( 'showing pop up' )
     SurveyManager.surveyInstances[ surveyToken ].show();
   }
 }
