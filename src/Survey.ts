@@ -225,7 +225,6 @@ class Survey {
 
       self.tracking.token = self.surveyToken;
 
-      console.log( self );
       self.tracking.trackEvent( 'Login Success', {
         token: self.tracking.token,
         data: {
@@ -233,10 +232,18 @@ class Survey {
           action: self.surveyToken
         }
       }, console.log, console.error )
-
+      self.tracking.trackEvent( 'Survey Length', {
+        token: self.tracking.token,
+        data: {
+          name: `${ surveyData.questions.length } Questions`,
+          action: `${ surveyData.preFill ? surveyData.preFill.length : 0 } Prefills`
+        }
+      }, null, null );
       let event = new CustomEvent( Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken, { detail: JSON.parse( JSON.stringify( surveyData ) ) } );
       document.dispatchEvent( event );
-      self.dom.hideLoader();
+      if ( !self.config.skipWelcomePage ) {
+        self.dom.hideLoader();
+      }
       if ( self.surveyData ) {
         self.initSurveyQuestions();
       } else {
@@ -267,8 +274,12 @@ class Survey {
     // self.survey.attachSurvey(this.surveyData);
     // self.config.language = "हिन्दी";
     self.config.language = "default";
-    if ( self.surveyToken && decodeURIComponent( self.surveyToken ).trim() !== '' ) {
+    if ( self.surveyToken && decodeURIComponent( self.surveyToken ).trim() !== '' && !self.config.skipWelcomePage ) {
       self.survey.displayWelcomeQuestion();
+    } else if ( self.config.skipWelcomePage ) {
+      let onImpressionEvent = new CustomEvent( Constants.SURVEY_IMPRESSION_EVENT + "-" + this.surveyToken );
+      document.dispatchEvent( onImpressionEvent );
+      self.dom.startSurvey();
     }
     self.dom.setupListeners();
     // self.survey.displayLanguageSelector();
@@ -317,7 +328,7 @@ class Survey {
     this.tracking.trackEvent( 'Survey Destroyed', {
       token: this.tracking.token,
       data: {
-        name: null,
+        name: ( <any>new Date() - ( <any>window ).globalSurveyStartTime ) + 's',
         action: null
       }
     }, null, null );
@@ -349,6 +360,7 @@ class Survey {
     let self: Survey = this;
     switch ( type ) {
       case 'click':
+        console.log( 'enable click trigger ##' )
         this.triggers.enableClickTrigger( target, function () {
           // self.initSurvey();
           // Scrollbar.initAll();

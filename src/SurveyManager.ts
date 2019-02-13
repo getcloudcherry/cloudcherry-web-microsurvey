@@ -59,6 +59,7 @@ class SurveyManager {
 
   public static setSurveyRunning() {
     ( window as any ).globalSurveyRunning = true;
+    ( window as any ).globalSurveyStartTime = new Date();
   }
 
   public static unsetSurveyRunning() {

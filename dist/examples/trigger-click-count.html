@@ -3,7 +3,8 @@
 
 <head>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700" rel="stylesheet">
-  <meta name="viewport" charset="utf-8" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+  <meta name="viewport" charset="utf-8"
+    content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
   <title>Survey</title>
   <style type="text/css">
     body {
@@ -80,7 +81,7 @@
         // themeColor : "rgb(235, 28, 35)",
         // themeColor : color,
         textDirection: 'ltr',
-        isActive: false, //boolean,    // Whether a microsurvey is enabled or disabled, true for enabled
+        isActive: true, //boolean,    // Whether a microsurvey is enabled or disabled, true for enabled
         welcomeText: 'Hey There! Help us improve :)', // Welcome message
         thankyouText: 'Thank you for taking the survey', // Thank you message
         brandColor: color, // Theme color
@@ -99,6 +100,7 @@
         onExitDetect: false, // Show the microsurvey when the user tries to leave the page or close the tab
         // startButtonText: 'Start Survey', // Use this text in the start button
         resumeButtonText: 'Resume', // Use this text in the resume button
+        skipWelcomePage: true
       });
       // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
 

@@ -26,7 +26,13 @@ export class MatomoTracker {
       rand: Math.ceil( Math.random() * 100 )
     };
     Object.keys( searchParams ).forEach( x => {
-      url.searchParams.set( x, JSON.stringify( searchParams[ x ] ) );
+      let param;
+      if ( typeof searchParams[ x ] === 'string' ) {
+        param = searchParams[ x ];
+      } else {
+        param = JSON.stringify( searchParams[ x ] );
+      }
+      url.searchParams.set( x, param );
     } )
     return RequestHelper.post( url.toString(), null, successCb, errorCb );
   }

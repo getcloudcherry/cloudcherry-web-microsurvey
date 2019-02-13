@@ -219,6 +219,15 @@ class DomSurvey {
 
   updateProgress() {
     let el = <HTMLElement>document.querySelectorAll( "#progress-line" )[ 0 ];
+    if ( this.ccsdk && this.ccsdk.tracking ) {
+      this.ccsdk.tracking.trackEvent( 'Questions Answered', {
+        token: this.ccsdk.surveyToken,
+        data: {
+          name: `${ this.qIndex }/${ this.ccsdk.survey.questionsToDisplay.length }`,
+          action: this.currentQuestionId
+        }
+      }, null, null );
+    }
     el.style.width = ( this.qIndex / this.ccsdk.survey.questionsToDisplay.length ) * 100 + '%';
   }
 

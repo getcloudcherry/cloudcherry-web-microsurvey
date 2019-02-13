@@ -72,13 +72,15 @@ class SurveyHandler {
     this.displayThankYouCb = ( e: any ) => {
       //perform final post
       this.finalPost( null, null );
-      this.ccsdk.tracking.trackEvent( 'Completed Survey', {
-        token: this.ccsdk.tracking.token,
-        data: {
-          name: null,
-          action: null
-        }
-      }, null, null );
+      if ( this.ccsdk && this.ccsdk.tracking ) {
+        this.ccsdk.tracking.trackEvent( 'Completed Survey', {
+          token: this.ccsdk.tracking.token,
+          data: {
+            name: null,
+            action: null
+          }
+        }, null, null );
+      }
 
       let thankyouHtml: any = templates.thankyou;
       // thankyouHtml = thankyouHtml.replace("{{question}}", this.surveyData.thankyouText);

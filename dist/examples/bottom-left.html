@@ -3,8 +3,8 @@
 
 <head>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
-  <meta name="viewport" charset="utf-8" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height"
-  />
+  <meta name="viewport" charset="utf-8"
+    content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
   <title>Survey</title>
   <style type="text/css">
     body {
@@ -76,7 +76,7 @@
       // execute your script immediately here
       //WW-02872
       //CH-88360
-      var ins = window.CCSDK("init", token, {
+      window['microsurvey'] = window.CCSDK("init", token, {
         // themeColor : "rgb(235, 28, 35)",
         // themeColor : color,
         textDirection: 'ltr',
@@ -99,6 +99,7 @@
         onExitDetect: true, // Show the microsurvey when the user tries to leave the page or close the tab
         // startButtonText: 'Start Survey', // Use this text in the start button
         resumeButtonText: 'Resume', // Use this text in the resume button
+        skipWelcomePage: true
       });
       // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
 
@@ -115,7 +116,10 @@
 
     document.addEventListener(token + '-ready', function (e) {
       // e.detail.survey.trigger('launch');
-      e.detail.survey.trigger('click', '#anywhere');
+      console.log('details', e.detail);
+
+      // e.detail.survey.dom.startSurvey();
+      // e.detail.survey.trigger('click', '#anywhere');
       //  e.detail.survey.trigger('launch');
     });
 

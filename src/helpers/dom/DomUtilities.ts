@@ -60,12 +60,18 @@ class DomUtilities {
 
   removeClass( el: any, className: string ): void {
     // console.log(el);
+    if ( !el ) {
+      return;
+    }
     if ( el.classList )
       el.classList.remove( className );
     else
       el.className = el.className.replace( new RegExp( '(^|\\b)' + className.split( ' ' ).join( '|' ) + '(\\b|$)', 'gi' ), ' ' );
   }
   addClass( el: any, className: string ) {
+    if ( !el ) {
+      return;
+    }
     if ( el.classList )
       el.classList.add( className );
     else
@@ -117,7 +123,7 @@ class DomUtilities {
   listener( el: any, evt: any, sel: any, handler: any ): any {
     let selectorMatches = function ( el, selector ) {
       var p = Element.prototype;
-      var f = p.matches || p.webkitMatchesSelector || ( <any>p ).mozMatchesSelector || p.msMatchesSelector || function ( s ) {
+      var f = p.matches || p.webkitMatchesSelector || ( <any>p ).mozMatchesSelector || ( <any>p ).msMatchesSelector || function ( s ) {
         return [].indexOf.call( document.querySelectorAll( s ), this ) !== -1;
       };
       return f.call( el, selector );
