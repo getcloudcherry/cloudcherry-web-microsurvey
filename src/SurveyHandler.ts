@@ -846,9 +846,11 @@ class SurveyHandler {
               scaleImageContainer = '';
               mobileImageUrl = "";
             }
+            
             for ( let initial = startRange; initial <= endRange; initial += divider ) {
-              options += '<span data-rating="' + initial + '" class="option-number-item option-scale ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
+              options += '<span data-rating="' + initial + '" class="option-number-item option-'+ endRange +'-scale-' + initial + ' ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
             }
+            
             if ( ( endRange - startRange + 1 ) <= 11 ) {
               var optionLeftExtraClass = 'option-left-rating-text-small-container';
               var optionRightExtraClass = 'option-right-rating-text-small-container';
