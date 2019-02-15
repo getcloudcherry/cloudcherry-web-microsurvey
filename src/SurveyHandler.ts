@@ -785,6 +785,16 @@ class SurveyHandler {
             // let startRangeLabel = "";
             // let endRangeLabel = "Very likely";
             let endRangeLabel = "";
+            
+            if(question.questionTags.includes("ces_agree_5") || question.questionTags.includes("ces_agree_7")) {
+              startRangeLabel = "Strongly Disagree";
+              endRangeLabel = "Strongly Agree";
+            }
+            else if(question.questionTags.includes("ces_effort_5") || question.questionTags.includes("ces_effort_7")) {
+              startRangeLabel = "Low Effort";
+              endRangeLabel = "High Effort";
+            }
+            
             let displayLegend = LanguageTextFilter.translateDisplayLegend( this, question );
             if ( displayLegend ) {
               if ( displayLegend.length > 0 ) {
@@ -847,8 +857,16 @@ class SurveyHandler {
               mobileImageUrl = "";
             }
             
-            for ( let initial = startRange; initial <= endRange; initial += divider ) {
-              options += '<span data-rating="' + initial + '" class="option-number-item option-'+ endRange +'-scale-' + initial + ' ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
+            if( question.questionTags.includes("CES") ) {
+              for ( let initial = startRange; initial <= endRange; initial += divider ) {
+                options += '<span data-rating="' + initial + '" class="option-number-item option-'+ endRange +'-scale-' + initial + ' ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
+              }
+            }
+            else
+            {
+              for ( let initial = startRange; initial <= endRange; initial += divider ) {
+                options += '<span data-rating="' + initial + '" class="option-number-item option-scale ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
+              }
             }
             
             if ( ( endRange - startRange + 1 ) <= 11 ) {
