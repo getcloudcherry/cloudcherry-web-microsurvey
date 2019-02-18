@@ -785,16 +785,16 @@ class SurveyHandler {
             // let startRangeLabel = "";
             // let endRangeLabel = "Very likely";
             let endRangeLabel = "";
-            
-            if(question.questionTags.includes("ces_agree_5") || question.questionTags.includes("ces_agree_7")) {
+
+            if ( question.questionTags.includes( "ces_agree_5" ) || question.questionTags.includes( "ces_agree_7" ) ) {
               startRangeLabel = "Strongly Disagree";
               endRangeLabel = "Strongly Agree";
             }
-            else if(question.questionTags.includes("ces_effort_5") || question.questionTags.includes("ces_effort_7")) {
-              startRangeLabel = "Low Effort";
-              endRangeLabel = "High Effort";
+            else if ( question.questionTags.includes( "ces_effort_5" ) || question.questionTags.includes( "ces_effort_7" ) ) {
+              startRangeLabel = "High Effort";
+              endRangeLabel = "Low Effort";
             }
-            
+
             let displayLegend = LanguageTextFilter.translateDisplayLegend( this, question );
             if ( displayLegend ) {
               if ( displayLegend.length > 0 ) {
@@ -856,19 +856,18 @@ class SurveyHandler {
               scaleImageContainer = '';
               mobileImageUrl = "";
             }
-            
-            if( question.questionTags.includes("CES") ) {
+
+            if ( question.questionTags.includes( "CES" ) ) {
               for ( let initial = startRange; initial <= endRange; initial += divider ) {
-                options += '<span data-rating="' + initial + '" class="option-number-item option-'+ endRange +'-scale-' + initial + ' ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
+                options += '<span data-rating="' + initial + '" class="option-number-item option-' + endRange + '-scale-' + initial + ' ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
               }
             }
-            else
-            {
+            else {
               for ( let initial = startRange; initial <= endRange; initial += divider ) {
                 options += '<span data-rating="' + initial + '" class="option-number-item option-scale ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
               }
             }
-            
+
             if ( ( endRange - startRange + 1 ) <= 11 ) {
               var optionLeftExtraClass = 'option-left-rating-text-small-container';
               var optionRightExtraClass = 'option-right-rating-text-small-container';
