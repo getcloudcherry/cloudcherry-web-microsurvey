@@ -786,7 +786,8 @@ class SurveyHandler {
             // let endRangeLabel = "Very likely";
             let endRangeLabel = "";
             
-            let customMetric = this.surveyData.customMetrics.sample;
+            let metricName = question.anchorMetricName;
+            let customMetric = this.surveyData.customMetrics[metricName];
             if(question.questionTags.includes("ces_agree_5") || question.questionTags.includes("ces_agree_7")) {
               startRangeLabel = "Strongly Disagree";
               endRangeLabel = "Strongly Agree";
@@ -795,7 +796,7 @@ class SurveyHandler {
               startRangeLabel = "Low Effort";
               endRangeLabel = "High Effort";
             }
-            else {
+            else if( metricName != null ) { 
               startRangeLabel = customMetric.optionCategories[0].label;
               endRangeLabel = customMetric.optionCategories[2].label; 
             }
@@ -867,8 +868,8 @@ class SurveyHandler {
                 options += '<span data-rating="' + initial + '" class="option-number-item option-'+ endRange +'-scale-' + initial + ' ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
               }
             }
-            else {
-              for(let iterator=0; iterator<=2; iterator++) {
+            else if(metricName != null) {           
+              for(var iterator in customMetric.optionCategories) {  
                 let startRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[0]);
                 let endRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[1]);
                 
@@ -877,12 +878,11 @@ class SurveyHandler {
                 }
               }
             }
-            /*
-            else{
+            else {
               for ( let initial = startRange; initial <= endRange; initial += divider ) {
                 options += '<span data-rating="' + initial + '" class="option-number-item option-scale ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
               }
-            }*/
+            }
             
             if ( ( endRange - startRange + 1 ) <= 11 ) {
               var optionLeftExtraClass = 'option-left-rating-text-small-container';
