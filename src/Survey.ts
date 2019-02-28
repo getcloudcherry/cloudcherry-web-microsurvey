@@ -280,6 +280,7 @@ class Survey {
       let onImpressionEvent = new CustomEvent( Constants.SURVEY_IMPRESSION_EVENT + "-" + this.surveyToken );
       document.dispatchEvent( onImpressionEvent );
       self.dom.startSurvey();
+      self.survey.setCoolDownPeriod( self.config, self.surveyToken );
     }
     self.dom.setupListeners();
     // self.survey.displayLanguageSelector();
