@@ -1,22 +1,13 @@
-import { CCSDKConfig } from "./interfaces/CCSDKConfig";
-import { DisplayConfig } from "./interfaces/DisplayConfig";
-import { SurveyHandler } from "./SurveyHandler";
-import { DomSurvey } from "./helpers/dom/DomSurvey";
-import { DomUtilities } from "./helpers/dom/DomUtilities";
-import { Scrollbar } from "./helpers/dom/ScrollBar";
 import { Cookie } from './helpers/Cookie';
-import { Constants } from './Constants';
-import { Slider } from "./helpers/dom/Slider";
 import { SurveyManager } from "./SurveyManager";
-import { Triggers } from './Triggers';
 import { Survey } from "./Survey";
-import { RequestHelper } from "./helpers/Request";
-import { Config } from "./Config";
+
 /**
  * functions that are exposed to SDK User are written here.
  * Entry point for CCSDK.
  */
-declare var Sentry: any;
+// declare var Sentry: any;
+
 let localCCSDK = {
   init: init,
   destroy: destroy,
@@ -59,13 +50,16 @@ if ( typeof ( window as any ).CCSDK !== 'undefined' ) {
   let eventCCReady: Event = document.createEvent( 'Event' );
   eventCCReady.initEvent( 'ccready', true, true );
   document.dispatchEvent( eventCCReady );
-  let sentry = document.createElement( 'script' );
-  sentry.src = "https://browser.sentry-cdn.com/4.5.3/bundle.min.js";
-  sentry.crossOrigin = "anonymous";
-  sentry.onload = () => {
-    Sentry.init( { dsn: 'https://49d72b03f26d4936a104ceb51cd1f669@sentry.io/1391030' } );
-  }
-  document.head.appendChild( sentry );
+
+  // Disabling this as Sentry captures errors from host web site. 
+  // let sentry = document.createElement( 'script' );
+  // sentry.src = "https://browser.sentry-cdn.com/4.5.3/bundle.min.js";
+  // sentry.crossOrigin = "anonymous";
+  // sentry.onload = () => {
+  //   Sentry.init( { dsn: 'https://49d72b03f26d4936a104ceb51cd1f669@sentry.io/1391030' } );
+  // }
+  // document.head.appendChild( sentry );
+
 }
 
 export function init( surveyToken: any ) {
