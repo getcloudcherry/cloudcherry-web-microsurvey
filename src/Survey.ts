@@ -32,7 +32,7 @@ class Survey {
   thorttlingLogic: any;
   loginData: any;
   debug: false;
-  surveyStartTime: number;
+  surveyStartTime: any;
   requester = new RequestHelper();
   tracking: MatomoTracker;
 
@@ -281,6 +281,8 @@ class Survey {
       document.dispatchEvent( onImpressionEvent );
       self.dom.startSurvey();
       self.survey.setCoolDownPeriod( self.config, self.surveyToken );
+      this.surveyStartTime = new Date();
+      self.survey.acceptAnswers();
     }
     self.dom.setupListeners();
     // self.survey.displayLanguageSelector();
