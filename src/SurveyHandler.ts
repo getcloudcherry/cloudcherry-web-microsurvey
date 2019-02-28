@@ -307,6 +307,7 @@ class SurveyHandler {
     // (window as any).ccsdkDebug?console.log("Appending in body"):'';
     this.ccsdk.dom.appendInBody( welcomeHtml );
     this.ccsdk.dom.showWelcomeContainer();
+    this.setCoolDownPeriod( this.ccsdk.config, this.surveyToken )
     if ( ( typeof this.ccsdk.config.keepAlive != undefined ) && ( this.ccsdk.config.keepAlive > 0 ) ) {
       this.welcomeQuestionDisplayTime = new Date();
       this.welcomeInterval = setInterval( () => { self.checkWelcomeQuestionDisplay( self.ccsdk.config.keepAlive ) }
@@ -316,6 +317,14 @@ class SurveyHandler {
     this.acceptAnswers();
     // self.survey.displayLanguageSelector();
 
+  }
+
+  setCoolDownPeriod( campaign, surveyToken ) {
+    if ( campaign && campaign.coolDownPeriod && campaign.coolDownPeriod != 0 ) {
+      Cookie.set( surveyToken + '-coolDown', 'true', campaign.coolDownPeriod / 86400, '/' );
+    } else {
+      Cookie.set( surveyToken + '-coolDown', 'true', 1, '/' );
+    }
   }
 
   checkWelcomeQuestionDisplay( keepAlive ) {
