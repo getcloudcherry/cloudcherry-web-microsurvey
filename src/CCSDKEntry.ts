@@ -76,7 +76,6 @@ export function init( surveyToken: any ) {
   }
 
   if ( typeof config.isActive !== 'undefined' && config.isActive ) {
-    setCoolDownPeriod( config, surveyToken );
     SurveyManager.surveyInstances[ surveyToken ] = ( SurveyManager.surveyInstances[ surveyToken ] ) ? SurveyManager.surveyInstances[ surveyToken ] : new Survey( surveyToken, config );
     SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Init MicroSurvey', {
       token: surveyToken,
@@ -90,14 +89,6 @@ export function init( surveyToken: any ) {
     //do nothing
   }
 
-}
-
-export function setCoolDownPeriod( campaign, surveyToken ) {
-  if ( campaign && campaign.coolDownPeriod && campaign.coolDownPeriod != 0 ) {
-    Cookie.set( surveyToken + '-coolDown', 'true', campaign.coolDownPeriod / 86400, '/' );
-  } else {
-    Cookie.set( surveyToken + '-coolDown', 'true', 1, '/' );
-  }
 }
 
 export function destroy( surveyToken: string ) {
