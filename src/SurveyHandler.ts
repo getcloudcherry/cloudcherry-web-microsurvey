@@ -785,9 +785,7 @@ class SurveyHandler {
             // let startRangeLabel = "";
             // let endRangeLabel = "Very likely";
             let endRangeLabel = "";
-            
-            let metricName = question.anchorMetricName;
-            let customMetric = this.surveyData.customMetrics[metricName];
+           
             if(question.questionTags.includes("ces_agree_5") || question.questionTags.includes("ces_agree_7")) {
               startRangeLabel = "Strongly Disagree";
               endRangeLabel = "Strongly Agree";
@@ -796,7 +794,9 @@ class SurveyHandler {
               startRangeLabel = "Low Effort";
               endRangeLabel = "High Effort";
             }
-            else if( metricName != null ) { 
+            else if( question.anchorMetricName != null ) {
+              let metricName = question.anchorMetricName;
+              let customMetric = this.surveyData.customMetrics[metricName];
               startRangeLabel = customMetric.optionCategories[0].label;
               endRangeLabel = customMetric.optionCategories[2].label; 
             }
@@ -868,7 +868,9 @@ class SurveyHandler {
                 options += '<span data-rating="' + initial + '" class="option-number-item option-'+ endRange +'-scale-' + initial + ' ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
               }
             }
-            else if(metricName != null) {           
+            else if(question.anchorMetricName != null) {  
+              let metricName = question.anchorMetricName;
+              let customMetric = this.surveyData.customMetrics[metricName];
               for(var iterator in customMetric.optionCategories) {  
                 let startRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[0]);
                 let endRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[1]);
