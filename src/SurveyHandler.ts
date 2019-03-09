@@ -542,7 +542,6 @@ class SurveyHandler {
     }
     let surveyPartialUrl = Config.SURVEY_PARTIAL_RESPONSE.replace( "{id}", this.surveyData.partialResponseId );
     surveyPartialUrl = surveyPartialUrl.replace( "{complete}", "false" );
-    surveyPartialUrl = surveyPartialUrl.replace( "{tabletId}", "" + this.randomNumber );
     surveyPartialUrl = Config.API_URL + surveyPartialUrl;
     ( window as any ).ccsdkDebug ? console.log( "Posting Prefill Responses to Server" ) : '';
     ( window as any ).ccsdkDebug ? console.log( this.prefillResponses ) : '';
@@ -804,13 +803,13 @@ class SurveyHandler {
               startRangeLabel = "High Effort";
               endRangeLabel = "Low Effort";
             }
-            else if( question.anchorMetricName != null ) {
+            else if ( question.anchorMetricName != null ) {
               let metricName = question.anchorMetricName;
-              let customMetric = this.surveyData.customMetrics[metricName];
-              startRangeLabel = customMetric.optionCategories[0].label;
-              endRangeLabel = customMetric.optionCategories[2].label; 
+              let customMetric = this.surveyData.customMetrics[ metricName ];
+              startRangeLabel = customMetric.optionCategories[ 0 ].label;
+              endRangeLabel = customMetric.optionCategories[ 2 ].label;
             }
-            
+
             let displayLegend = LanguageTextFilter.translateDisplayLegend( this, question );
             if ( displayLegend ) {
               if ( displayLegend.length > 0 ) {
@@ -878,15 +877,15 @@ class SurveyHandler {
                 options += '<span data-rating="' + initial + '" class="option-number-item option-' + endRange + '-scale-' + initial + ' ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
               }
             }
-            else if(question.anchorMetricName != null) {  
+            else if ( question.anchorMetricName != null ) {
               let metricName = question.anchorMetricName;
-              let customMetric = this.surveyData.customMetrics[metricName];
-              for(var iterator in customMetric.optionCategories) {  
-                let startRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[0]);
-                let endRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[1]);
-                
-                for (let initial = startRange; initial <= endRange; initial += divider) {             
-                  options += '<span data-rating="' + initial + '" class="option-number-item option-scale"' + scaleVisibility + '" style="background:' + customMetric.optionCategories[iterator].color + '">' + initial + '</span>';
+              let customMetric = this.surveyData.customMetrics[ metricName ];
+              for ( var iterator in customMetric.optionCategories ) {
+                let startRange = parseFloat( customMetric.optionCategories[ iterator ].categoryRange.split( "," )[ 0 ] );
+                let endRange = parseFloat( customMetric.optionCategories[ iterator ].categoryRange.split( "," )[ 1 ] );
+
+                for ( let initial = startRange; initial <= endRange; initial += divider ) {
+                  options += '<span data-rating="' + initial + '" class="option-number-item option-scale"' + scaleVisibility + '" style="background:' + customMetric.optionCategories[ iterator ].color + '">' + initial + '</span>';
                 }
               }
             }
