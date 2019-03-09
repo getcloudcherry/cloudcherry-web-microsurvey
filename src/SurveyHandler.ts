@@ -796,6 +796,7 @@ class SurveyHandler {
             let endRangeLabel = "";
 
             if ( question.questionTags.includes( "ces_agree_5" ) || question.questionTags.includes( "ces_agree_7" ) ) {
+
               startRangeLabel = "Strongly Disagree";
               endRangeLabel = "Strongly Agree";
             }
@@ -803,7 +804,13 @@ class SurveyHandler {
               startRangeLabel = "High Effort";
               endRangeLabel = "Low Effort";
             }
-
+            else if( question.anchorMetricName != null ) {
+              let metricName = question.anchorMetricName;
+              let customMetric = this.surveyData.customMetrics[metricName];
+              startRangeLabel = customMetric.optionCategories[0].label;
+              endRangeLabel = customMetric.optionCategories[2].label; 
+            }
+            
             let displayLegend = LanguageTextFilter.translateDisplayLegend( this, question );
             if ( displayLegend ) {
               if ( displayLegend.length > 0 ) {
@@ -869,6 +876,18 @@ class SurveyHandler {
             if ( question.questionTags.includes( "CES" ) ) {
               for ( let initial = startRange; initial <= endRange; initial += divider ) {
                 options += '<span data-rating="' + initial + '" class="option-number-item option-' + endRange + '-scale-' + initial + ' ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
+              }
+            }
+            else if(question.anchorMetricName != null) {  
+              let metricName = question.anchorMetricName;
+              let customMetric = this.surveyData.customMetrics[metricName];
+              for(var iterator in customMetric.optionCategories) {  
+                let startRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[0]);
+                let endRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[1]);
+                
+                for (let initial = startRange; initial <= endRange; initial += divider) {             
+                  options += '<span data-rating="' + initial + '" class="option-number-item option-scale"' + scaleVisibility + '" style="background:' + customMetric.optionCategories[iterator].color + '">' + initial + '</span>';
+                }
               }
             }
             else {
