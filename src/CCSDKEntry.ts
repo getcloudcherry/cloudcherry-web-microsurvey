@@ -50,16 +50,6 @@ if ( typeof ( window as any ).CCSDK !== 'undefined' ) {
   let eventCCReady: Event = document.createEvent( 'Event' );
   eventCCReady.initEvent( 'ccready', true, true );
   document.dispatchEvent( eventCCReady );
-
-  // Disabling this as Sentry captures errors from host web site. 
-  // let sentry = document.createElement( 'script' );
-  // sentry.src = "https://browser.sentry-cdn.com/4.5.3/bundle.min.js";
-  // sentry.crossOrigin = "anonymous";
-  // sentry.onload = () => {
-  //   Sentry.init( { dsn: 'https://49d72b03f26d4936a104ceb51cd1f669@sentry.io/1391030' } );
-  // }
-  // document.head.appendChild( sentry );
-
 }
 
 export function init( surveyToken: any ) {
