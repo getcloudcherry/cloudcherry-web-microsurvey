@@ -307,6 +307,7 @@ class SurveyHandler {
     // (window as any).ccsdkDebug?console.log("Appending in body"):'';
     this.ccsdk.dom.appendInBody( welcomeHtml );
     this.ccsdk.dom.showWelcomeContainer();
+    this.setCoolDownPeriod( this.ccsdk.config, this.surveyToken )
     if ( ( typeof this.ccsdk.config.keepAlive != undefined ) && ( this.ccsdk.config.keepAlive > 0 ) ) {
       this.welcomeQuestionDisplayTime = new Date();
       this.welcomeInterval = setInterval( () => { self.checkWelcomeQuestionDisplay( self.ccsdk.config.keepAlive ) }
@@ -316,6 +317,14 @@ class SurveyHandler {
     this.acceptAnswers();
     // self.survey.displayLanguageSelector();
 
+  }
+
+  setCoolDownPeriod( campaign, surveyToken ) {
+    if ( campaign && campaign.coolDownPeriod && campaign.coolDownPeriod != 0 ) {
+      Cookie.set( surveyToken + '-coolDown', 'true', campaign.coolDownPeriod / 86400, '/' );
+    } else {
+      Cookie.set( surveyToken + '-coolDown', 'true', 1, '/' );
+    }
   }
 
   checkWelcomeQuestionDisplay( keepAlive ) {
@@ -785,14 +794,15 @@ class SurveyHandler {
             // let startRangeLabel = "";
             // let endRangeLabel = "Very likely";
             let endRangeLabel = "";
-           
-            if(question.questionTags.includes("ces_agree_5") || question.questionTags.includes("ces_agree_7")) {
+
+            if ( question.questionTags.includes( "ces_agree_5" ) || question.questionTags.includes( "ces_agree_7" ) ) {
+
               startRangeLabel = "Strongly Disagree";
               endRangeLabel = "Strongly Agree";
             }
-            else if(question.questionTags.includes("ces_effort_5") || question.questionTags.includes("ces_effort_7")) {
-              startRangeLabel = "Low Effort";
-              endRangeLabel = "High Effort";
+            else if ( question.questionTags.includes( "ces_effort_5" ) || question.questionTags.includes( "ces_effort_7" ) ) {
+              startRangeLabel = "High Effort";
+              endRangeLabel = "Low Effort";
             }
             else if( question.anchorMetricName != null ) {
               let metricName = question.anchorMetricName;
@@ -862,10 +872,10 @@ class SurveyHandler {
               scaleImageContainer = '';
               mobileImageUrl = "";
             }
-            
-            if( question.questionTags.includes("CES") ) {
+
+            if ( question.questionTags.includes( "CES" ) ) {
               for ( let initial = startRange; initial <= endRange; initial += divider ) {
-                options += '<span data-rating="' + initial + '" class="option-number-item option-'+ endRange +'-scale-' + initial + ' ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
+                options += '<span data-rating="' + initial + '" class="option-number-item option-' + endRange + '-scale-' + initial + ' ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
               }
             }
             else if(question.anchorMetricName != null) {  
@@ -885,7 +895,7 @@ class SurveyHandler {
                 options += '<span data-rating="' + initial + '" class="option-number-item option-scale ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
               }
             }
-            
+
             if ( ( endRange - startRange + 1 ) <= 11 ) {
               var optionLeftExtraClass = 'option-left-rating-text-small-container';
               var optionRightExtraClass = 'option-right-rating-text-small-container';
