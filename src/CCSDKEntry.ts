@@ -1,6 +1,7 @@
 import { Cookie } from './helpers/Cookie';
 import { SurveyManager } from "./SurveyManager";
 import { Survey } from "./Survey";
+import { PrefillDictionary, PrefillsBatchOrSingle } from './typings';
 
 /**
  * functions that are exposed to SDK User are written here.
@@ -123,8 +124,15 @@ export function on( surveyToken: string, type: string, callback: any ) {
   }
 }
 
-export function prefill( surveyToken: string, questionId: string, answerObject: any ) {
+export function prefill( surveyToken: string, ...restArgs: PrefillsBatchOrSingle ) {
+
   if ( typeof SurveyManager.surveyInstances[ surveyToken ] != 'undefined' ) {
+    let questionId;
+    if ( typeof restArgs[ 0 ] === 'string' ) {
+      questionId = restArgs[ 0 ];
+    } else {
+      questionId = Object.keys( restArgs[ 0 ].length ) + ' Questions';
+    }
     SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Prefill', {
       token: surveyToken,
       data: {
@@ -132,12 +140,18 @@ export function prefill( surveyToken: string, questionId: string, answerObject: 
         action: surveyToken
       }
     }, null, null );
-    SurveyManager.surveyInstances[ surveyToken ].prefill( questionId, answerObject );
+    SurveyManager.surveyInstances[ surveyToken ].prefill( ...restArgs , 'DIRECT');
   }
 }
 
-export function prefillByTag( surveyToken: string, questionTag: string, answer: any ) {
+export function prefillByTag( surveyToken: string, ...restArgs: PrefillsBatchOrSingle ) {
   if ( typeof SurveyManager.surveyInstances[ surveyToken ] != 'undefined' ) {
+    let questionTag;
+    if ( typeof restArgs[ 0 ] === 'string' ) {
+      questionTag = restArgs[ 0 ];
+    } else {
+      questionTag = Object.keys( restArgs[ 0 ].length ) + ' Questions';
+    }
     SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Prefill by tag', {
       token: surveyToken,
       data: {
@@ -145,12 +159,18 @@ export function prefillByTag( surveyToken: string, questionTag: string, answer: 
         action: surveyToken
       }
     }, null, null );
-    SurveyManager.surveyInstances[ surveyToken ].fillPrefill( questionTag, answer );
+    SurveyManager.surveyInstances[ surveyToken ].prefill( ...restArgs, 'BY_TAG' );
   }
 }
 
-export function prefillByNote( surveyToken: string, questionNote: string, answer: any ) {
+export function prefillByNote( surveyToken: string, ...restArgs: PrefillsBatchOrSingle ) {
   if ( typeof SurveyManager.surveyInstances[ surveyToken ] != 'undefined' ) {
+    let questionNote;
+    if ( typeof restArgs[ 0 ] === 'string' ) {
+      questionNote = restArgs[ 0 ];
+    } else {
+      questionNote = Object.keys( restArgs[ 0 ].length ) + ' Questions';
+    }
     SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Prefill by Note', {
       token: surveyToken,
       data: {
@@ -158,7 +178,7 @@ export function prefillByNote( surveyToken: string, questionNote: string, answer
         action: surveyToken
       }
     }, null, null );
-    SurveyManager.surveyInstances[ surveyToken ].fillPrefillByNote( questionNote, answer );
+    SurveyManager.surveyInstances[ surveyToken ].prefill( ...restArgs, 'BY_NOTE' );
   }
 }
 

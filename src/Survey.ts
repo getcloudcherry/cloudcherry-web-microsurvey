@@ -14,6 +14,7 @@ import { RequestHelper } from './helpers/Request';
 import { Config } from './Config';
 import { MatomoTracker } from './helpers/tracking';
 import { templates } from "./helpers/templates";
+import { PrefillsBatchOrSingle, PrefillType } from "./typings";
 
 class Survey {
   survey: SurveyHandler;
@@ -337,20 +338,25 @@ class Survey {
   }
 
 
-  public prefill( questionId: string, answer: any ) {
+  public prefill( restOfArgs: PrefillsBatchOrSingle, type: PrefillType ) {
+    let prefillObject;
+    if ( typeof restOfArgs[ 0 ] !== 'object' ) {
+      prefillObject = {
+        [ restOfArgs[ 0 ] ]: restOfArgs
+      };
+    } else {
+      prefillObject = restOfArgs[ 0 ];
+    }
     //save this in this.surveyHandler
-    // this.survey.fillPrefillQuestionObject(questionId, answerObject);
-    this.survey.fillPrefillDirect( questionId, answer );
+    if ( type === 'DIRECT' ) {
+      this.survey.fillPrefillDirect( prefillObject );
+    } else if ( type === 'BY_TAG' ) {
+      this.survey.fillPrefill( prefillObject );
+    } else if ( type === 'BY_NOTE' ) {
+      this.survey.fillPrefillByNote( prefillObject );
+    }
   }
 
-  public fillPrefill( questionTag: string, answer: any ) {
-    //save this in this.surveyHandler
-    this.survey.fillPrefill( questionTag, answer );
-  }
-
-  public fillPrefillByNote( questionNote: string, answer: any ) {
-    this.survey.fillPrefillByNote( questionNote, answer );
-  }
 
   public trigger( type: string, target: any ) {
     let self: Survey = this;

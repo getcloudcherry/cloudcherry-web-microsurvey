@@ -12,6 +12,7 @@ import { LanguageTextFilter } from "./helpers/filters/LanguageTextFilter";
 import { Select } from './helpers/dom/Select';
 import { Cookie } from './helpers/Cookie';
 import { ConditionalFlowFilter } from './helpers/filters/ConditionalFlowFilter';
+import { PrefillDictionary } from "./typings";
 
 
 
@@ -484,26 +485,31 @@ class SurveyHandler {
     }
   }
 
-  fillPrefill( tag: any, value: object ) {
-    this.prefillWithTags[ tag.toLowerCase() ] = value;
+  fillPrefill( prefillObj: PrefillDictionary ) {
+    Object.keys( prefillObj ).map( x => {
+      this.prefillWithTags[ x.toLowerCase() ] = prefillObj[ x ];
+    } );
     ( window as any ).ccsdkDebug ? console.log( 'prefillByTag', this.prefillWithTags ) : '';
   }
 
-  fillPrefillByNote( note: any, value: object ) {
-    this.prefillWithNote[ note.toLowerCase() ] = value;
+  fillPrefillByNote( prefillObj: PrefillDictionary ) {
+    Object.keys( prefillObj ).map( x => {
+      this.prefillWithNote[ x.toLowerCase() ] = prefillObj[ x ];
+    } );
     ( window as any ).ccsdkDebug ? console.log( 'prefillByNote', this.prefillWithNote ) : '';
-
   }
 
-  fillPrefillDirect( questionId: string, value: object ) {
-    this.prefillDirect[ questionId ] = value;
-    ( window as any ).ccsdkDebug ? console.log( 'prefillDirect', this.prefillDirect ) : '';
+  fillPrefillDirect( prefillObj: PrefillDictionary ) {
+    Object.keys( prefillObj ).forEach( x => {
+      this.prefillDirect[ x ] = prefillObj[ x ];
+    } );
 
+    ( window as any ).ccsdkDebug ? console.log( 'prefillDirect', this.prefillDirect ) : '';
   }
 
   fillPrefillQuestion( id: any, value: any, valueType: string ) {
     let question: any = this.getQuestionById( id );
-    // console.log(this.questions);
+
     let response: any;
     let responseStored = this.getPrefillResponseById( id );
     if ( responseStored != null ) {
@@ -565,60 +571,36 @@ class SurveyHandler {
     for ( let response of this.prefillResponses ) {
       if ( response.questionId == id ) {
         response = resp;
+        break;
       }
     }
   }
 
   getPrefillResponseById( id: any ) {
-    for ( let response of this.prefillResponses ) {
-      if ( response.questionId == id ) {
-        return response;
-      }
-    }
-    return null;
+    return this.prefillResponses.find( x => x.id === id );
   }
 
   getQuestionById( id: any ) {
-    for ( let question of this.questions ) {
-      if ( question.id == id ) {
-        return question;
-      }
-    }
+    return this.questions.find( x => x.id === id );
   }
 
   postPartialAnswer( index: any, response: any, complete = false, successcb, errorcb ) {
     this.postPrefillPartialAnswer( complete, null, null );
-    // let data = new FormData();
-    //in case of file.
-    // let input = document.querySelector('input[type="file"]') ;
-    // data.append('file', input.files[0]);
 
     let question: any = this.questionsToDisplay[ index ];
-    if ( typeof question === 'undefined' ) {
-      //now?
-      // return (window as any).ccsdkDebug?console.log("No Partial Remaining"):'';
-    }
+
     let data: any = {
       questionId: question.id,
       questionText: question.text,
       textInput: response.text,
       numberInput: response.number
     };
-    // if(this.isPartialAvailable == false) {
-    //   this.answers.push(data);
-    //   return;
-    // }
-    // (window as any).ccsdkDebug?console.log("Submitting for : " + index):'';
+
     let surveyPartialUrl = Config.SURVEY_PARTIAL_RESPONSE.replace( "{id}", this.surveyData.partialResponseId );
-    //if this is the last of displayed question
     ( window as any ).ccsdkDebug ? console.log( "partial response", question.id == this.questionsToDisplay[ this.questionsToDisplay.length - 1 ].id ) : '';
-    // if (question.id == this.questionsToDisplay[this.questionsToDisplay.length - 1].id) {
-    //   surveyPartialUrl = surveyPartialUrl.replace("{complete}", `${complete}`);
-    // } else {
     surveyPartialUrl = surveyPartialUrl.replace( "{complete}", `${ complete }` );
-    // }
-    // surveyPartialUrl = surveyPartialUrl.replace("{tabletId}", "" + this.randomNumber);
     surveyPartialUrl = Config.API_URL + surveyPartialUrl;
+
     //add partial answer to main answer
     this.surveyAnswers[ question.id ] = data;
 
