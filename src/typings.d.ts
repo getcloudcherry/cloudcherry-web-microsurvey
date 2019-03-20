@@ -3,7 +3,7 @@ declare module "*.html";
 // declare var Map : any;
 // declare var Promise: any;
 
-export type PrefillsBatchOrSingle = Array<PrefillDictionary> | [ string, ResponseType ];
+export type PrefillsBatchOrSingle = Array<PrefillDictionary | string | ResponseType>;
 
 export type ResponseType = string | number;
 

@@ -342,7 +342,7 @@ class Survey {
     let prefillObject;
     if ( typeof restOfArgs[ 0 ] !== 'object' ) {
       prefillObject = {
-        [ restOfArgs[ 0 ] ]: restOfArgs
+        [ <string>restOfArgs[ 0 ] ]: restOfArgs[ 1 ]
       };
     } else {
       prefillObject = restOfArgs[ 0 ];

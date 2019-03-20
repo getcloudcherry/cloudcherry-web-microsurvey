@@ -131,7 +131,7 @@ export function prefill( surveyToken: string, ...restArgs: PrefillsBatchOrSingle
     if ( typeof restArgs[ 0 ] === 'string' ) {
       questionId = restArgs[ 0 ];
     } else {
-      questionId = Object.keys( restArgs[ 0 ].length ) + ' Questions';
+      questionId = Object.keys( restArgs[ 0 ] ).length + ' Questions';
     }
     SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Prefill', {
       token: surveyToken,
@@ -140,7 +140,7 @@ export function prefill( surveyToken: string, ...restArgs: PrefillsBatchOrSingle
         action: surveyToken
       }
     }, null, null );
-    SurveyManager.surveyInstances[ surveyToken ].prefill( ...restArgs , 'DIRECT');
+    SurveyManager.surveyInstances[ surveyToken ].prefill( ...restArgs, 'DIRECT' );
   }
 }
 
@@ -150,7 +150,7 @@ export function prefillByTag( surveyToken: string, ...restArgs: PrefillsBatchOrS
     if ( typeof restArgs[ 0 ] === 'string' ) {
       questionTag = restArgs[ 0 ];
     } else {
-      questionTag = Object.keys( restArgs[ 0 ].length ) + ' Questions';
+      questionTag = Object.keys( restArgs[ 0 ] ).length + ' Questions';
     }
     SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Prefill by tag', {
       token: surveyToken,
@@ -169,7 +169,7 @@ export function prefillByNote( surveyToken: string, ...restArgs: PrefillsBatchOr
     if ( typeof restArgs[ 0 ] === 'string' ) {
       questionNote = restArgs[ 0 ];
     } else {
-      questionNote = Object.keys( restArgs[ 0 ].length ) + ' Questions';
+      questionNote = Object.keys( restArgs[ 0 ] ).length + ' Questions';
     }
     SurveyManager.surveyInstances[ surveyToken ].tracking.trackEvent( 'Prefill by Note', {
       token: surveyToken,
