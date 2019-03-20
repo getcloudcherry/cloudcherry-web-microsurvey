@@ -1,7 +1,7 @@
 import { Cookie } from './helpers/Cookie';
 import { SurveyManager } from "./SurveyManager";
 import { Survey } from "./Survey";
-import { PrefillDictionary, PrefillsBatchOrSingle } from './typings';
+import { PrefillsBatchOrSingle } from './types';
 
 /**
  * functions that are exposed to SDK User are written here.

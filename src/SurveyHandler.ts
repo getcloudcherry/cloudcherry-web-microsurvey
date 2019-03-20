@@ -12,7 +12,7 @@ import { LanguageTextFilter } from "./helpers/filters/LanguageTextFilter";
 import { Select } from './helpers/dom/Select';
 import { Cookie } from './helpers/Cookie';
 import { ConditionalFlowFilter } from './helpers/filters/ConditionalFlowFilter';
-import { PrefillDictionary } from "./typings";
+import { PrefillDictionary } from "./types";
 
 
 
@@ -781,26 +781,26 @@ class SurveyHandler {
 
               startRangeLabel = "Strongly Disagree";
               endRangeLabel = "Strongly Agree";
-              if ( question.questionTags.includes( "ces_agree_7" ) ) { 
+              if ( question.questionTags.includes( "ces_agree_7" ) ) {
                 midRangeLabel = "Somewhat Agree";
               }
             }
             else if ( question.questionTags.includes( "ces_effort_5" ) || question.questionTags.includes( "ces_effort_7" ) ) {
               startRangeLabel = "High Effort";
               endRangeLabel = "Low Effort";
-              if ( question.questionTags.includes( "ces_effort_7" ) ) {  
+              if ( question.questionTags.includes( "ces_effort_7" ) ) {
                 midRangeLabel = "Moderate Effort";
               }
             }
 
-            else if( question.anchorMetricName != null ) {
+            else if ( question.anchorMetricName != null ) {
               let metricName = question.anchorMetricName;
-              let customMetric = this.surveyData.customMetrics[metricName];
-              startRangeLabel = customMetric.optionCategories[0].label;
-              midRangeLabel = customMetric.optionCategories[1].label;
-              endRangeLabel = customMetric.optionCategories[2].label; 
+              let customMetric = this.surveyData.customMetrics[ metricName ];
+              startRangeLabel = customMetric.optionCategories[ 0 ].label;
+              midRangeLabel = customMetric.optionCategories[ 1 ].label;
+              endRangeLabel = customMetric.optionCategories[ 2 ].label;
             }
-            
+
             let displayLegend = LanguageTextFilter.translateDisplayLegend( this, question );
             if ( displayLegend ) {
               if ( displayLegend.length > 0 ) {
@@ -864,26 +864,26 @@ class SurveyHandler {
             }
 
             if ( question.questionTags.includes( "CES" ) ) {
-              var leftWidth = 38*3 + 'px';
+              var leftWidth = 38 * 3 + 'px';
               for ( let initial = startRange; initial <= endRange; initial += divider ) {
                 options += '<span data-rating="' + initial + '" class="option-number-item option-' + endRange + '-scale-' + initial + ' ' + scaleVisibility + '" style="' + optionStyle + '">' + initial + '</span>';
               }
             }
 
-            else if(question.anchorMetricName != null) {  
+            else if ( question.anchorMetricName != null ) {
               let metricName = question.anchorMetricName;
-              let customMetric = this.surveyData.customMetrics[metricName];
-              
-              var cmwidthstart = customMetric.optionCategories[0].categoryRange.split(",")[0];
-              var cmwidthend = customMetric.optionCategories[1].categoryRange.split(",")[0];
-              var leftWidth = (cmwidthend - cmwidthstart)*38 + 'px';
-              
-              for(var iterator in customMetric.optionCategories) {  
-                let startRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[0]);
-                let endRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[1]);
-                
-                for (let initial = startRange; initial <= endRange; initial += divider) {             
-                  options += '<span data-rating="' + initial + '" class="option-number-item option-scale"' + scaleVisibility + '" style="background:' + customMetric.optionCategories[iterator].color + '">' + initial + '</span>';
+              let customMetric = this.surveyData.customMetrics[ metricName ];
+
+              var cmwidthstart = customMetric.optionCategories[ 0 ].categoryRange.split( "," )[ 0 ];
+              var cmwidthend = customMetric.optionCategories[ 1 ].categoryRange.split( "," )[ 0 ];
+              var leftWidth = ( cmwidthend - cmwidthstart ) * 38 + 'px';
+
+              for ( var iterator in customMetric.optionCategories ) {
+                let startRange = parseFloat( customMetric.optionCategories[ iterator ].categoryRange.split( "," )[ 0 ] );
+                let endRange = parseFloat( customMetric.optionCategories[ iterator ].categoryRange.split( "," )[ 1 ] );
+
+                for ( let initial = startRange; initial <= endRange; initial += divider ) {
+                  options += '<span data-rating="' + initial + '" class="option-number-item option-scale"' + scaleVisibility + '" style="background:' + customMetric.optionCategories[ iterator ].color + '">' + initial + '</span>';
                 }
               }
             }
@@ -895,7 +895,7 @@ class SurveyHandler {
 
             if ( ( endRange - startRange + 1 ) <= 11 ) {
               var optionLeftExtraClass = 'option-left-rating-text-small-container';
-              var optionMidExtraClass = 'option-mid-rating-text-small-container'; 
+              var optionMidExtraClass = 'option-mid-rating-text-small-container';
               var optionRightExtraClass = 'option-right-rating-text-small-container';
               var optionMaxWidth = ( ( ( endRange - startRange + 1 ) * 38 / 2 ) - 5 ) + 'px';
               // console.log(optionMaxWidth);
@@ -907,10 +907,10 @@ class SurveyHandler {
             questionTemplate = questionTemplate.replace( /maxWidth/g, mobileImageUrl ? '35%;width:35%' : optionMaxWidth );
             questionTemplate = questionTemplate.replace( /leftWidth/g, leftWidth );
             questionTemplate = questionTemplate.replace( /{{optionLeftExtraClass}}/g, optionLeftExtraClass );
-            questionTemplate = questionTemplate.replace( /{{optionMidExtraClass}}/g,optionMidExtraClass);
+            questionTemplate = questionTemplate.replace( /{{optionMidExtraClass}}/g, optionMidExtraClass );
             questionTemplate = questionTemplate.replace( /{{optionRightExtraClass}}/g, optionRightExtraClass );
             questionTemplate = questionTemplate.replace( "{{leftLabel}}", startRangeLabel );
-            questionTemplate = questionTemplate.replace( "{{midLabel}}", midRangeLabel);
+            questionTemplate = questionTemplate.replace( "{{midLabel}}", midRangeLabel );
             questionTemplate = questionTemplate.replace( "{{rightLabel}}", endRangeLabel );
             questionTemplate = questionTemplate.replace( /{{mobileImageUrl}}/g, '"' + mobileImageUrl + '"' );
             questionTemplate = questionTemplate.replace( "{{imageVisibility010}}", imageVisibility010 );

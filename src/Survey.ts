@@ -14,7 +14,7 @@ import { RequestHelper } from './helpers/Request';
 import { Config } from './Config';
 import { MatomoTracker } from './helpers/tracking';
 import { templates } from "./helpers/templates";
-import { PrefillsBatchOrSingle, PrefillType } from "./typings";
+import { PrefillsBatchOrSingle, PrefillType } from "./types";
 
 class Survey {
   survey: SurveyHandler;
