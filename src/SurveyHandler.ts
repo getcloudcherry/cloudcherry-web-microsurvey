@@ -121,6 +121,7 @@ class SurveyHandler {
       let data: any = <any>e.detail;
       let response: any = {};
       response.questionId = data.questionId;
+
       switch ( data.type ) {
         case 'scale':
           response.text = null;
@@ -219,6 +220,7 @@ class SurveyHandler {
           self.ccsdk.dom.setQIndex( data.index );
           // self.ccsdk.dom.nextQuestion();
           break;
+
         default:
           break;
       }
@@ -937,8 +939,17 @@ class SurveyHandler {
           questionTemplate = questionTemplate.replace( "{{isRequired}}", question.isRequired ? "true" : "false" );
           questionTemplate = questionTemplate.replace( "{{requiredLabel}}", question.isRequired ? "*" : "" );
           questionTemplate = questionTemplate.replace( "{{validationHint}}", question.validationHint ? question.validationHint : "" );
-
           break;
+
+        case "Date":
+          questionTemplate = templates.question_date;
+          questionTemplate = questionTemplate.replace( "{{question}}", ConditionalTextFilter.filterText( this, question ) );
+          questionTemplate = questionTemplate.replace( /{{questionId}}/g, "id" + question.id );
+          questionTemplate = questionTemplate.replace( "{{isRequired}}", question.isRequired ? "true" : "false" );
+          questionTemplate = questionTemplate.replace( "{{requiredLabel}}", question.isRequired ? "*" : "" );
+          questionTemplate = questionTemplate.replace( "{{validationHint}}", question.validationHint ? question.validationHint : "" );
+          break;
+
         case "MultilineText":
           //get text question template and compile it.
           questionTemplate = templates.question_multi_line_text;
@@ -948,8 +959,8 @@ class SurveyHandler {
           questionTemplate = questionTemplate.replace( "{{requiredLabel}}", question.isRequired ? "*" : "" );
           questionTemplate = questionTemplate.replace( "{{characterLimit}}", question.attributes && question.attributes.characterLimit ? question.attributes.characterLimit : "" );
           questionTemplate = questionTemplate.replace( "{{validationHint}}", question.validationHint ? question.validationHint : "" );
-
           break;
+
         case "MultiSelect":
           let acTemplate: string;
           let multiSelect1;
@@ -1272,7 +1283,7 @@ class SurveyHandler {
                 || question.conditionalFilter.filterquestions.length == 0 ) )
           ) {
             //check supported display types
-            let supportedDisplayTypes = "Slider, Scale, Text, Number, MultilineText, MultiSelect, Smile-5, Star-5";
+            let supportedDisplayTypes = "Slider, Scale, Text, Number, MultilineText, MultiSelect, Smile-5, Star-5, Date";
             if ( supportedDisplayTypes.indexOf( question.displayType ) > -1 ) {
               this.questionsToDisplay.push( question );
             }

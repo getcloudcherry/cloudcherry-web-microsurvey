@@ -638,3 +638,20 @@
 		max-width: 98%;
 	}
 }
+
+.date-s,.date-y{
+	display: inline-block;
+	margin: 0 12px !important;
+	width: 80px !important;
+}
+
+.date-error{
+	color: red;
+	font-style: italic;
+	visibility: hidden;
+	margin-top: 12px;
+	&.show-error{
+		visibility: visible;
+	}
+}
+

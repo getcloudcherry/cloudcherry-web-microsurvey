@@ -404,6 +404,9 @@ class DomSurvey {
   }
 
   prevQuestion() {
+    this.submitQuestion( this.qIndex, { ...this.qResponse }, this.qResponse.type, this.currentQuestionId );
+    this.ccsdk.survey.answers[ this.currentQuestionId ] = JSON.parse( JSON.stringify( this.qResponse ) );
+
     this.qIndex--;
     if ( !this.ccsdk.survey.questionsToDisplay.length || this.qIndex < 0 ) {
       this.qIndex = 0;
@@ -512,7 +515,6 @@ class DomSurvey {
     let self: DomSurvey = this;
     this.$questionContainer[ 0 ].innerHTML = "";
     let compiledTemplate = this.ccsdk.survey.compileTemplate( this.ccsdk.survey.questionsToDisplay[ index ] );
-    // console.log( compiledTemplate );
     this.$questionContainer[ 0 ].innerHTML += compiledTemplate;
     let qType: string = this.$questionContainer[ 0 ].firstChild.getAttribute( 'data-type' );
     let qId: string = this.$questionContainer[ 0 ].firstChild.getAttribute( 'data-id' );
@@ -566,6 +568,10 @@ class DomSurvey {
         break;
       case 'number':
         this.setupListenersQuestionNumber( index, qId );
+        break;
+      case 'date':
+        this.setupListenersForDate( index, qId );
+
       default:
         break;
     }
@@ -1116,6 +1122,64 @@ class DomSurvey {
     // console.log( 'singleline qResponse', self.qResponse );
   }
 
+  setupListenersForDate( index: number, qId: string ) {
+    if ( this.util.checkIfListenerExists( '.date-container', this.domListeners ) ) {
+      //remove listeners
+      ( window as any ).ccsdkDebug ? console.log( "date question - previous listeners exists" ) : '';
+      this.removePrevListener( '.date-container' );
+    }
+
+    let questionId: any;
+    let self = this;
+    questionId = qId.substring( 2, qId.length );
+    ( window as any ).ccsdkDebug ? console.log( 'date question', this.ccsdk.survey.answers, questionId ) : '';
+    if ( this.ccsdk.survey.answers[ questionId ] && this.ccsdk.survey.answers[ questionId ].number ) {
+      let model = this.ccsdk.survey.answers[ questionId ].number;
+      let dateQuestion = this.util.get( '.date-container' )[ 0 ];
+      let list = model.toString().match( /\d\d/g );
+
+      ( <HTMLInputElement>dateQuestion.children[ 0 ] ).value = list[ 3 ];
+      ( <HTMLInputElement>dateQuestion.children[ 1 ] ).value = list[ 2 ];
+      ( <HTMLInputElement>dateQuestion.children[ 2 ] ).value = list[ 0 ] + list[ 1 ];
+
+      this.qResponse.type = 'date';
+      this.qResponse.text = null;
+      this.qResponse.number = model;
+      this.qResponse.questionId = qId;
+    }
+
+    let ref = this.util.initListener( 'change', '.date-container', function () {
+      let date = this.children[ 0 ].value;
+      let month = this.children[ 1 ].value;
+      let year = this.children[ 2 ].value;
+      if ( !date && !month && !year ) {
+        return;
+      }
+
+      if ( !date.match( /^\d\d$/ ) ) {
+        self.util.addClass( this.children[ 3 ], 'show-error' );
+        return;
+      } else if ( !month.match( /^\d\d$/ ) ) {
+        self.util.addClass( this.children[ 3 ], 'show-error' );
+        return;
+      } else if ( !year.match( /^\d\d\d\d$/ ) ) {
+        self.util.addClass( this.children[ 3 ], 'show-error' );
+        return;
+      } else {
+        self.util.removeClass( this.children[ 3 ], 'show-error' );
+        let numberRes = parseInt( year + month + date, 10 );
+        self.qResponse.type = 'number';
+        self.qResponse.text = null;
+        self.qResponse.number = numberRes;
+        self.qResponse.questionId = qId;
+      }
+    } );
+
+    this.domListeners.push( ref );
+
+    ref.internalHandler = this.util.listener( this.$body, ref.type, ref.id, ref.cb );
+  }
+
   setupListenersQuestionNumber( index: number, qId: string ) {
     let self: DomSurvey = this;
     let numberRes: string = '';
@@ -1123,7 +1187,6 @@ class DomSurvey {
       //remove listeners
       ( window as any ).ccsdkDebug ? console.log( "number question - previous listeners exists" ) : '';
       this.removePrevListener( '#' + qId );
-
     }
     //set previous value
     let questionId: any;
@@ -1284,16 +1347,14 @@ class DomSurvey {
   // }
 
   submitQuestion( index: number, data: any, type: string, qId: string ) {
-    // (window as any).ccsdkDebug?console.log('type', type ,'res',data):'';
+    ( window as any ).ccsdkDebug ? console.log( 'type', type, 'res', data ) : '';
     this.util.trigger( document, 'q-answered', {
       index: index,
       data: data,
       type: type,
-      questionId: qId.substring( 2, qId.length )
+      questionId: qId.match( /^id/ ) ? qId.substring( 2, qId.length ) : qId
     } );
   }
-
-
 
 }
 

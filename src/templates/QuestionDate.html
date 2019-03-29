@@ -1,0 +1,17 @@
+<div class="cc-question-container single-line" data-required="{{isRequired}}" data-type="date" data-id="{{questionId}}">
+  <div class="cc-question-container__text">
+    <p>
+      <span class="cc-question-container__required-label">{{requiredLabel}}</span>{{question}}</p>
+    <span class="cc-question-container__required">Mandatory Question</span>
+    <span class="cc-question-container__validation">{{validationHint}}</span>
+  </div>
+  <div class="cc-question-container__content date-container">
+    <input type="text" name="" maxlength="2" id="{{questionId}}-date" placeholder="Date (DD)"
+      class="cc-sdk-form-control date-s">
+    <input type="text" name="" maxlength="2" id="{{questionId}}-month" placeholder="Month (MM)"
+      class="cc-sdk-form-control date-s">
+    <input type="text" name="" maxlength="4" id="{{questionId}}-year" placeholder="Year (YYYY)"
+      class="cc-sdk-form-control date-y">
+    <div class="date-error">Invalid date</div>
+  </div>
+</div>
