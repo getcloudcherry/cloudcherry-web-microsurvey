@@ -15,3 +15,12 @@
 		transition: all .4s ease-in;
 	}
 }
+
+@media screen and (max-width: 768px){
+	.cc-sdk{
+		.progress-bar{
+			bottom: unset;
+			top: 0px;
+		}
+	}
+} 
