@@ -1025,7 +1025,7 @@ class SurveyHandler {
               let optionsLength = customMetric.optionCategories.length;
               startRangeLabel = customMetric.optionCategories[0].label;
               if (optionsLength > 2) {
-                midRangeLabel = customMetric.optionCategories[2].label;
+                midRangeLabel = customMetric.optionCategories[1].label;
               } else {
                 midRangeLabel = null;
               }

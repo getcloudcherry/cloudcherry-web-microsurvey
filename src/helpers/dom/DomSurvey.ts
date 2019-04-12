@@ -5,7 +5,6 @@ import { Theme } from "./Theme";
 import { ConditionalFlowFilter } from "../filters/ConditionalFlowFilter";
 import { Slider } from "./Slider";
 import { Constants } from "../../Constants";
-import { setInterval } from "timers";
 
 class DomSurvey {
   util: DomUtilities;
@@ -38,14 +37,14 @@ class DomSurvey {
     this.domSelectElements();
     this.util = new DomUtilities();
     // self.scrollbar = new ScrollBar("data-cc-scrollbar");
-    this.util.ready(function() {
+    this.util.ready(function () {
       // self.util.addClassAll(self.$popupContainer,'show-slide');
     });
   }
 
   setTheme(brandColor, time) {
     let self: DomSurvey = this;
-    this.util.ready(function() {
+    this.util.ready(function () {
       self.theme = new Theme(brandColor, time);
     });
   }
@@ -95,7 +94,7 @@ class DomSurvey {
     let startSurvey = this.util.initListener(
       "click",
       ".act-cc-survey-start",
-      function() {
+      function () {
         if (
           !self.util.hasClass(self.$startBtn, "disabled") &&
           self.ccsdk.surveyStatus != "minimized"
@@ -124,7 +123,7 @@ class DomSurvey {
     let nextQue = this.util.initListener(
       "click",
       ".act-cc-button-next",
-      function() {
+      function () {
         // alert("working");
         let onSurveyClickEvent = new CustomEvent(
           Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken
@@ -145,7 +144,7 @@ class DomSurvey {
     let prevQue = this.util.initListener(
       "click",
       ".act-cc-button-prev",
-      function() {
+      function () {
         let onSurveyClickEvent = new CustomEvent(
           Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken
         );
@@ -165,7 +164,7 @@ class DomSurvey {
     let closeSurvey = this.util.initListener(
       "click",
       ".act-cc-button-close",
-      function() {
+      function () {
         let onSurveyCloseEvent = new CustomEvent(
           Constants.SURVEY_CLOSE_EVENT + "-" + self.ccsdk.surveyToken
         );
@@ -193,7 +192,7 @@ class DomSurvey {
     let minSurvey = this.util.initListener(
       "click",
       ".act-cc-button-minimize",
-      function() {
+      function () {
         self.minimizeSurvey();
       }
     );
@@ -294,7 +293,7 @@ class DomSurvey {
           data: {
             name: `${this.qIndex}/${
               this.ccsdk.survey.questionsToDisplay.length
-            }`,
+              }`,
             action: this.currentQuestionId
           }
         },
@@ -418,19 +417,19 @@ class DomSurvey {
         // (window as any).ccsdkDebug?console.log('qindex ' + this.qIndex):'';
         if (
           typeof this.ccsdk.survey.answers[this.currentQuestionId] !==
-            "undefined" &&
+          "undefined" &&
           this.qResponse.type ==
-            this.ccsdk.survey.answers[this.currentQuestionId].type &&
+          this.ccsdk.survey.answers[this.currentQuestionId].type &&
           this.qResponse.text ==
-            this.ccsdk.survey.answers[this.currentQuestionId].text &&
+          this.ccsdk.survey.answers[this.currentQuestionId].text &&
           this.qResponse.number ==
-            this.ccsdk.survey.answers[this.currentQuestionId].number
+          this.ccsdk.survey.answers[this.currentQuestionId].number
         ) {
           // console.log('no submit');
           //don't submit if already submitted.
         } else if (
           typeof this.ccsdk.survey.answers[this.currentQuestionId] !==
-            "undefined" &&
+          "undefined" &&
           !this.qResponse.text &&
           !this.qResponse.number
         ) {
@@ -494,8 +493,8 @@ class DomSurvey {
       this.qResponse =
         typeof this.ccsdk.survey.answers[this.currentQuestionId] !== "undefined"
           ? JSON.parse(
-              JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])
-            )
+            JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])
+          )
           : {};
       // this.util.removeClassAll(this.$questionContainer[0].firstChild, 'show-slide');
       // this.util.addClass(nextQ, 'show-slide');
@@ -546,8 +545,8 @@ class DomSurvey {
     this.qResponse =
       typeof this.ccsdk.survey.answers[this.currentQuestionId] !== "undefined"
         ? JSON.parse(
-            JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])
-          )
+          JSON.stringify(this.ccsdk.survey.answers[this.currentQuestionId])
+        )
         : {};
     (window as any).ccsdkDebug
       ? console.log("prevQuestion qResponse", this.qResponse)
@@ -624,7 +623,7 @@ class DomSurvey {
     let languageSelect = this.util.initListener(
       "click",
       ".cc-language-select",
-      function() {
+      function () {
         // let onSurveyClickEvent = new CustomEvent(Constants.SURVEY_CLICK_EVENT + "-" + self.ccsdk.surveyToken);
         // document.dispatchEvent(onSurveyClickEvent);
         //select language show next question.
@@ -774,7 +773,7 @@ class DomSurvey {
     let ref = this.util.initListener(
       "click",
       "#" + qId + " .option-number-item",
-      function() {
+      function () {
         let allOptions: any = document.querySelectorAll(
           "#" + qId + " .option-number-item"
         );
@@ -872,7 +871,7 @@ class DomSurvey {
     let ref = this.util.initListener(
       "click",
       "#" + qId + " .option-number-item",
-      function() {
+      function () {
         let rating: number = this.getAttribute("data-rating");
         self.util.removeClassAll(allOptions, "selected");
         self.util.addClass(this, "selected");
@@ -961,17 +960,17 @@ class DomSurvey {
     let ref = this.util.initListener(
       "click",
       "#" + qId + " .cc-checkbox",
-      function() {
+      function () {
         // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox input');
         // let rating : number = this.querySelectorAll('input')[0].value;
         let rating: string = [].filter
           .call(
             document.querySelectorAll("#" + qId + " .cc-checkbox input"),
-            function(c) {
+            function (c) {
               return c.checked;
             }
           )
-          .map(function(c) {
+          .map(function (c) {
             return c.value;
           })
           .join(",");
@@ -1047,7 +1046,7 @@ class DomSurvey {
     let ref = this.util.initListener(
       "click",
       "#" + qId + " .cc-checkbox input",
-      function() {
+      function () {
         // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox');
         let rating: string = this.value;
         // self.util.removeClassAll(allOptions, "selected");
@@ -1097,9 +1096,9 @@ class DomSurvey {
     questionId = qId.substring(2, qId.length);
     (window as any).ccsdkDebug
       ? console.log(
-          "radio image question",
-          this.ccsdk.survey.answers[questionId]
-        )
+        "radio image question",
+        this.ccsdk.survey.answers[questionId]
+      )
       : "";
     if (
       typeof this.ccsdk.survey.answers[questionId] !== "undefined" &&
@@ -1125,7 +1124,7 @@ class DomSurvey {
     let ref = this.util.initListener(
       "click",
       "#" + qId + " .cc-checkbox input",
-      function() {
+      function () {
         // let allOptions : any = document.querySelectorAll('#'+qId+' .cc-checkbox');
         let rating: string = this.value;
         // self.util.removeClassAll(allOptions, "selected");
@@ -1201,7 +1200,7 @@ class DomSurvey {
     let ref = this.util.initListener(
       "click",
       "#" + qId + " .option-star-box",
-      function() {
+      function () {
         let allOptions: any = document.querySelectorAll(
           "#" + qId + " .option-star-box"
         );
@@ -1288,7 +1287,7 @@ class DomSurvey {
     let ref = this.util.initListener(
       "click",
       "#" + qId + " .option-smile-box",
-      function() {
+      function () {
         let allOptions: any = document.querySelectorAll(
           "#" + qId + " .option-smile-box"
         );
@@ -1377,7 +1376,7 @@ class DomSurvey {
     let ref = this.util.initListener(
       "click",
       "#" + qId + " .option-smile-box",
-      function() {
+      function () {
         let allOptions: any = document.querySelectorAll(
           "#" + qId + " .option-smile-box"
         );
@@ -1440,9 +1439,9 @@ class DomSurvey {
       let previousValue = this.ccsdk.survey.answers[questionId].text;
       (window as any).ccsdkDebug
         ? console.log(
-            "multiine input box",
-            document.querySelectorAll("#" + qId)[0]
-          )
+          "multiine input box",
+          document.querySelectorAll("#" + qId)[0]
+        )
         : "";
       let previousSelection = <HTMLInputElement>(
         document.querySelectorAll("#" + qId)[0]
@@ -1465,7 +1464,7 @@ class DomSurvey {
         self.qResponse.questionId = qId;
       }
     }
-    let ref = this.util.initListener("change", "#" + qId, function() {
+    let ref = this.util.initListener("change", "#" + qId, function () {
       multilineRes = this.value;
       self.qResponse.type = "multiline";
       self.qResponse.text = multilineRes;
@@ -1497,9 +1496,9 @@ class DomSurvey {
     questionId = qId.substring(2, qId.length);
     (window as any).ccsdkDebug
       ? console.log(
-          "singleline question",
-          this.ccsdk.survey.answers[questionId]
-        )
+        "singleline question",
+        this.ccsdk.survey.answers[questionId]
+      )
       : "";
     if (
       typeof this.ccsdk.survey.answers[questionId] !== "undefined" &&
@@ -1508,9 +1507,9 @@ class DomSurvey {
       let previousValue = this.ccsdk.survey.answers[questionId].text;
       (window as any).ccsdkDebug
         ? console.log(
-            "singleline input box",
-            document.querySelectorAll("#" + qId)[0]
-          )
+          "singleline input box",
+          document.querySelectorAll("#" + qId)[0]
+        )
         : "";
       let previousSelection = <HTMLInputElement>(
         document.querySelectorAll("#" + qId)[0]
@@ -1533,7 +1532,7 @@ class DomSurvey {
         self.qResponse.questionId = qId;
       }
     }
-    let ref = this.util.initListener("change", "#" + qId, function() {
+    let ref = this.util.initListener("change", "#" + qId, function () {
       singlelineRes = this.value;
       self.qResponse.type = "singleline";
       self.qResponse.text = singlelineRes;
@@ -1585,7 +1584,7 @@ class DomSurvey {
       this.qResponse.questionId = qId;
     }
 
-    let ref = this.util.initListener("change", ".date-container", function() {
+    let ref = this.util.initListener("change", ".date-container", function () {
       let date = this.children[0].value;
       let month = this.children[1].value;
       let year = this.children[2].value;
@@ -1645,9 +1644,9 @@ class DomSurvey {
       let previousValue = this.ccsdk.survey.answers[questionId].number;
       (window as any).ccsdkDebug
         ? console.log(
-            "number input box",
-            document.querySelectorAll("#" + qId)[0]
-          )
+          "number input box",
+          document.querySelectorAll("#" + qId)[0]
+        )
         : "";
       let previousSelection = <HTMLInputElement>(
         document.querySelectorAll("#" + qId)[0]
@@ -1670,7 +1669,7 @@ class DomSurvey {
         self.qResponse.questionId = qId;
       }
     }
-    let ref = this.util.initListener("change", "#" + qId, function() {
+    let ref = this.util.initListener("change", "#" + qId, function () {
       numberRes = this.value;
       self.qResponse.type = "number";
       self.qResponse.text = null;
@@ -1713,9 +1712,9 @@ class DomSurvey {
       let previousValue = this.ccsdk.survey.answers[questionId].number;
       (window as any).ccsdkDebug
         ? console.log(
-            "slider input box",
-            document.querySelectorAll("#" + qId)[0]
-          )
+          "slider input box",
+          document.querySelectorAll("#" + qId)[0]
+        )
         : "";
       let previousSelection = <HTMLInputElement>(
         document.querySelectorAll("#" + qId + " .act-slider-tip")[0]
@@ -1742,7 +1741,7 @@ class DomSurvey {
     let ref = this.util.initListener(
       "change",
       "#" + qId + " input",
-      function() {
+      function () {
         sliderRes = this.value;
         self.qResponse.type = "slider";
         self.qResponse.number = sliderRes;
@@ -1821,7 +1820,7 @@ class DomSurvey {
     let ref = this.util.initListener(
       "click",
       "#" + qId + " .cc-select-options .cc-select-option",
-      function() {
+      function () {
         // selectRes = this.getAttribute('data-value');
         selectRes = document
           .querySelectorAll("#" + qId + " .cc-select-trigger")[0]
