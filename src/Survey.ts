@@ -218,38 +218,40 @@ class Survey {
     let successcb = function ( surveyData ) {
       self.debug ? console.log( surveyData ) : '';
       // console.log(surveyData);
-
-      self.surveyData = surveyData;
-      if ( surveyData && surveyData.questions && surveyData.questions[ 0 ] ) {
-        self.tracking.username = surveyData.questions[ 0 ].user;
-      }
-
-      self.tracking.token = self.surveyToken;
-
-      self.tracking.trackEvent( 'Login Success', {
-        token: self.tracking.token,
-        data: {
-          name: 'Token',
-          action: self.surveyToken
-        }
-      }, console.log, console.error )
-      self.tracking.trackEvent( 'Survey Length', {
-        token: self.tracking.token,
-        data: {
-          name: `${ surveyData.questions.length } Questions`,
-          action: `${ surveyData.preFill ? surveyData.preFill.length : 0 } Prefills`
-        }
-      }, null, null );
+      
       let event = new CustomEvent( Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken, { detail: JSON.parse( JSON.stringify( surveyData ) ) } );
       document.dispatchEvent( event );
       if ( !self.config.skipWelcomePage ) {
         self.dom.hideLoader();
       }
+
+      self.surveyData = surveyData;
+      if ( surveyData && surveyData.questions && surveyData.questions[ 0 ] ) {
+        self.tracking.username = surveyData.questions[ 0 ].user;
+      }
+       
+      self.tracking.token = self.surveyToken;
+
       if ( self.surveyData ) {
+        self.tracking.trackEvent( 'Login Success', {
+          token: self.tracking.token,
+          data: {
+            name: 'Token',
+            action: self.surveyToken
+          }
+        }, console.log, console.error )
+        self.tracking.trackEvent( 'Survey Length', {
+          token: self.tracking.token,
+          data: {
+            name: `${ surveyData.questions.length } Questions`,
+            action: `${ surveyData.preFill ? surveyData.preFill.length : 0 } Prefills`
+          }
+        }, null, null );
+    
         self.initSurveyQuestions();
       } else {
-        this.tracking.trackEvent( 'Expired Survey', {
-          token: this.tracking.token,
+        self.tracking.trackEvent( 'Expired Survey', {
+          token: self.tracking.token,
           data: {
             name: null,
             action: null
