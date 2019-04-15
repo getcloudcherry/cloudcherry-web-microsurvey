@@ -467,6 +467,16 @@ class SurveyHandler {
         self.ccsdk.config.language = "default";
         self.ccsdk.config.language = selectRes; //language selection from menu then show first question
         //set config rtl or ltr
+
+        var languageQuestion = self.surveyData.questions.find(x => x.questionTags.indexOf('cc_language') !== -1);
+
+        if (languageQuestion) {
+          self.fillPrefillQuestion(
+            languageQuestion.id,
+            selectRes,
+            'text'
+          );
+        }
         let isRTL = /[\u0600-\u06FF]/.test(selectRes);
         self.ccsdk.config.textDirection = isRTL ? "rtl" : "ltr";
         self.ccsdk.setHtmlTextDirection();
@@ -1929,14 +1939,6 @@ class SurveyHandler {
             this.fillPrefillQuestion(
               question.id,
               'MicroSurvey',
-              'text'
-            );
-            return true;
-          // language
-          case 'cc_language':
-            this.fillPrefillQuestion(
-              question.id,
-              this.ccsdk.config.language,
               'text'
             );
             return true;
