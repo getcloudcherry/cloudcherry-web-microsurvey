@@ -71,16 +71,7 @@ class Survey {
     //based on new config
     //gotta and these.
     this.trigger( "click", this.config.cssSelector );
-    // this.trigger("scroll-pixels", this.config.scrollPercent);
-    // this.trigger("page-time", this.config.waitSeconds);
-    // this.trigger("url-match", this.config.grepURL);
-    // this.trigger("url-not-match", this.config.grepInvertURL);
-    // this.config.scrollPercent = 10;
-    // this.config.waitSeconds = 5;
     this.triggers.setConditionalTriggers( this.config );
-    // this.login(function() {
-    //on login
-    // });
   }
 
   getSurveyThrottlingLogic( cb ) {
@@ -146,7 +137,6 @@ class Survey {
   }
 
   setupSurvey() {
-    // this.getSurveyData();
     this.initSurvey();
   }
 
@@ -165,12 +155,7 @@ class Survey {
     this.survey.surveyDisplay.position = this.config && this.config.position ?
       this.config.position : "bottom right";
     let welcomePopupAnimation = 'hide-right-left';
-    // this.survey.surveyDisplay.welcomePopupAnimation =  this.config && this.config.display && this.config.display.welcomePopupAnimation ?
-    // "hide-"+ this.config.display.welcomePopupAnimation : "hide-right-left";
-    // this.survey.surveyDisplay.surveyPopupAnimation =  this.config && this.config.display && this.config.display.surveyPopupAnimation ?
-    // "hide-"+ this.config.display.surveyPopupAnimation : "hide-right-left";
-    // this.survey.surveyDisplay.surveyPosition =  this.config && this.config.display && this.config.display.surveyPosition ?
-    // this.config.display.surveyPosition : ( this.config.display.position.search(/bottom/gi)==-1?"top":"bottom" ) ;
+
 
     switch ( this.survey.surveyDisplay.position ) {
       case 'bottom right':
@@ -217,7 +202,6 @@ class Survey {
     let self: Survey = this;
     let successcb = function ( surveyData ) {
       self.debug ? console.log( surveyData ) : '';
-      // console.log(surveyData);
       
       let event = new CustomEvent( Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken, { detail: JSON.parse( JSON.stringify( surveyData ) ) } );
       document.dispatchEvent( event );
@@ -268,14 +252,10 @@ class Survey {
     //if survey already run don't run?
     //if default trigger initiated and survey already run then don't run.
     let self: Survey = this;
-    // if(!self.surveyRunning) {
-    //   self.surveyRunning = true;
-    // }
+   
     self.surveyRunning = true;
     self.dom = new DomSurvey( this );
     self.dom.setTheme( self.config.brandColor, this.config.keepAlive ? this.config.keepAlive : 0 );
-    // self.survey.attachSurvey(this.surveyData);
-    // self.config.language = "हिन्दी";
     self.config.language = "default";
     if ( self.surveyToken && decodeURIComponent( self.surveyToken ).trim() !== '' && !self.config.skipWelcomePage ) {
       self.survey.displayWelcomeQuestion();
@@ -288,20 +268,15 @@ class Survey {
       self.survey.acceptAnswers();
     }
     self.dom.setupListeners();
-    // self.survey.displayLanguageSelector();
-    //survey start event.
-    // let onSurveyStartEvent = new CustomEvent(Constants.SURVEY_START_EVENT + "-" + this.surveyToken);
-    // document.dispatchEvent(onSurveyStartEvent);
+  
   }
 
   initSurveyQuestions() {
     let self: Survey = this;
     self.survey.attachSurvey( this.surveyData );
-    // self.dom.setupListeners();
-    // self.config.language = "हिन्दी";
+ 
     self.config.language = "default";
-    // self.survey.displayLanguageSelector();
-    //survey start event.
+  
     this.dom.initSurveyDom();
     let onSurveyStartEvent = new CustomEvent( Constants.SURVEY_START_EVENT + "-" + this.surveyToken );
     document.dispatchEvent( onSurveyStartEvent );
@@ -364,12 +339,8 @@ class Survey {
     let self: Survey = this;
     switch ( type ) {
       case 'click':
-        console.log( 'enable click trigger ##' )
+        // console.log( 'enable click trigger ##' )
         this.triggers.enableClickTrigger( target, function () {
-          // self.initSurvey();
-          // Scrollbar.initAll();
-          // self.slider = new Slider();
-          // self.setupSurvey();
           SurveyManager.addSurvey( self.surveyToken );
 
         } );

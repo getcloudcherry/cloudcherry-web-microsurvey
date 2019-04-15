@@ -1916,6 +1916,46 @@ class SurveyHandler {
               "text"
             );
             return true;
+          // Token prefill
+          case 'cc_token':
+            this.fillPrefillQuestion(
+              question.id,
+              this.surveyToken,
+              'text'
+            );
+            return true;
+          // Channel prefill
+          case 'cc_channel':
+            this.fillPrefillQuestion(
+              question.id,
+              'MicroSurvey',
+              'text'
+            );
+            return true;
+          // language
+          case 'cc_language':
+            this.fillPrefillQuestion(
+              question.id,
+              this.ccsdk.config.language,
+              'text'
+            );
+            return true;
+          // currentURL
+          case 'cc_currenturl':
+            this.fillPrefillQuestion(
+              question.id,
+              window.location.href,
+              'text'
+            );
+            return true;
+          // partial response
+          case 'cc_partialresponseid':
+            this.fillPrefillQuestion(
+              question.id,
+              this.surveyData.partialResponseId,
+              'text'
+            );
+            return true;
           default:
             if (typeof this.prefillWithTags[tag.toLowerCase()] != "undefined") {
               let type = this.getAnswerTypeFromDisplayType(
