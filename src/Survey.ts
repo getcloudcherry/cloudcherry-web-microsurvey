@@ -36,7 +36,7 @@ class Survey {
   requester = new RequestHelper();
   tracking: MatomoTracker;
 
-  constructor( surveyToken: string, config: CCSDKConfig ) {
+  constructor(surveyToken: string, config: CCSDKConfig) {
     this.isThrottled = true;
     this.surveyDone = false;
     this.surveyStatus = '';
@@ -46,21 +46,21 @@ class Survey {
     this.thorttlingLogic = null;
     this.tracking = new MatomoTracker();
     this.tracking.token = surveyToken;
-    if ( typeof this.config.textDirection === 'undefined' ) {
+    if (typeof this.config.textDirection === 'undefined') {
       this.config.textDirection = "ltr";
     }
 
-    this.triggers = new Triggers( this );
-    TriggerManager.addSurvey( this.surveyToken, this.triggers );
-    this.survey = new SurveyHandler( this );
+    this.triggers = new Triggers(this);
+    TriggerManager.addSurvey(this.surveyToken, this.triggers);
+    this.survey = new SurveyHandler(this);
     this.util = new DomUtilities;
     //set themeColor of survey
-    this.config.brandColor = ( this.config && this.config.brandColor ) ?
+    this.config.brandColor = (this.config && this.config.brandColor) ?
       this.config.brandColor : "#db3c39";
     //use config variable textDirection and set dir
     this.setHtmlTextDirection();
     this.setDisplayOptions();
-    this.util.trigger( document, this.surveyToken + '-ready', { 'survey': this } );
+    this.util.trigger(document, this.surveyToken + '-ready', { 'survey': this });
     //do login
     this.config.username = "test";
     this.config.password = "test";
@@ -69,69 +69,69 @@ class Survey {
     //check trigger conditions and add itself to 
     //based on new config
     //gotta and these.
-    this.trigger( "click", this.config.cssSelector );
+    this.trigger("click", this.config.cssSelector);
     // this.trigger("scroll-pixels", this.config.scrollPercent);
     // this.trigger("page-time", this.config.waitSeconds);
     // this.trigger("url-match", this.config.grepURL);
     // this.trigger("url-not-match", this.config.grepInvertURL);
     // this.config.scrollPercent = 10;
     // this.config.waitSeconds = 5;
-    this.triggers.setConditionalTriggers( this.config );
+    this.triggers.setConditionalTriggers(this.config);
     // this.login(function() {
     //on login
     // });
   }
 
-  getSurveyThrottlingLogic( cb ) {
-    let getThrottleUrl = Config.API_URL + Config.GET_SURVEY_THROTTLE_LOGIC.replace( '{location}', this.config.location );
+  getSurveyThrottlingLogic(cb) {
+    let getThrottleUrl = Config.API_URL + Config.GET_SURVEY_THROTTLE_LOGIC.replace('{location}', this.config.location);
     let headers = {};
-    headers[ Constants.AUTHORIZATION ] = Constants.AUTHORIZATION_BEARER + " " + this.loginData.access_token;
+    headers[Constants.AUTHORIZATION] = Constants.AUTHORIZATION_BEARER + " " + this.loginData.access_token;
     let self = this;
-    let successcb = function ( data ) {
+    let successcb = function (data) {
       self.thorttlingLogic = data;
-      self.checkThrottling( cb );
+      self.checkThrottling(cb);
     };
 
-    RequestHelper.getWithHeaders( getThrottleUrl, headers, successcb, null );
+    RequestHelper.getWithHeaders(getThrottleUrl, headers, successcb, null);
   }
 
-  checkThrottling( cb ) {
-    if ( this.thorttlingLogic != null ) {
-      if ( this.thorttlingLogic.inputIds == null ) {
+  checkThrottling(cb) {
+    if (this.thorttlingLogic != null) {
+      if (this.thorttlingLogic.inputIds == null) {
         this.thorttlingLogic.inputIds = [];
       }
-      this.thorttlingLogic.inputIds.push( this.thorttlingLogic[ this.thorttlingLogic.uniqueIDQuestionIdOrTag.toLowerCase() ] );
-      if ( this.thorttlingLogic.logics != null && this.thorttlingLogic.logics.length > 0 && this.config != null ) {
-        this.thorttlingLogic.logics[ 0 ].filter.location = [];
-        this.thorttlingLogic.logics[ 0 ].filter.location.push( this.config.location );
+      this.thorttlingLogic.inputIds.push(this.thorttlingLogic[this.thorttlingLogic.uniqueIDQuestionIdOrTag.toLowerCase()]);
+      if (this.thorttlingLogic.logics != null && this.thorttlingLogic.logics.length > 0 && this.config != null) {
+        this.thorttlingLogic.logics[0].filter.location = [];
+        this.thorttlingLogic.logics[0].filter.location.push(this.config.location);
       }
     }
     let self = this;
     let postThrottleUrl = Config.API_URL + Config.POST_THROTTLING;
     let headers = {};
-    headers[ Constants.AUTHORIZATION ] = Constants.AUTHORIZATION + " " + this.loginData.access_token;
-    let successcb = function ( throttleResponse ) {
+    headers[Constants.AUTHORIZATION] = Constants.AUTHORIZATION + " " + this.loginData.access_token;
+    let successcb = function (throttleResponse) {
 
-      if ( typeof throttleResponse[ 0 ][ self.thorttlingLogic.uniqueIDQuestionIdOrTag.toLowerCase() ] && throttleResponse[ 0 ].value ) {
+      if (typeof throttleResponse[0][self.thorttlingLogic.uniqueIDQuestionIdOrTag.toLowerCase()] && throttleResponse[0].value) {
         //get survey data?  
         cb();
       }
     };
 
-    RequestHelper.postWithHeaders( postThrottleUrl, this.thorttlingLogic, headers, successcb, null );
+    RequestHelper.postWithHeaders(postThrottleUrl, this.thorttlingLogic, headers, successcb, null);
   }
 
-  addThrottlingEntries( isOpen: boolean ) {
+  addThrottlingEntries(isOpen: boolean) {
     let addThrottleUrl = Config.API_URL + Config.POST_THROTTLING_ADD_ENTRIES;
     let headers = {};
     this.loginData = { access_token: "help" };
-    headers[ Constants.AUTHORIZATION ] = Constants.AUTHORIZATION + " " + this.loginData.access_token;
+    headers[Constants.AUTHORIZATION] = Constants.AUTHORIZATION + " " + this.loginData.access_token;
     //fill this from config and data.
-    let successcb = ( throttleResponse ) => {
-      this.debug ? console.log( throttleResponse ) : '';
+    let successcb = (throttleResponse) => {
+      this.debug ? console.log(throttleResponse) : '';
     }
 
-    RequestHelper.postWithHeaders( addThrottleUrl, {
+    RequestHelper.postWithHeaders(addThrottleUrl, {
       user: "",
       mobile: "",
       emailId: "",
@@ -140,7 +140,7 @@ class Survey {
       surveyOpenDate: "",
       channel: "",
       isOpened: isOpen
-    }, headers, successcb, null );
+    }, headers, successcb, null);
 
   }
 
@@ -150,14 +150,14 @@ class Survey {
   }
 
   setHtmlTextDirection() {
-    let ccSDKElement = document.querySelector( '.cc-sdk' );
-    if ( !ccSDKElement ) {
+    let ccSDKElement = document.querySelector('.cc-sdk');
+    if (!ccSDKElement) {
       return;
     }
-    let ccSDKDir: string = ccSDKElement.getAttribute( 'dir' );
-    let direction: string = ( this.config && this.config.textDirection ) ?
-      this.config.textDirection : ( ccSDKDir ? ccSDKDir : "ltr" );
-    ccSDKElement.setAttribute( 'dir', direction );
+    let ccSDKDir: string = ccSDKElement.getAttribute('dir');
+    let direction: string = (this.config && this.config.textDirection) ?
+      this.config.textDirection : (ccSDKDir ? ccSDKDir : "ltr");
+    ccSDKElement.setAttribute('dir', direction);
   }
 
   setDisplayOptions() {
@@ -171,7 +171,7 @@ class Survey {
     // this.survey.surveyDisplay.surveyPosition =  this.config && this.config.display && this.config.display.surveyPosition ?
     // this.config.display.surveyPosition : ( this.config.display.position.search(/bottom/gi)==-1?"top":"bottom" ) ;
 
-    switch ( this.survey.surveyDisplay.position ) {
+    switch (this.survey.surveyDisplay.position) {
       case 'bottom right':
         welcomePopupAnimation = 'hide-right-left';
         break;
@@ -201,64 +201,65 @@ class Survey {
         break;
     }
     this.survey.surveyDisplay.welcomePopupAnimation = welcomePopupAnimation;
-    this.tracking.trackEvent( 'Welcome Pop up Position', {
+    this.tracking.trackEvent('Welcome Pop up Position', {
       token: this.tracking.token,
       data: {
         name: this.survey.surveyDisplay.position,
         action: null
       }
-    }, null, null );
+    }, null, null);
 
-    this.survey.surveyDisplay.surveyPosition = this.config.position.search( /bottom/gi ) == -1 ? "top" : "bottom";
+    this.survey.surveyDisplay.surveyPosition = this.config.position.search(/bottom/gi) == -1 ? "top" : "bottom";
   }
 
   getSurveyData() {
     let self: Survey = this;
-    let successcb = function ( surveyData ) {
-      self.debug ? console.log( surveyData ) : '';
+    let successcb = function (surveyData) {
+      self.debug ? console.log(surveyData) : '';
       // console.log(surveyData);
 
       self.surveyData = surveyData;
-      if ( surveyData && surveyData.questions && surveyData.questions[ 0 ] ) {
-        self.tracking.username = surveyData.questions[ 0 ].user;
+      if (surveyData && surveyData.questions && surveyData.questions[0]) {
+        self.tracking.username = surveyData.questions[0].user;
+        self.config.username = surveyData.questions[0].user;
       }
 
       self.tracking.token = self.surveyToken;
 
-      self.tracking.trackEvent( 'Login Success', {
+      self.tracking.trackEvent('Login Success', {
         token: self.tracking.token,
         data: {
           name: 'Token',
           action: self.surveyToken
         }
-      }, console.log, console.error )
-      self.tracking.trackEvent( 'Survey Length', {
+      }, console.log, console.error)
+      self.tracking.trackEvent('Survey Length', {
         token: self.tracking.token,
         data: {
-          name: `${ surveyData.questions.length } Questions`,
-          action: `${ surveyData.preFill ? surveyData.preFill.length : 0 } Prefills`
+          name: `${surveyData.questions.length} Questions`,
+          action: `${surveyData.preFill ? surveyData.preFill.length : 0} Prefills`
         }
-      }, null, null );
-      let event = new CustomEvent( Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken, { detail: JSON.parse( JSON.stringify( surveyData ) ) } );
-      document.dispatchEvent( event );
-      if ( !self.config.skipWelcomePage ) {
+      }, null, null);
+      let event = new CustomEvent(Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken, { detail: JSON.parse(JSON.stringify(surveyData)) });
+      document.dispatchEvent(event);
+      if (!self.config.skipWelcomePage) {
         self.dom.hideLoader();
       }
-      if ( self.surveyData ) {
+      if (self.surveyData) {
         self.initSurveyQuestions();
       } else {
-        this.tracking.trackEvent( 'Expired Survey', {
+        this.tracking.trackEvent('Expired Survey', {
           token: this.tracking.token,
           data: {
             name: null,
             action: null
           }
-        }, null, null );
-        self.survey.displayWelcomeQuestion( "The Survey has been expired" );
+        }, null, null);
+        self.survey.displayWelcomeQuestion("The Survey has been expired");
       }
     };
     let errorcb = null;
-    this.survey.fetchQuestions( successcb, errorcb );
+    this.survey.fetchQuestions(successcb, errorcb);
   }
 
   initSurvey() {
@@ -269,18 +270,18 @@ class Survey {
     //   self.surveyRunning = true;
     // }
     self.surveyRunning = true;
-    self.dom = new DomSurvey( this );
-    self.dom.setTheme( self.config.brandColor, this.config.keepAlive ? this.config.keepAlive : 0 );
+    self.dom = new DomSurvey(this);
+    self.dom.setTheme(self.config.brandColor, this.config.keepAlive ? this.config.keepAlive : 0);
     // self.survey.attachSurvey(this.surveyData);
     // self.config.language = "हिन्दी";
     self.config.language = "default";
-    if ( self.surveyToken && decodeURIComponent( self.surveyToken ).trim() !== '' && !self.config.skipWelcomePage ) {
+    if (self.surveyToken && decodeURIComponent(self.surveyToken).trim() !== '' && !self.config.skipWelcomePage) {
       self.survey.displayWelcomeQuestion();
-    } else if ( self.config.skipWelcomePage ) {
-      let onImpressionEvent = new CustomEvent( Constants.SURVEY_IMPRESSION_EVENT + "-" + this.surveyToken );
-      document.dispatchEvent( onImpressionEvent );
+    } else if (self.config.skipWelcomePage) {
+      let onImpressionEvent = new CustomEvent(Constants.SURVEY_IMPRESSION_EVENT + "-" + this.surveyToken);
+      document.dispatchEvent(onImpressionEvent);
       self.dom.startSurvey();
-      self.survey.setCoolDownPeriod( self.config, self.surveyToken );
+      self.survey.setCoolDownPeriod(self.config, self.surveyToken);
       this.surveyStartTime = new Date();
       self.survey.acceptAnswers();
     }
@@ -293,21 +294,21 @@ class Survey {
 
   initSurveyQuestions() {
     let self: Survey = this;
-    self.survey.attachSurvey( this.surveyData );
+    self.survey.attachSurvey(this.surveyData);
     // self.dom.setupListeners();
     // self.config.language = "हिन्दी";
     self.config.language = "default";
     // self.survey.displayLanguageSelector();
     //survey start event.
     this.dom.initSurveyDom();
-    let onSurveyStartEvent = new CustomEvent( Constants.SURVEY_START_EVENT + "-" + this.surveyToken );
-    document.dispatchEvent( onSurveyStartEvent );
+    let onSurveyStartEvent = new CustomEvent(Constants.SURVEY_START_EVENT + "-" + this.surveyToken);
+    document.dispatchEvent(onSurveyStartEvent);
   }
 
-  public on( type: string, callback: any ) {
-    document.addEventListener( type + "-" + this.surveyToken, function ( e: any ) {
-      callback( e.detail );
-    } );
+  public on(type: string, callback: any) {
+    document.addEventListener(type + "-" + this.surveyToken, function (e: any) {
+      callback(e.detail);
+    });
   }
 
   public show() {
@@ -321,13 +322,13 @@ class Survey {
   public hide() {
     SurveyManager.unsetSurveyRunning();
     this.survey.destroy();
-    this.tracking.trackEvent( 'Survey Destroyed', {
+    this.tracking.trackEvent('Survey Destroyed', {
       token: this.tracking.token,
       data: {
-        name: ( <any>new Date() - ( <any>window ).globalSurveyStartTime ) + 's',
+        name: (<any>new Date() - (<any>window).globalSurveyStartTime) + 's',
         action: null
       }
-    }, null, null );
+    }, null, null);
   }
 
   public destroy() {
@@ -337,64 +338,60 @@ class Survey {
   }
 
 
-  public prefill( questionId: string, answer: any ) {
+  public prefill(questionId: string, answer: any) {
     //save this in this.surveyHandler
     // this.survey.fillPrefillQuestionObject(questionId, answerObject);
-    this.survey.fillPrefillDirect( questionId, answer );
+    this.survey.fillPrefillDirect(questionId, answer);
   }
 
-  public fillPrefill( questionTag: string, answer: any ) {
+  public fillPrefill(questionTag: string, answer: any) {
     //save this in this.surveyHandler
-    this.survey.fillPrefill( questionTag, answer );
+    this.survey.fillPrefill(questionTag, answer);
   }
 
-  public fillPrefillByNote( questionNote: string, answer: any ) {
-    this.survey.fillPrefillByNote( questionNote, answer );
+  public fillPrefillByNote(questionNote: string, answer: any) {
+    this.survey.fillPrefillByNote(questionNote, answer);
   }
 
-  public trigger( type: string, target: any ) {
+  public trigger(type: string, target: any) {
     let self: Survey = this;
-    switch ( type ) {
+    switch (type) {
       case 'click':
-        console.log( 'enable click trigger ##' )
-        this.triggers.enableClickTrigger( target, function () {
-          // self.initSurvey();
-          // Scrollbar.initAll();
-          // self.slider = new Slider();
-          // self.setupSurvey();
-          SurveyManager.addSurvey( self.surveyToken );
+        console.log('enable click trigger ##')
+        this.triggers.enableClickTrigger(target, function () {
+          SurveyManager.addSurvey(self.surveyToken);
 
-        } );
+        });
         break;
       case 'page-count':
-        let count: number = parseInt( target );
-        this.triggers.enablePageCountTrigger( count );
+        let count: number = parseInt(target);
+        this.triggers.enablePageCountTrigger(count);
 
         break;
       case 'site-count':
-        let count2: number = parseInt( target );
-        this.triggers.enableSiteCountTrigger( count2 );
+        let count2: number = parseInt(target);
+        this.triggers.enableSiteCountTrigger(count2);
         break;
       case 'page-time':
-        this.triggers.enablePageTimeTrigger( parseInt( target ) );
+        this.triggers.enablePageTimeTrigger(parseInt(target));
         break;
       case 'site-time':
-        this.triggers.enableSiteTimeTrigger( parseInt( target ) );
+        this.triggers.enableSiteTimeTrigger(parseInt(target));
         break;
       case 'url-match':
-        this.triggers.enablePopUpByURLPatternTrigger( target );
+        this.triggers.enablePopUpByURLPatternTrigger(target);
         break;
       case 'url-not-match':
-        this.triggers.enablePopUpByNotURLPatternTrigger( target );
+        this.triggers.enablePopUpByNotURLPatternTrigger(target);
         break;
       case 'utm-match':
-        this.triggers.enablePopUpByUTMPatternTrigger( target );
+        this.triggers.enablePopUpByUTMPatternTrigger(target);
         break;
       case 'scroll-pixels':
-        this.triggers.enableScrollPixelsTrigger( parseInt( target ) );
+        this.triggers.enableScrollPixelsTrigger(parseInt(target));
         break;
       case 'launch':
-        SurveyManager.addSurvey( self.surveyToken );
+        SurveyManager.addSurvey(self.surveyToken);
         break;
       default:
         break;
