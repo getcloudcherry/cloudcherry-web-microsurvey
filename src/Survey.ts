@@ -286,10 +286,6 @@ class Survey {
       self.survey.acceptAnswers();
     }
     self.dom.setupListeners();
-    // self.survey.displayLanguageSelector();
-    //survey start event.
-    // let onSurveyStartEvent = new CustomEvent(Constants.SURVEY_START_EVENT + "-" + this.surveyToken);
-    // document.dispatchEvent(onSurveyStartEvent);
   }
 
   initSurveyQuestions() {
@@ -357,7 +353,7 @@ class Survey {
     let self: Survey = this;
     switch (type) {
       case 'click':
-        console.log('enable click trigger ##')
+        console.log('enable click trigger ##', target)
         this.triggers.enableClickTrigger(target, function () {
           SurveyManager.addSurvey(self.surveyToken);
 

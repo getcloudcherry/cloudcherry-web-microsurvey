@@ -19,11 +19,16 @@ if (sitePageViewCount == null) {
 }
 
 let individualPageViewCount = Cookie.get(Constants.CCTriggerIndividualPageViewCount);
+let pathname = window.location.pathname;
+if (pathname.match(/\./)) {
+  pathname = pathname.substring(0, pathname.lastIndexOf('/'));
+}
 if (individualPageViewCount == null) {
-  Cookie.set(Constants.CCTriggerIndividualPageViewCount, 1, undefined, window.location.href);
+
+  Cookie.set(Constants.CCTriggerIndividualPageViewCount, 1, undefined, pathname);
 } else {
   individualPageViewCount = (parseInt(individualPageViewCount) + 1).toString();
-  Cookie.set(Constants.CCTriggerIndividualPageViewCount, individualPageViewCount, undefined, window.location.href);
+  Cookie.set(Constants.CCTriggerIndividualPageViewCount, individualPageViewCount, undefined, pathname);
 }
 
 (window as any).click = 0;
@@ -75,10 +80,13 @@ class TriggerManager {
 
   static processIntervalTriggers() {
     //if some survey is already running skip processing surveys for now?or queue it?.
-    Cookie.set(Constants.CCTriggerPageElapsedTime, new Date(), undefined, window.location.href);
+    let pathname = window.location.pathname;
+    if (pathname.match(/\./)) {
+      pathname = pathname.substring(0, pathname.lastIndexOf('/'));
+    }
+    Cookie.set(Constants.CCTriggerPageElapsedTime, new Date(), undefined, pathname);
     Cookie.set(Constants.CCTriggerSiteElapsedTime, new Date(), undefined, undefined);
-    //set cookies and call every process Interval Triggers.
-    // console.log(TriggerManager.triggerInstances);
+
     for (let trigger in TriggerManager.triggerInstances) {
       TriggerManager.triggerInstances[trigger].processIntervalTriggers();
       TriggerManager.triggerInstances[trigger].processConditionalTriggers();
