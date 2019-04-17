@@ -186,7 +186,11 @@ class Triggers {
               break;
             case "waitSeconds":
               let pageStartTime = new Date(Cookie.get(Constants.CCTriggerPageStartTime)).getTime();
-              let pageTime = new Date(Cookie.get(Constants.CCTriggerPageElapsedTime)).getTime();
+              let pathname = window.location.pathname;
+              if (pathname.match(/\./)) {
+                pathname = pathname.substring(0, pathname.lastIndexOf('/'));
+              }
+              let pageTime = new Date(Cookie.get(Constants.CCTriggerPageElapsedTime + pathname)).getTime();
               isEnabled = isEnabled && TriggerUtils.checkTimeCondition(pageTime, pageStartTime, this.conditionalTriggers[conditionalTrigger]);
               (window as any).ccsdkDebug ? console.log('waitSeconds enabled', isEnabled) : '';
               break;
@@ -253,7 +257,12 @@ class Triggers {
   //minPageTime in seconds
   TriggerPopUpByTimeSpentOnPage() {
     let pageStartTime = new Date(Cookie.get(Constants.CCTriggerPageStartTime)).getTime();
-    let pageTime = new Date(Cookie.get(Constants.CCTriggerPageElapsedTime)).getTime();
+    let pathname = window.location.pathname;
+    if (pathname.match(/\./)) {
+      pathname = pathname.substring(0, pathname.lastIndexOf('/'));
+    }
+
+    let pageTime = new Date(Cookie.get(Constants.CCTriggerPageElapsedTime + pathname)).getTime();
 
     //!(window as any).globalSurveyRunning && 
     if (!this.ccsdk.surveyRunning && !this.ccsdk.surveyDone && !this.pageTimeTrigger && TriggerUtils.checkTimeCondition(pageTime, pageStartTime, this.minPageTime)) {
@@ -345,19 +354,3 @@ class Triggers {
 }
 
 export { Triggers };
-
-
-// function triggerHandler(surveyHandler) {
-//   //survey specific Trigger Handlers
-//   // self.surveyRunning = self.util.get('#' + self.surveyToken  + "-survey").length == 1;
-  // Cookie.set(Constants.CCTriggerPageElapsedTime, new Date(), undefined, window.location.href);
-  // Cookie.set(Constants.CCTriggerSiteElapsedTime, new Date(), undefined, undefined);
-//   surveyHandler.triggers.TriggerPopUpByTimeSpentOnSite(surveyHandler.siteInterval);
-//   // surveyHandler.surveyRunning = surveyHandler.util.get('#' + self.surveyToken  + "-survey").length == 1;
-//   surveyHandler.triggers.TriggerPopUpByTimeSpentOnPage(surveyHandler.pageInterval);
-// }
-
-//call below functions when survey is locked and loaded.
-// self.triggers.TriggerPopUpByURLPattern(/xyz=33/);
-// self.triggers.TriggerPopUpByUTMParameter();
-// self.triggerInterval = setInterval(self.triggerHandler, 1000, self);

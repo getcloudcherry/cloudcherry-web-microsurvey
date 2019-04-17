@@ -18,17 +18,16 @@ if (sitePageViewCount == null) {
   Cookie.set(Constants.CCTriggerSitePageViewCount, sitePageViewCount, undefined, undefined);
 }
 
-let individualPageViewCount = Cookie.get(Constants.CCTriggerIndividualPageViewCount);
 let pathname = window.location.pathname;
 if (pathname.match(/\./)) {
   pathname = pathname.substring(0, pathname.lastIndexOf('/'));
 }
+let individualPageViewCount = Cookie.get(Constants.CCTriggerIndividualPageViewCount);
 if (individualPageViewCount == null) {
-
-  Cookie.set(Constants.CCTriggerIndividualPageViewCount, 1, undefined, pathname);
+  Cookie.set(Constants.CCTriggerIndividualPageViewCount + pathname, 1, undefined, undefined);
 } else {
   individualPageViewCount = (parseInt(individualPageViewCount) + 1).toString();
-  Cookie.set(Constants.CCTriggerIndividualPageViewCount, individualPageViewCount, undefined, pathname);
+  Cookie.set(Constants.CCTriggerIndividualPageViewCount + pathname, individualPageViewCount, undefined, undefined);
 }
 
 (window as any).click = 0;
@@ -84,7 +83,7 @@ class TriggerManager {
     if (pathname.match(/\./)) {
       pathname = pathname.substring(0, pathname.lastIndexOf('/'));
     }
-    Cookie.set(Constants.CCTriggerPageElapsedTime, new Date(), undefined, pathname);
+    Cookie.set(Constants.CCTriggerPageElapsedTime + pathname, new Date(), undefined, undefined);
     Cookie.set(Constants.CCTriggerSiteElapsedTime, new Date(), undefined, undefined);
 
     for (let trigger in TriggerManager.triggerInstances) {
