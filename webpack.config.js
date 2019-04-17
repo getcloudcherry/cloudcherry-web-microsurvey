@@ -67,7 +67,8 @@ let config = Object.keys(languages).map(function (language) {
         use: {
           loader: 'html-loader?exportAsEs6Default',
           options: {
-            attrs: [':data-src']
+            attrs: [':data-src'],
+            removeAttributeQuotes: false
           }
         }
       },

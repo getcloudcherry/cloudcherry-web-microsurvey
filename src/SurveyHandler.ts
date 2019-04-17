@@ -1067,6 +1067,7 @@ class SurveyHandler {
               acTemplate2 = templates.question_radio_image;
 
               options2 = self.util.generateRadioImageOptions(invertedMultiSelect, multiSelect, question.id);
+              // console.log(options2, 'radio1');
               (window as any).ccsdkDebug ? console.log({ options2 }) : '';
               questionTemplate = acTemplate2;
               questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
@@ -1075,13 +1076,15 @@ class SurveyHandler {
               acTemplate2 = templates.question_radio_image;
               options2 = self.util.generateRadioIgnoreImageOptions(invertedMultiSelect, multiSelect, question.id);
               // (window as any).ccsdkDebug?console.log(options2):'';
+              // console.log(options2, 'radio2');
+
               questionTemplate = acTemplate2;
               questionTemplate = questionTemplate.replace(/{{options}}/g, options2);
             } else {
               acTemplate1 = templates.question_radio;
               questionTemplate = acTemplate1;
-
               options1 = self.util.generateRadioOptions(invertedMultiSelect, multiSelect, question.id);
+              // console.log(options1, 'radio3');
               questionTemplate = questionTemplate.replace("{{options}}", options1);
             }
           } else if ((question.displayStyle == 'icon') && (multiSelect.length < 6)) {
