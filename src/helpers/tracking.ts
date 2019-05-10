@@ -15,6 +15,15 @@ export class MatomoTracker {
       }
       return;
     }
+
+    if (!url || !url.searchParams) {
+      if (errorCb && typeof errorCb === 'function') {
+        errorCb();
+        return;
+      } else {
+        return;
+      }
+    }
     // constants for project
     const idsite = 4;
     const rec = 1;
@@ -40,14 +49,9 @@ export class MatomoTracker {
       } else {
         param = JSON.stringify(searchParams[x]);
       }
-      if (url && url.searchParams) {
-        url.searchParams.set(x, param);
-      }
+      url.searchParams.set(x, param);
     })
-    if (url && url.searchParams) {
-      return RequestHelper.post(url.toString(), null, successCb, errorCb);
-    } else if (errorCb && typeof errorCb === 'function') {
-      errorCb();
-    }
+
+    return RequestHelper.post(url.toString(), null, successCb, errorCb);
   }
 }
