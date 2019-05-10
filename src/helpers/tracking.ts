@@ -40,8 +40,14 @@ export class MatomoTracker {
       } else {
         param = JSON.stringify(searchParams[x]);
       }
-      url.searchParams.set(x, param);
+      if (url && url.searchParams) {
+        url.searchParams.set(x, param);
+      }
     })
-    return RequestHelper.post(url.toString(), null, successCb, errorCb);
+    if (url && url.searchParams) {
+      return RequestHelper.post(url.toString(), null, successCb, errorCb);
+    } else if (errorCb && typeof errorCb === 'function') {
+      errorCb();
+    }
   }
 }
