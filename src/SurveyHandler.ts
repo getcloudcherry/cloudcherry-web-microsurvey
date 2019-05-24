@@ -667,7 +667,7 @@ class SurveyHandler {
       answersAll.push(this.prefillResponses[answer]);
     }
 
-    answersAll = answersAll.filter(x => x);
+    answersAll = answersAll.filter(x => x && typeof x === 'object');
 
     let timeAtPost = new Date().getTime();
     let finalData = {
