@@ -666,6 +666,9 @@ class SurveyHandler {
     for (let answer in this.prefillResponses) {
       answersAll.push(this.prefillResponses[answer]);
     }
+
+    answersAll = answersAll.filter(x => x);
+
     let timeAtPost = new Date().getTime();
     let finalData = {
       id: this.ccsdk.surveyToken,
