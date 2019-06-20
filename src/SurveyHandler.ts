@@ -885,7 +885,7 @@ class SurveyHandler {
             else if (question.anchorMetricName != null) {
               let metricName = question.anchorMetricName;
               let customMetric = this.surveyData.customMetrics[metricName];
-              for (var iterator in customMetric.optionCategories) {
+              for (var iterator = 0; iterator < customMetric.optionCategories.length; iterator++) {
                 let startRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[0]);
                 let endRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[1]);
 
