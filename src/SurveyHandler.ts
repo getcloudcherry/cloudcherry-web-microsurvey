@@ -839,13 +839,13 @@ class SurveyHandler {
             let imageVisibility110 = 'hide';
             let scaleVisibility = 'show-inline';
             let scaleImageContainer = '';
-            if (startRange == 0 && endRange == 10) {
+            if (startRange == 0 && endRange == 10 && question.anchorMetricName === null) {
               mobileImageUrl = "https://cx.getcloudcherry.com/microsurvey-assets/scale-0-10-neutral.svg";
               imageVisibility010 = 'show';
               imageVisibility110 = 'hide';
               scaleVisibility = 'hide';
               scaleImageContainer = 'scale-image-container';
-            } else if (startRange == 1 && endRange == 10) {
+            } else if (startRange == 1 && endRange == 10 && question.anchorMetricName === null) {
               mobileImageUrl = "https://cx.getcloudcherry.com/microsurvey-assets/scale-1-10-neutral.svg";
               imageVisibility010 = 'hide';
               imageVisibility110 = 'show';
@@ -890,7 +890,7 @@ class SurveyHandler {
                 let endRange = parseFloat(customMetric.optionCategories[iterator].categoryRange.split(",")[1]);
 
                 for (let initial = startRange; initial <= endRange; initial += divider) {
-                  options += '<span data-rating="' + initial + '" class="option-number-item option-scale"' + scaleVisibility + '" style="background:' + customMetric.optionCategories[iterator].color + '">' + initial + '</span>';
+                  options += '<span data-rating="' + initial + '" class="option-number-item option-scale"' + scaleVisibility + '" style="background:' + customMetric.optionCategories[iterator].color + ';' + optionStyle + ';">' + initial + '</span>';
                 }
               }
             }
