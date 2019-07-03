@@ -468,7 +468,7 @@ class SurveyHandler {
         self.ccsdk.config.language = selectRes; //language selection from menu then show first question
         //set config rtl or ltr
 
-        var languageQuestion = self.surveyData.questions.find(x => x.questionTags.indexOf('cc_language') !== -1);
+        var languageQuestion = self.surveyData.questions.find(x => x.questionTags && x.questionTags.indexOf('cc_language') !== -1);
 
         if (languageQuestion) {
           self.fillPrefillQuestion(
@@ -604,7 +604,6 @@ class SurveyHandler {
 
   fillPrefillQuestion(id: any, value: any, valueType: string) {
     let question: any = this.getQuestionById(id);
-
     let response: any;
     let responseStored = this.getPrefillResponseById(id);
     if (responseStored != null) {
@@ -685,7 +684,7 @@ class SurveyHandler {
   }
 
   getPrefillResponseById(id: any) {
-    return this.prefillResponses.find(x => x.id === id);
+    return this.prefillResponses && this.prefillResponses.find(x => x.id === id);
   }
 
   getQuestionById(id: any) {
@@ -702,7 +701,9 @@ class SurveyHandler {
     this.postPrefillPartialAnswer(complete, null, null);
 
     let question: any = this.questionsToDisplay[index];
-
+    if (!question) {
+      return;
+    }
     let data: any = {
       questionId: question.id,
       questionText: question.text,
@@ -792,6 +793,9 @@ class SurveyHandler {
     for (let answer in this.prefillResponses) {
       answersAll.push(this.prefillResponses[answer]);
     }
+
+    answersAll = answersAll.filter(x => x && typeof x === 'object');
+
     let timeAtPost = new Date().getTime();
     let finalData = {
       id: this.ccsdk.surveyToken,
@@ -802,7 +806,8 @@ class SurveyHandler {
       surveyClient: Constants.SURVEY_CLIENT,
       responseDuration: Math.floor(
         (timeAtPost - this.ccsdk.surveyStartTime.getTime()) / 1000
-      )
+      ),
+      responseDateTime: new Date()
     };
     if (lastAnswer) {
       let _lastAnswer = {
@@ -1069,25 +1074,23 @@ class SurveyHandler {
             }
             startRangeLabel = startRangeLabel == null ? "" : startRangeLabel;
             endRangeLabel = endRangeLabel == null ? "" : endRangeLabel;
-            let mobileImageUrl = "";
-            let imageVisibility010 = "hide";
-            let imageVisibility110 = "hide";
-            let scaleVisibility = "show-inline";
-            let scaleImageContainer = "";
-            if (startRange == 0 && endRange == 10) {
-              mobileImageUrl =
-                "https://cx.getcloudcherry.com/microsurvey-assets/scale-0-10-neutral.svg";
-              imageVisibility010 = "show";
-              imageVisibility110 = "hide";
-              scaleVisibility = "hide";
-              scaleImageContainer = "scale-image-container";
-            } else if (startRange == 1 && endRange == 10) {
-              mobileImageUrl =
-                "https://cx.getcloudcherry.com/microsurvey-assets/scale-1-10-neutral.svg";
-              imageVisibility010 = "hide";
-              imageVisibility110 = "show";
-              scaleVisibility = "hide";
-              scaleImageContainer = "scale-image-container";
+            let mobileImageUrl = '';
+            let imageVisibility010 = 'hide';
+            let imageVisibility110 = 'hide';
+            let scaleVisibility = 'show-inline';
+            let scaleImageContainer = '';
+            if (startRange == 0 && endRange == 10 && question.anchorMetricName === null) {
+              mobileImageUrl = "https://cx.getcloudcherry.com/microsurvey-assets/scale-0-10-neutral.svg";
+              imageVisibility010 = 'show';
+              imageVisibility110 = 'hide';
+              scaleVisibility = 'hide';
+              scaleImageContainer = 'scale-image-container';
+            } else if (startRange == 1 && endRange == 10 && question.anchorMetricName === null) {
+              mobileImageUrl = "https://cx.getcloudcherry.com/microsurvey-assets/scale-1-10-neutral.svg";
+              imageVisibility010 = 'hide';
+              imageVisibility110 = 'show';
+              scaleVisibility = 'hide';
+              scaleImageContainer = 'scale-image-container';
             }
             // console.log('scale', startRange, endRange);
             let divider: any = 1;
@@ -1120,6 +1123,7 @@ class SurveyHandler {
             }
 
             if (question.questionTags.includes("CES")) {
+
               var leftWidth = 38 * 3 + "px";
               for (
                 let initial = startRange;
@@ -1153,7 +1157,7 @@ class SurveyHandler {
               )[0];
               var leftWidth = (cmwidthend - cmwidthstart) * 39 + "px";
 
-              for (var iterator in customMetric.optionCategories) {
+              for (let iterator = 0; iterator < customMetric.optionCategories.length; iterator++) {
                 let startRange = parseFloat(
                   customMetric.optionCategories[iterator].categoryRange.split(
                     ","
@@ -1183,7 +1187,8 @@ class SurveyHandler {
                     scaleVisibility +
                     '" style="background:' +
                     customMetric.optionCategories[iterator].color +
-                    '">' +
+                    ';' + optionStyle +
+                    ';">' +
                     initial +
                     "</span>";
                 }
@@ -1592,6 +1597,8 @@ class SurveyHandler {
                 question.id
               );
               // (window as any).ccsdkDebug?console.log(options2):'';
+              // console.log(options2, 'radio2');
+
               questionTemplate = acTemplate2;
               questionTemplate = questionTemplate.replace(
                 /{{options}}/g,

@@ -158,7 +158,6 @@ class Survey {
       this.config.position : "bottom right";
     let welcomePopupAnimation = 'hide-right-left';
 
-
     switch (this.survey.surveyDisplay.position) {
       case 'bottom right':
         welcomePopupAnimation = 'hide-right-left';
@@ -234,7 +233,14 @@ class Survey {
           }
         }, null, null);
 
-        self.initSurveyQuestions();
+        let event = new CustomEvent(Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken, { detail: JSON.parse(JSON.stringify(surveyData)) });
+        document.dispatchEvent(event);
+        if (!self.config.skipWelcomePage) {
+          self.dom.hideLoader();
+        }
+        if (self.surveyData) {
+          self.initSurveyQuestions();
+        }
       } else {
         self.tracking.trackEvent('Expired Survey', {
           token: self.tracking.token,
@@ -249,6 +255,7 @@ class Survey {
     let errorcb = null;
     this.survey.fetchQuestions(successcb, errorcb);
   }
+
 
   initSurvey() {
     //if survey already run don't run?
@@ -270,13 +277,11 @@ class Survey {
       self.survey.acceptAnswers();
     }
     self.dom.setupListeners();
-
   }
 
   initSurveyQuestions() {
     let self: Survey = this;
     self.survey.attachSurvey(this.surveyData);
-
     self.config.language = "default";
 
     this.dom.initSurveyDom();

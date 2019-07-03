@@ -17,7 +17,7 @@
     "@types/chai": "^4.0.4",
     "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.23",
-    "awesome-typescript-loader": "^3.2.3",
+    "awesome-typescript-loader": "^5.0.0-1",
     "chai": "^4.1.1",
     "clean-webpack-plugin": "^0.1.16",
     "compression-webpack-plugin": "^1.0.0",
@@ -41,8 +41,8 @@
     "typescript": "^2.4.2",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "url-loader": "^1.1.2",
-    "webpack": "^3.5.5",
-    "webpack-dev-server": "^2.1.10",
+    "webpack": "^4.30.0",
+    "webpack-dev-server": "^3.1.4",
     "webpack-rtl-plugin": "^1.6.0"
   },
   "dependencies": {

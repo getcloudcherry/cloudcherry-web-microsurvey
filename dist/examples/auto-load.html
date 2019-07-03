@@ -3,8 +3,8 @@
 
 <head>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700" rel="stylesheet">
-  <meta name="viewport" charset="utf-8" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height"
-  />
+  <meta name="viewport" charset="utf-8"
+    content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
   <title>Survey</title>
   <style type="text/css">
     body {
@@ -75,47 +75,28 @@
       // execute your script immediately here
       //WW-02872
       //CH-88360
-      var ins = window.CCSDK("init", token, {
-        // themeColor : "rgb(235, 28, 35)",
-        themeColor: color,
-        textDirection: 'ltr',
-        display: {
-          //write it accordring to screen corners
-          // top right or right top
-          // left top or top left 
-          // bottom right or right bottom
-          // bottom left or left bottom
-          'position': 'bottom right',
-          // write it in fashion of from-to
-          // right-left
-          // left-right
-          // top-bottom
-          // bottom-top
-          'welcomePopupAnimation': 'right-left',
-          'surveyPopupAnimation': 'right-left'
-        }
-      });
+      var ins = window.CCSDK("init", token, { "isActive": true, "logoURL": null, "backgroundColor": "#e7833a", "backgroundOpacity": 0, "horizontalOffset": 0, "preferredFont": null, "fontColor": "#ffffff", "fontStyle": null, "titleBarText": null, "selectionAlgo": null, "keepAlive": 0, "coolDownPeriod": 0, "click": 0, "waitSeconds": 0, "grepURL": null, "grepInvertURL": null, "scrollPercent": 0, "onExitDetect": false, "onExitDetectModal": false, "city": null, "state": null, "country": null, "region": null, "lastSeenQuestion": null, "urlQuestion": null, "browserQuestion": null, "welcomeText": "Your feedback is important to us.", "thankyouText": "Thank you for your feedback.", "brandColor": "#e7833a", "position": "bottom left", "cssSelector": null, "startButtonText": null, "resumeButtonText": null, "skipWelcomePage": false });
 
-      var ins = window.CCSDK("init", "WW-35080", {
-        // themeColor : "rgb(235, 28, 35)",
-        themeColor: color,
-        textDirection: 'ltr',
-        display: {
-          //write it accordring to screen corners
-          // top right or right top
-          // left top or top left 
-          // bottom right or right bottom
-          // bottom left or left bottom
-          'position': 'bottom right',
-          // write it in fashion of from-to
-          // right-left
-          // left-right
-          // top-bottom
-          // bottom-top
-          'welcomePopupAnimation': 'right-left',
-          'surveyPopupAnimation': 'right-left'
-        }
-      });
+      // var ins = window.CCSDK("init", "WW-35080", {
+      //   // themeColor : "rgb(235, 28, 35)",
+      //   themeColor: color,
+      //   textDirection: 'ltr',
+      //   display: {
+      //     //write it accordring to screen corners
+      //     // top right or right top
+      //     // left top or top left 
+      //     // bottom right or right bottom
+      //     // bottom left or left bottom
+      //     'position': 'bottom right',
+      //     // write it in fashion of from-to
+      //     // right-left
+      //     // left-right
+      //     // top-bottom
+      //     // bottom-top
+      //     'welcomePopupAnimation': 'right-left',
+      //     'surveyPopupAnimation': 'right-left'
+      //   }
+      // });
 
       // window.CCSDK("trigger", "WW-35080", "page-time", "15");
       // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
