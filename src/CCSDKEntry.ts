@@ -75,7 +75,6 @@ export function init(surveyToken: any) {
         action: surveyToken
       }
     }, null, null);
-    console.log(SurveyManager.surveyInstances, 'onInit');
     return SurveyManager.surveyInstances[surveyToken];
   } else {
     //do nothing
