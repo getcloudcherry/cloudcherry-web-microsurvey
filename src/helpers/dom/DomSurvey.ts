@@ -656,7 +656,6 @@ class DomSurvey {
       this.ccsdk.survey.questionsToDisplay[index]
     );
     this.$questionContainer[0].innerHTML += compiledTemplate;
-    console.log(compiledTemplate);
     let qType: string = this.$questionContainer[0].firstChild.getAttribute(
       "data-type"
     );

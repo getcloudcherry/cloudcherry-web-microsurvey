@@ -741,7 +741,7 @@ class SurveyHandler {
       }
       return;
     }
-
+    console.log(data);
     if (
       question.id ==
       this.questionsToDisplay[this.questionsToDisplay.length - 1].id

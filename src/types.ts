@@ -5,5 +5,5 @@ export type ResponseType = string | number;
 export type PrefillType = 'DIRECT' | 'BY_TAG' | 'BY_NOTE';
 
 export interface PrefillDictionary {
-  [ key: string ]: ResponseType
+  [key: string]: ResponseType
 }
