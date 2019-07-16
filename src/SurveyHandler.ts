@@ -898,6 +898,8 @@ class SurveyHandler {
           break;
         case "Scale":
           //get text question template and compile it.
+          var middleBlock = 0;
+          let dimension;
           (window as any).ccsdkDebug ? console.log(question.questionTags) : "";
           if (question.questionTags.includes("NPS")) {
             questionTemplate = templates.question_nps;
@@ -1007,6 +1009,7 @@ class SurveyHandler {
               question.isRequired ? "*" : ""
             );
             //construct NPS scale here....
+
             let startRange = 0.0;
             let endRange = 10.0;
             let options = "";
@@ -1024,6 +1027,7 @@ class SurveyHandler {
               endRangeLabel = "Strongly Agree";
               if (question.questionTags.includes("ces_agree_7")) {
                 midRangeLabel = "Somewhat Agree";
+                middleBlock = 2;
               }
             } else if (
               question.questionTags.includes("ces_effort_5") ||
@@ -1033,6 +1037,7 @@ class SurveyHandler {
               endRangeLabel = "Low Effort";
               if (question.questionTags.includes("ces_effort_7")) {
                 midRangeLabel = "Moderate Effort";
+                middleBlock = 0;
               }
             } else if (question.anchorMetricName != null) {
               let metricName = question.anchorMetricName;
@@ -1041,6 +1046,10 @@ class SurveyHandler {
               startRangeLabel = customMetric.optionCategories[0].label;
               if (optionsLength > 2) {
                 midRangeLabel = customMetric.optionCategories[1].label;
+                let middleRange = customMetric.optionCategories[1].categoryRange.split(
+                  ","
+                );
+                middleBlock = parseInt(middleRange[0], 10) - parseInt(middleRange[1], 10) + 1;
               } else {
                 midRangeLabel = null;
               }
@@ -1104,7 +1113,7 @@ class SurveyHandler {
             if ((window as any).isMobile) {
               if (endRange < 11) {
                 let parentContainer = window.innerWidth - 40;
-                let dimension =
+                dimension =
                   ((100 / (endRange - startRange + 1) - 0.5) *
                     parentContainer) /
                   100;
@@ -1226,12 +1235,15 @@ class SurveyHandler {
                 ((endRange - startRange + 1) * 38) / 2 - 5 + "px";
               // console.log(optionMaxWidth);
             }
+
             questionTemplate = questionTemplate.replace(
               "{{legendStyle}}",
               `style="position:relative;width:${
               mobileImageUrl ? "100%" : legendDimension + "px"
               };min-height: 20px;"`
             );
+
+
             questionTemplate = questionTemplate.replace(
               /\{\{radialLegend\}\}/g,
               mobileImageUrl ? "radial-legend" : "unknown-class"
@@ -1240,11 +1252,18 @@ class SurveyHandler {
               "{{optionsRange}}",
               options
             );
+
+            questionTemplate = questionTemplate.replace(
+              /maxWidthMiddle/g,
+              mobileImageUrl ? "35%;width:35%" : midRangeLabel && dimension ? dimension * middleBlock : optionMaxWidth
+            );
             // questionTemplate = questionTemplate.replace("{{maxWidth}}", optionMaxWidth);
             questionTemplate = questionTemplate.replace(
               /maxWidth/g,
               mobileImageUrl ? "35%;width:35%" : optionMaxWidth
             );
+
+
             questionTemplate = questionTemplate.replace(
               /leftWidth/g,
               leftWidth
