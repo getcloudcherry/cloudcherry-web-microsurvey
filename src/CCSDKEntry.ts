@@ -75,6 +75,33 @@ export function init(surveyToken: any) {
         action: surveyToken
       }
     }, null, null);
+
+    if (SurveyManager.prefillQueue[surveyToken]) {
+      let object = SurveyManager.prefillQueue[surveyToken];
+      SurveyManager.surveyInstances[surveyToken].tracking.trackEvent('Init MicroSurvey', {
+        token: surveyToken,
+        data: {
+          name: 'Prefill lazily',
+          action: surveyToken
+        }
+      }, null, null);
+      if (object.directPrefills) {
+        object.directPrefills.forEach(x => {
+          SurveyManager.surveyInstances[surveyToken].prefill(x, 'DIRECT');
+        });
+        delete object.directPrefills;
+      } else if (object.byTagPrefills) {
+        object.byTagPrefills.forEach(x => {
+          SurveyManager.surveyInstances[surveyToken].prefill(x, 'BY_TAG');
+        });
+        delete object.byTagPrefills;
+      } else if (object.byNotePrefills) {
+        object.byTagPrefills.forEach(x => {
+          SurveyManager.surveyInstances[surveyToken].prefill(x, 'BY_NOTE');
+        });
+        delete object.byNotePrefills;
+      }
+    }
     return SurveyManager.surveyInstances[surveyToken];
   } else {
     //do nothing
@@ -140,6 +167,14 @@ export function prefill(surveyToken: string, ...restArgs: PrefillsBatchOrSingle)
       }
     }, null, null);
     SurveyManager.surveyInstances[surveyToken].prefill(restArgs, 'DIRECT');
+  } else {
+    if (SurveyManager.prefillQueue[surveyToken]) {
+      SurveyManager.prefillQueue[surveyToken].directPrefills.push(restArgs);
+    } else {
+      SurveyManager.prefillQueue[surveyToken] = {
+        directPrefills: [restArgs]
+      }
+    }
   }
 }
 
@@ -159,6 +194,14 @@ export function prefillByTag(surveyToken: string, ...restArgs: PrefillsBatchOrSi
       }
     }, null, null);
     SurveyManager.surveyInstances[surveyToken].prefill(restArgs, 'BY_TAG');
+  } else {
+    if (SurveyManager.prefillQueue[surveyToken]) {
+      SurveyManager.prefillQueue[surveyToken].byTagPrefills.push(restArgs);
+    } else {
+      SurveyManager.prefillQueue[surveyToken] = {
+        byTagPrefills: [restArgs]
+      }
+    }
   }
 }
 
@@ -178,6 +221,14 @@ export function prefillByNote(surveyToken: string, ...restArgs: PrefillsBatchOrS
       }
     }, null, null);
     SurveyManager.surveyInstances[surveyToken].prefill(restArgs, 'BY_NOTE');
+  } else {
+    if (SurveyManager.prefillQueue[surveyToken]) {
+      SurveyManager.prefillQueue[surveyToken].byNotePrefills.push(restArgs);
+    } else {
+      SurveyManager.prefillQueue[surveyToken] = {
+        byNotePrefills: [restArgs]
+      }
+    }
   }
 }
 

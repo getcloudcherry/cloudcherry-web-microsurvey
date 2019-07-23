@@ -899,9 +899,10 @@ class SurveyHandler {
         case "Scale":
           //get text question template and compile it.
           var middleBlock = 0;
+          var endBlock = 0;
           let dimension;
           (window as any).ccsdkDebug ? console.log(question.questionTags) : "";
-          if (question.questionTags.includes("NPS")) {
+          if (question.questionTags.indexOf("NPS") !== -1) {
             questionTemplate = templates.question_nps;
             questionTemplate = questionTemplate.replace(
               "{{question}}",
@@ -919,10 +920,10 @@ class SurveyHandler {
               "{{requiredLabel}}",
               question.isRequired ? "*" : ""
             );
-          } else if (question.questionTags.includes("CSAT")) {
-            if (question.questionTags.includes("csat_satisfaction_5")) {
+          } else if (question.questionTags.indexOf("CSAT") !== -1) {
+            if (question.questionTags.indexOf("csat_satisfaction_5") !== -1) {
               questionTemplate = templates.question_csat_satisfaction_5;
-            } else if (question.questionTags.includes("csat_agreement_5")) {
+            } else if (question.questionTags.indexOf("csat_agreement_5") !== -1) {
               questionTemplate = templates.question_csat_agreement_5;
             }
             questionTemplate = questionTemplate.replace(
@@ -1020,22 +1021,22 @@ class SurveyHandler {
             let midRangeLabel = "";
 
             if (
-              question.questionTags.includes("ces_agree_5") ||
-              question.questionTags.includes("ces_agree_7")
+              question.questionTags.indexOf("ces_agree_5") !== -1 ||
+              question.questionTags.indexOf("ces_agree_7") !== -1
             ) {
               startRangeLabel = "Strongly Disagree";
               endRangeLabel = "Strongly Agree";
-              if (question.questionTags.includes("ces_agree_7")) {
+              if (question.questionTags.indexOf("ces_agree_7") !== -1) {
                 midRangeLabel = "Somewhat Agree";
                 middleBlock = 2;
               }
             } else if (
-              question.questionTags.includes("ces_effort_5") ||
-              question.questionTags.includes("ces_effort_7")
+              question.questionTags.indexOf("ces_effort_5") !== -1 ||
+              question.questionTags.indexOf("ces_effort_7") !== -1
             ) {
               startRangeLabel = "High Effort";
               endRangeLabel = "Low Effort";
-              if (question.questionTags.includes("ces_effort_7")) {
+              if (question.questionTags.indexOf("ces_effort_7") !== -1) {
                 midRangeLabel = "Moderate Effort";
                 middleBlock = 0;
               }
@@ -1049,12 +1050,17 @@ class SurveyHandler {
                 let middleRange = customMetric.optionCategories[1].categoryRange.split(
                   ","
                 );
-                middleBlock = parseInt(middleRange[0], 10) - parseInt(middleRange[1], 10) + 1;
+                middleBlock = parseInt(middleRange[1], 10) - parseInt(middleRange[0], 10) + 1;
               } else {
                 midRangeLabel = null;
               }
               endRangeLabel =
                 customMetric.optionCategories[optionsLength - 1].label;
+
+              let endRange = customMetric.optionCategories[optionsLength - 1].categoryRange.split(
+                ","
+              );
+              endBlock = parseInt(endRange[1], 10) - parseInt(endRange[0], 10) + 1;
             }
 
             let displayLegend = LanguageTextFilter.translateDisplayLegend(
@@ -1130,10 +1136,15 @@ class SurveyHandler {
               scaleImageContainer = "";
               mobileImageUrl = "";
             }
+            var leftWidth;
+            if (question.questionTags.indexOf("CES") !== -1) {
 
-            if (question.questionTags.includes("CES")) {
 
-              var leftWidth = 38 * 3 + "px";
+              if ((window as any).isMobile) {
+                leftWidth = dimension * 3 + 'px';
+              } else {
+                leftWidth = 38 * 3 + "px";
+              }
               for (
                 let initial = startRange;
                 initial <= endRange;
@@ -1164,7 +1175,12 @@ class SurveyHandler {
               var cmwidthend = customMetric.optionCategories[1].categoryRange.split(
                 ","
               )[0];
-              var leftWidth = (cmwidthend - cmwidthstart) * 39 + "px";
+
+              if ((window as any).isMobile) {
+                leftWidth = (dimension + 1) * (cmwidthend - cmwidthstart) - 0.5 + 'px';
+              } else {
+                leftWidth = (cmwidthend - cmwidthstart) * 39 + "px";
+              }
 
               for (let iterator = 0; iterator < customMetric.optionCategories.length; iterator++) {
                 let startRange = parseFloat(
@@ -1202,7 +1218,9 @@ class SurveyHandler {
                     "</span>";
                 }
               }
-              legendDimension = (endRange - startRange + 1) * 39;
+              if (!(window as any).isMobile) {
+                legendDimension = (endRange - startRange + 1) * 39;
+              }
 
             } else {
               for (
@@ -1221,7 +1239,9 @@ class SurveyHandler {
                   initial +
                   "</span>";
               }
-              legendDimension = (endRange - startRange + 1) * 39;
+              if (!(window as any).isMobile) {
+                legendDimension = (endRange - startRange + 1) * 39;
+              }
             }
 
             if (endRange - startRange + 1 <= 11) {
@@ -1232,7 +1252,7 @@ class SurveyHandler {
               var optionRightExtraClass =
                 "option-right-rating-text-small-container";
               var optionMaxWidth =
-                ((endRange - startRange + 1) * 38) / 2 - 5 + "px";
+                ((endRange - startRange + 1) * 38) / 2 - 5;
               // console.log(optionMaxWidth);
             }
 
@@ -1255,12 +1275,16 @@ class SurveyHandler {
 
             questionTemplate = questionTemplate.replace(
               /maxWidthMiddle/g,
-              mobileImageUrl ? "35%;width:35%" : midRangeLabel && dimension ? dimension * middleBlock : optionMaxWidth
-            );
+              mobileImageUrl ? "35%;width:35%" : midRangeLabel && dimension ? (dimension * middleBlock) + 'px' : (38 * middleBlock) + 'px');
             // questionTemplate = questionTemplate.replace("{{maxWidth}}", optionMaxWidth);
             questionTemplate = questionTemplate.replace(
+              /maxWidthEnd/g,
+              mobileImageUrl ? "35%;width:35%" : endBlock && dimension ? (dimension * endBlock) + 'px' : endBlock ? (endBlock * 38) + 'px' : optionMaxWidth + 'px'
+            );
+
+            questionTemplate = questionTemplate.replace(
               /maxWidth/g,
-              mobileImageUrl ? "35%;width:35%" : optionMaxWidth
+              mobileImageUrl ? "35%;width:35%" : optionMaxWidth + 'px'
             );
 
 

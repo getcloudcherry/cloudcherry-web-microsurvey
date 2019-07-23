@@ -5,7 +5,7 @@ class SurveyManager {
 
   static surveyQueue: any = [];
   static processQueueInterval: any = null;
-
+  static prefillQueue: any = {};
   static surveyInstances: any = {};
 
   static initializeSurvey(surveyId: string) {

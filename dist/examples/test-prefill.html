@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="surveyApp">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <base href="/">
+  <title>Testuat</title>
+
+
+
+</head>
+
+Test
+
+<!-- <script type="text/javascript" src="//api.getcloudcherry.com/api/JavascriptMicroCampaignLite/5b6418bec1967b16f413538e"></script> -->
+<script type="text/javascript"
+  src="https://api.getcloudcherry.com/api/JavascriptMicroCampaignLite/5b6418bec1967b16f413538e"></script>
+<script>
+  var token = 'CH-28240';
+  //  document.addEventListener(token + '-ready', function(e) {
+
+  //           window.CCSDK("prefill", token, "5d1f199188db4510c4f93acb", "123456789");
+  //           window.CCSDK("prefill", token, "5d1f199188db4510c4f93acc", "123456789");
+  //           console.log("prefills passed");
+  //   });   
+
+  setTimeout(() => {
+    window.CCSDK("prefill", token, "5d1f199188db4510c4f93acb", "123456789");
+    window.CCSDK("prefill", token, "5d1f199188db4510c4f93acc", "123456789");
+  }, 1000);
+
+</script>
+
+</body>
+
+</html>

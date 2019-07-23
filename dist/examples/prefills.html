@@ -68,6 +68,9 @@
       window.CCSDK = window.CCSDK || function () {
         (window.CCSDK.q = window.CCSDK.q || []).push(arguments);
       };
+
+
+
       var s = document.createElement('script');
       s.type = 'text/javascript';
       s.async = true;
@@ -78,6 +81,15 @@
       // execute your script immediately here
       //WW-02872
       //CH-88360
+      var prefills = {
+        '5cc6aacc56a94e05aca8579d': 4,
+        '5caf452d39aa8c1df84e5e18': 'Option A'
+      }
+      var prefillsAsArray = ['5cc6aacc56a94e05aca8579d', 4,]
+      // document.addEventListener(token + '-ready', function (e) {
+      // window.CCSDK("prefill", token, prefills);
+      // window.CCSDK("prefill", token, ...prefillsAsArray);
+
       var ins = window.CCSDK("init", token, {
         // themeColor : "rgb(235, 28, 35)",
         // themeColor : color,
@@ -102,7 +114,7 @@
         // startButtonText: 'Start Survey', // Use this text in the start button
         resumeButtonText: 'Resume', // Use this text in the resume button
         // coolDownPeriod: 172800,
-        skipWelcomePage: true
+        skipWelcomePage: false
       });
 
       // var ins = window.CCSDK("init", "WW-35080" ,{
@@ -143,18 +155,11 @@
 
     })();
 
-    var prefills = {
-      '5cc6aacc56a94e05aca8579d': 4,
-      '5caf452d39aa8c1df84e5e18': 'Option A'
-    }
-    var prefillsAsArray = ['5cc6aacc56a94e05aca8579d', 4,]
-    document.addEventListener(token + '-ready', function (e) {
-      // window.CCSDK("prefill", token, prefills);
-      window.CCSDK("prefill", token, ...prefillsAsArray);
-      setTimeout(function () {
-        // e.detail.survey.show(token);
-      }, 5000);
-    });
+
+    // setTimeout(function () {
+    //   // e.detail.survey.show(token);
+    // });
+    // });
 
     // document.addEventListener(token+'-ready', function(e){
     //   // console.log(e);
