@@ -216,7 +216,6 @@ class Survey {
       }
 
       self.tracking.token = self.surveyToken;
-
       if (self.surveyData) {
         self.tracking.trackEvent('Login Success', {
           token: self.tracking.token,
@@ -224,7 +223,7 @@ class Survey {
             name: 'Token',
             action: self.surveyToken
           }
-        }, console.log, console.error)
+        }, console.log, (err) => console.error(err));
         self.tracking.trackEvent('Survey Length', {
           token: self.tracking.token,
           data: {
@@ -234,6 +233,7 @@ class Survey {
         }, null, null);
 
         let event = new CustomEvent(Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken, { detail: JSON.parse(JSON.stringify(surveyData)) });
+
         document.dispatchEvent(event);
         if (!self.config.skipWelcomePage) {
           self.dom.hideLoader();
@@ -251,6 +251,7 @@ class Survey {
         }, null, null);
         self.survey.displayWelcomeQuestion("The Survey has been expired");
       }
+
     };
     let errorcb = null;
     this.survey.fetchQuestions(successcb, errorcb);
