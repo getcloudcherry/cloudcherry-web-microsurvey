@@ -1,158 +1,160 @@
 /** Checkbox **/
 
 .cc-sdk .cc-checkbox {
-    display: table-cell;
-    vertical-align: middle;
-    position: relative;
-    text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
+  text-align: center;
 }
 
 .cc-sdk .cc-checkbox label {
-    cursor: pointer;
-    display: block; // position: absolute;
-    height: 25px;
+  cursor: pointer;
+  display: block; // position: absolute;
+  height: 20px;
+  width: 20px;
 }
 
-.cc-sdk .cc-checkbox+span label img {
-    width: 40px;
-    display: inline-block;
-    vertical-align: middle;
+.cc-sdk .cc-checkbox + span label img {
+  width: 40px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .cc-sdk .cc-checkbox label:before,
 .cc-sdk .cc-checkbox label:after {
-    content: "";
-    left: 0;
-    margin: auto;
-    position: absolute;
-    top: calc(50% - 12.5px);
+  content: "";
+  left: 0;
+  margin: auto;
+  position: absolute;
+  top: calc(50% - 12.5px);
 }
 
 .cc-sdk .cc-checkbox label:before {
-    background: transparent;
-    border-radius: 2px;
-    border: 1px solid rgb(66, 66, 66);
-    cursor: pointer;
-    height: 20px;
-    transition: background .3s;
-    width: 20px;
+  background: transparent;
+  border-radius: 2px;
+  border: 1px solid rgb(66, 66, 66);
+  cursor: pointer;
+  height: 20px;
+  transition: background 0.3s;
+  width: 20px;
 }
 
 .cc-sdk .cc-checkbox input[type="checkbox"] {
-    opacity: 0;
-    outline: 0;
+  opacity: 0;
+  outline: 0;
 }
 
-.cc-sdk .cc-checkbox input[type="checkbox"]:checked+label:before {
-    background: $cc-brand-1-color;
-    border: none;
+.cc-sdk .cc-checkbox input[type="checkbox"]:checked + label:before {
+  background: $cc-brand-1-color;
+  border: none;
 }
 
-.cc-sdk .cc-checkbox input[type="checkbox"]:checked+label:after {
-    border: 3px solid #222;
-    border-right-style: none;
-    border-top-style: none;
-    height: 7px;
-    top: calc(50% - 8.5px);
-    left: 4px;
-    transform: rotate(-45deg);
-    width: 12px;
+.cc-sdk .cc-checkbox input[type="checkbox"]:checked + label:after {
+  border: 3px solid #222;
+  border-right-style: none;
+  border-top-style: none;
+  height: 7px;
+  top: calc(50% - 8.5px);
+  left: 4px;
+  transform: rotate(-45deg);
+  width: 12px;
 }
 
 /*radio*/
 
 .cc-sdk .cc-checkbox.cc-radio label:before {
-    background: transparent;
-    border: 1px solid rgb(66, 66, 66);
-    cursor: pointer;
-    height: 25px;
-    transition: background-color .3s;
-    width: 25px;
+  background: transparent;
+  border: 1px solid rgb(66, 66, 66);
+  cursor: pointer;
+  height: 25px;
+  transition: background-color 0.3s;
+  width: 25px;
 }
 
 .cc-sdk .cc-checkbox input[type="radio"] {
-    // margin-right: 10px;
-    opacity: 0;
-    outline: 0;
+  // margin-right: 10px;
+  opacity: 0;
+  outline: 0;
 }
 
-.cc-sdk .cc-checkbox input[type="radio"]:checked+label:before {
-    background: transparent;
-    border-color: $cc-brand-1-color;
+.cc-sdk .cc-checkbox input[type="radio"]:checked + label:before {
+  background: transparent;
+  border-color: $cc-brand-1-color;
 }
 
 .cc-sdk .cc-question-container__list li {
-    display: inline-table;
-    margin-bottom: 0;
-    .cc-sdk .cc-checkbox,
-    .cc-radio {
-        width: 30px;
-    }
+  display: inline-table;
+  margin-bottom: 0;
+  .cc-sdk .cc-checkbox,
+  .cc-radio {
+    width: 30px;
+  }
 }
 
-.cc-sdk .cc-checkbox input[type="radio"]:checked+label:after {
-    -moz-transform: scale(.8);
-    -ms-transform: scale(.8);
-    -o-transform: scale(.8);
-    -webkit-transform: scale(.8);
-    background: $cc-brand-1-color;
-    border-radius: 30px;
-    height: 25px;
-    transform: scale(.8);
-    width: 25px;
+.cc-sdk .cc-checkbox input[type="radio"]:checked + label:after {
+  -moz-transform: scale(0.8);
+  -ms-transform: scale(0.8);
+  -o-transform: scale(0.8);
+  -webkit-transform: scale(0.8);
+  background: $cc-brand-1-color;
+  border-radius: 30px;
+  height: 25px;
+  transform: scale(0.8);
+  width: 25px;
 }
 
 .cc-sdk .cc-radio label:before {
-    border-radius: 30px;
+  border-radius: 30px;
 }
 
 .cc-sdk .radio-toggle--more-option li span {
-    padding-left: 25px !important;
-    width: 125px !important;
+  padding-left: 25px !important;
+  width: 125px !important;
 }
 
 .cc-sdk .radio-toggle .cc-question-container__list li {
-    padding-left: 15px;
+  padding-left: 15px;
 }
 
-@media(min-width:1000px) {
-    .cc-sdk .radio-toggle .cc-question-container__list li span label {
-        overflow: hidden;
-        max-height: 100px;
-        display: block;
-    }
+@media (min-width: 1000px) {
+  .cc-sdk .radio-toggle .cc-question-container__list li span label {
+    overflow: hidden;
+    max-height: 100px;
+    display: block;
+  }
 }
 
 @media (min-width: 769px) and (max-width: 992px) {
-    .cc-sdk .radio-toggle .cc-question-container__list li {
-        padding-left: 10px;
+  .cc-sdk .radio-toggle .cc-question-container__list li {
+    padding-left: 10px;
+  }
+  .cc-sdk .radio-toggle .cc-question-container__list li span {
+    .label {
+      display: block;
+      max-height: 50px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .cc-sdk .radio-toggle .cc-question-container__list li span {
-        .label {
-            display: block;
-            max-height: 50px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    }
-    .cc-sdk .radio-toggle .cc-question-container__list li span label {
-        overflow: hidden;
-        max-height: 50px;
-        display: block;
-        text-overflow: ellipsis;
-    }
+  }
+  .cc-sdk .radio-toggle .cc-question-container__list li span label {
+    overflow: hidden;
+    max-height: 50px;
+    display: block;
+    text-overflow: ellipsis;
+  }
 }
 
 @media screen and (min-width: 769px) {
-    .cc-sdk .cc-checkbox {}
+  .cc-sdk .cc-checkbox {
+  }
 }
 
 @media (max-width: 768px) {
-    .cc-sdk .radio-toggle .cc-question-container__list li {
-        padding-left: 0;
-    }
-    .cc-sdk .radio-toggle .cc-question-container__list li {
-        display: block;
-        padding-right: 50px;
-    }
+  .cc-sdk .radio-toggle .cc-question-container__list li {
+    padding-left: 0;
+  }
+  .cc-sdk .radio-toggle .cc-question-container__list li {
+    display: block;
+    padding-right: 50px;
+  }
 }
