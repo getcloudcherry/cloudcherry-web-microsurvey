@@ -514,10 +514,7 @@ class SurveyHandler {
 
     // this.questionsToDisplay = (this.surveyData.questions as any[]).filter(this.filterQuestions);
     this.filterQuestions();
-    //sort questions and display them?
-    this.questionsToDisplay = this.questionsToDisplay.sort(
-      this.questionCompare
-    );
+
     let ccSurvey: any;
     ccSurvey = document.getElementsByClassName("cc-questions-container");
     // ccSurvey = ccSurvey[0];
@@ -1900,6 +1897,8 @@ class SurveyHandler {
    */
   filterQuestions() {
     let self = this;
+    this.prefillResponses = [];
+    this.questionsToDisplay = [];
     for (let question of this.questions) {
       if (!question.isRetired) {
         //filter out prefill question only if it is filled?.
@@ -1952,7 +1951,10 @@ class SurveyHandler {
       // console.log(this.questionsToDisplay);
       ConditionalFlowFilter.filterQuestion(this, question);
     }
-
+    //sort questions and display them?
+    this.questionsToDisplay = this.questionsToDisplay.sort(
+      this.questionCompare
+    );
     // console.log(this.conditionalQuestions);
   }
 

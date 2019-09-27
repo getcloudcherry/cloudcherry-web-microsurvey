@@ -340,6 +340,7 @@ class Survey {
     } else if (type === 'BY_NOTE') {
       this.survey.fillPrefillByNote(prefillObject);
     }
+    this.survey.filterQuestions();
   }
 
 
