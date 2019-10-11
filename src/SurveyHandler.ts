@@ -578,6 +578,10 @@ class SurveyHandler {
     (window as any).ccsdkDebug
       ? console.log("prefillByTag", this.prefillWithTags)
       : "";
+
+    if (this._prefillsPartiallyPosted) {
+      this.postRecentPrefills()
+    }
   }
 
   fillPrefillByNote(prefillObj: PrefillDictionary) {
@@ -587,6 +591,10 @@ class SurveyHandler {
     (window as any).ccsdkDebug
       ? console.log("prefillByNote", this.prefillWithNote)
       : "";
+
+    if (this._prefillsPartiallyPosted) {
+      this.postRecentPrefills()
+    }
   }
 
   fillPrefillDirect(prefillObj: PrefillDictionary) {
@@ -597,6 +605,19 @@ class SurveyHandler {
     (window as any).ccsdkDebug
       ? console.log("prefillDirect", this.prefillDirect)
       : "";
+
+    if (this._prefillsPartiallyPosted) {
+      this.postRecentPrefills()
+    }
+  }
+
+  // prepares for partial posting in the next chance
+  postRecentPrefills() {
+    // clear the post partial flag
+    this._prefillsPartiallyPosted = false;
+
+    this.filterQuestions();
+
   }
 
   fillPrefillQuestion(id: any, value: any, valueType: string) {
