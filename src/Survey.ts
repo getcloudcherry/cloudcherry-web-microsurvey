@@ -340,6 +340,9 @@ class Survey {
     } else if (type === 'BY_NOTE') {
       this.survey.fillPrefillByNote(prefillObject);
     }
+
+    // map prefills from prefill buckets to prefillQueue
+    this.survey.filterQuestions();
   }
 
 
