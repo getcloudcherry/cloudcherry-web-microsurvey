@@ -45,6 +45,7 @@ class SurveyHandler {
   languageSelect: any;
   private _prefillsPartiallyPosted = false;
   // isPartialAvailable : Boolean;
+  retryPrefills = 3;
 
   constructor(ccsdk) {
     this.surveyToken = ccsdk.surveyToken;
@@ -92,8 +93,8 @@ class SurveyHandler {
       let thankyouText = this.ccsdk.config.thankyouText
         ? this.ccsdk.config.thankyouText
         : this.surveyData.thankyouText
-          ? this.surveyData.thankyouText
-          : "Thank You";
+        ? this.surveyData.thankyouText
+        : "Thank You";
       let startText = this.ccsdk.config.startButtonText
         ? this.ccsdk.config.startButtonText
         : "Start";
@@ -310,7 +311,7 @@ class SurveyHandler {
     this.ccsdk.dom.appendInBody(surveyHtml);
   }
 
-  displayQuestionSelector() { }
+  displayQuestionSelector() {}
 
   displayWelcomeQuestion(warningWelcomeText?: string) {
     //call this with true when welcome container is clicked.
@@ -449,7 +450,7 @@ class SurveyHandler {
     let ref = this.util.initListener(
       "click",
       "#" + qId + " .cc-select-options .cc-select-option",
-      function () {
+      function() {
         self.ccsdk.debug ? console.log("languageSelectOption") : "";
         selectRes = document.querySelectorAll(
           "#" + qId + " .cc-select-trigger"
@@ -462,20 +463,18 @@ class SurveyHandler {
     let languageSelect2 = this.util.initListener(
       "click",
       ".act-cc-button-lang-next",
-      function () {
+      function() {
         self.ccsdk.debug ? console.log("languageNext") : "";
         self.ccsdk.config.language = "default";
         self.ccsdk.config.language = selectRes; //language selection from menu then show first question
         //set config rtl or ltr
 
-        var languageQuestion = self.surveyData.questions.find(x => x.questionTags && x.questionTags.indexOf('cc_language') !== -1);
+        var languageQuestion = self.surveyData.questions.find(
+          x => x.questionTags && x.questionTags.indexOf("cc_language") !== -1
+        );
 
         if (languageQuestion) {
-          self.fillPrefillQuestion(
-            languageQuestion.id,
-            selectRes,
-            'text'
-          );
+          self.fillPrefillQuestion(languageQuestion.id, selectRes, "text");
         }
         let isRTL = /[\u0600-\u06FF]/.test(selectRes);
         self.ccsdk.config.textDirection = isRTL ? "rtl" : "ltr";
@@ -580,7 +579,7 @@ class SurveyHandler {
       : "";
 
     if (this._prefillsPartiallyPosted) {
-      this.postRecentPrefills()
+      this.postRecentPrefills();
     }
   }
 
@@ -593,7 +592,7 @@ class SurveyHandler {
       : "";
 
     if (this._prefillsPartiallyPosted) {
-      this.postRecentPrefills()
+      this.postRecentPrefills();
     }
   }
 
@@ -607,7 +606,7 @@ class SurveyHandler {
       : "";
 
     if (this._prefillsPartiallyPosted) {
-      this.postRecentPrefills()
+      this.postRecentPrefills();
     }
   }
 
@@ -617,7 +616,6 @@ class SurveyHandler {
     this._prefillsPartiallyPosted = false;
 
     this.filterQuestions();
-
   }
 
   fillPrefillQuestion(id: any, value: any, valueType: string) {
@@ -702,11 +700,27 @@ class SurveyHandler {
   }
 
   getPrefillResponseById(id: any) {
-    return this.prefillResponses && this.prefillResponses.find(x => x.id === id);
+    return (
+      this.prefillResponses && this.prefillResponses.find(x => x.id === id)
+    );
   }
 
   getQuestionById(id: any) {
     return this.questions.find(x => x.id === id);
+  }
+
+  postPrefillPartialAnswerWithRetry(complete = false) {
+    this.postPrefillPartialAnswer(
+      complete,
+      null,
+      this.retryPrefills > 0
+        ? () => {
+            this.retryPrefills -= 1;
+            this._prefillsPartiallyPosted = false;
+            this.postPrefillPartialAnswerWithRetry(complete);
+          }
+        : null
+    );
   }
 
   postPartialAnswer(
@@ -716,7 +730,7 @@ class SurveyHandler {
     successcb,
     errorcb
   ) {
-    this.postPrefillPartialAnswer(complete, null, null);
+    this.postPrefillPartialAnswerWithRetry(complete);
 
     let question: any = this.questionsToDisplay[index];
     if (!question) {
@@ -735,10 +749,10 @@ class SurveyHandler {
     );
     (window as any).ccsdkDebug
       ? console.log(
-        "partial response",
-        question.id ==
-        this.questionsToDisplay[this.questionsToDisplay.length - 1].id
-      )
+          "partial response",
+          question.id ==
+            this.questionsToDisplay[this.questionsToDisplay.length - 1].id
+        )
       : "";
     surveyPartialUrl = surveyPartialUrl.replace("{complete}", `${complete}`);
     surveyPartialUrl = Config.API_URL + surveyPartialUrl;
@@ -812,7 +826,7 @@ class SurveyHandler {
       answersAll.push(this.prefillResponses[answer]);
     }
 
-    answersAll = answersAll.filter(x => x && typeof x === 'object');
+    answersAll = answersAll.filter(x => x && typeof x === "object");
 
     let timeAtPost = new Date().getTime();
     let finalData = {
@@ -941,7 +955,9 @@ class SurveyHandler {
           } else if (question.questionTags.indexOf("CSAT") !== -1) {
             if (question.questionTags.indexOf("csat_satisfaction_5") !== -1) {
               questionTemplate = templates.question_csat_satisfaction_5;
-            } else if (question.questionTags.indexOf("csat_agreement_5") !== -1) {
+            } else if (
+              question.questionTags.indexOf("csat_agreement_5") !== -1
+            ) {
               questionTemplate = templates.question_csat_agreement_5;
             }
             questionTemplate = questionTemplate.replace(
@@ -1068,17 +1084,21 @@ class SurveyHandler {
                 let middleRange = customMetric.optionCategories[1].categoryRange.split(
                   ","
                 );
-                middleBlock = parseInt(middleRange[1], 10) - parseInt(middleRange[0], 10) + 1;
+                middleBlock =
+                  parseInt(middleRange[1], 10) -
+                  parseInt(middleRange[0], 10) +
+                  1;
               } else {
                 midRangeLabel = null;
               }
               endRangeLabel =
                 customMetric.optionCategories[optionsLength - 1].label;
 
-              let endRange = customMetric.optionCategories[optionsLength - 1].categoryRange.split(
-                ","
-              );
-              endBlock = parseInt(endRange[1], 10) - parseInt(endRange[0], 10) + 1;
+              let endRange = customMetric.optionCategories[
+                optionsLength - 1
+              ].categoryRange.split(",");
+              endBlock =
+                parseInt(endRange[1], 10) - parseInt(endRange[0], 10) + 1;
             }
 
             let displayLegend = LanguageTextFilter.translateDisplayLegend(
@@ -1107,23 +1127,33 @@ class SurveyHandler {
             }
             startRangeLabel = startRangeLabel == null ? "" : startRangeLabel;
             endRangeLabel = endRangeLabel == null ? "" : endRangeLabel;
-            let mobileImageUrl = '';
-            let imageVisibility010 = 'hide';
-            let imageVisibility110 = 'hide';
-            let scaleVisibility = 'show-inline';
-            let scaleImageContainer = '';
-            if (startRange == 0 && endRange == 10 && question.anchorMetricName === null) {
-              mobileImageUrl = "https://cx.getcloudcherry.com/microsurvey-assets/scale-0-10-neutral.svg";
-              imageVisibility010 = 'show';
-              imageVisibility110 = 'hide';
-              scaleVisibility = 'hide';
-              scaleImageContainer = 'scale-image-container';
-            } else if (startRange == 1 && endRange == 10 && question.anchorMetricName === null) {
-              mobileImageUrl = "https://cx.getcloudcherry.com/microsurvey-assets/scale-1-10-neutral.svg";
-              imageVisibility010 = 'hide';
-              imageVisibility110 = 'show';
-              scaleVisibility = 'hide';
-              scaleImageContainer = 'scale-image-container';
+            let mobileImageUrl = "";
+            let imageVisibility010 = "hide";
+            let imageVisibility110 = "hide";
+            let scaleVisibility = "show-inline";
+            let scaleImageContainer = "";
+            if (
+              startRange == 0 &&
+              endRange == 10 &&
+              question.anchorMetricName === null
+            ) {
+              mobileImageUrl =
+                "https://cx.getcloudcherry.com/microsurvey-assets/scale-0-10-neutral.svg";
+              imageVisibility010 = "show";
+              imageVisibility110 = "hide";
+              scaleVisibility = "hide";
+              scaleImageContainer = "scale-image-container";
+            } else if (
+              startRange == 1 &&
+              endRange == 10 &&
+              question.anchorMetricName === null
+            ) {
+              mobileImageUrl =
+                "https://cx.getcloudcherry.com/microsurvey-assets/scale-1-10-neutral.svg";
+              imageVisibility010 = "hide";
+              imageVisibility110 = "show";
+              scaleVisibility = "hide";
+              scaleImageContainer = "scale-image-container";
             }
             // console.log('scale', startRange, endRange);
             let divider: any = 1;
@@ -1156,10 +1186,8 @@ class SurveyHandler {
             }
             var leftWidth;
             if (question.questionTags.indexOf("CES") !== -1) {
-
-
               if ((window as any).isMobile) {
-                leftWidth = dimension * 3 + 'px';
+                leftWidth = dimension * 3 + "px";
               } else {
                 leftWidth = 38 * 3 + "px";
               }
@@ -1195,12 +1223,17 @@ class SurveyHandler {
               )[0];
 
               if ((window as any).isMobile) {
-                leftWidth = (dimension + 1) * (cmwidthend - cmwidthstart) - 0.5 + 'px';
+                leftWidth =
+                  (dimension + 1) * (cmwidthend - cmwidthstart) - 0.5 + "px";
               } else {
                 leftWidth = (cmwidthend - cmwidthstart) * 39 + "px";
               }
 
-              for (let iterator = 0; iterator < customMetric.optionCategories.length; iterator++) {
+              for (
+                let iterator = 0;
+                iterator < customMetric.optionCategories.length;
+                iterator++
+              ) {
                 let startRange = parseFloat(
                   customMetric.optionCategories[iterator].categoryRange.split(
                     ","
@@ -1212,9 +1245,9 @@ class SurveyHandler {
                   )[1]
                 );
 
-                imageVisibility010 = 'hide';
-                imageVisibility110 = 'hide';
-                scaleVisibility = 'show-inline';
+                imageVisibility010 = "hide";
+                imageVisibility110 = "hide";
+                scaleVisibility = "show-inline";
                 scaleImageContainer = "";
                 mobileImageUrl = "";
 
@@ -1230,7 +1263,8 @@ class SurveyHandler {
                     scaleVisibility +
                     '" style="background:' +
                     customMetric.optionCategories[iterator].color +
-                    ';' + optionStyle +
+                    ";" +
+                    optionStyle +
                     ';">' +
                     initial +
                     "</span>";
@@ -1239,7 +1273,6 @@ class SurveyHandler {
               if (!(window as any).isMobile) {
                 legendDimension = (endRange - startRange + 1) * 39;
               }
-
             } else {
               for (
                 let initial = startRange;
@@ -1269,18 +1302,16 @@ class SurveyHandler {
                 "option-mid-rating-text-small-container";
               var optionRightExtraClass =
                 "option-right-rating-text-small-container";
-              var optionMaxWidth =
-                ((endRange - startRange + 1) * 38) / 2 - 5;
+              var optionMaxWidth = ((endRange - startRange + 1) * 38) / 2 - 5;
               // console.log(optionMaxWidth);
             }
 
             questionTemplate = questionTemplate.replace(
               "{{legendStyle}}",
               `style="position:relative;width:${
-              mobileImageUrl ? "100%" : legendDimension + "px"
+                mobileImageUrl ? "100%" : legendDimension + "px"
               };min-height: 20px;"`
             );
-
 
             questionTemplate = questionTemplate.replace(
               /\{\{radialLegend\}\}/g,
@@ -1293,18 +1324,28 @@ class SurveyHandler {
 
             questionTemplate = questionTemplate.replace(
               /maxWidthMiddle/g,
-              mobileImageUrl ? "35%;width:35%" : midRangeLabel && dimension ? (dimension * middleBlock) + 'px' : (38 * middleBlock) + 'px');
+              mobileImageUrl
+                ? "35%;width:35%"
+                : midRangeLabel && dimension
+                ? dimension * middleBlock + "px"
+                : 38 * middleBlock + "px"
+            );
             // questionTemplate = questionTemplate.replace("{{maxWidth}}", optionMaxWidth);
             questionTemplate = questionTemplate.replace(
               /maxWidthEnd/g,
-              mobileImageUrl ? "35%;width:35%" : endBlock && dimension ? (dimension * endBlock) + 'px' : endBlock ? (endBlock * 38) + 'px' : optionMaxWidth + 'px'
+              mobileImageUrl
+                ? "35%;width:35%"
+                : endBlock && dimension
+                ? dimension * endBlock + "px"
+                : endBlock
+                ? endBlock * 38 + "px"
+                : optionMaxWidth + "px"
             );
 
             questionTemplate = questionTemplate.replace(
               /maxWidth/g,
-              mobileImageUrl ? "35%;width:35%" : optionMaxWidth + 'px'
+              mobileImageUrl ? "35%;width:35%" : optionMaxWidth + "px"
             );
-
 
             questionTemplate = questionTemplate.replace(
               /leftWidth/g,
@@ -1546,9 +1587,9 @@ class SurveyHandler {
                 typeof question.translated !== "undefined" &&
                 question.translated != null &&
                 typeof question.translated[self.ccsdk.config.language] !==
-                "undefined" &&
+                  "undefined" &&
                 question.translated[self.ccsdk.config.language].multiSelect !==
-                "undefined" &&
+                  "undefined" &&
                 question.translated[self.ccsdk.config.language].multiSelect
                   .length > 0
               ) {
@@ -1714,9 +1755,9 @@ class SurveyHandler {
                 typeof question.translated !== "undefined" &&
                 question.translated != null &&
                 typeof question.translated[self.ccsdk.config.language] !==
-                "undefined" &&
+                  "undefined" &&
                 question.translated[self.ccsdk.config.language].multiSelect !==
-                "undefined" &&
+                  "undefined" &&
                 question.translated[self.ccsdk.config.language].multiSelect
                   .length > 0
               ) {
@@ -1992,43 +2033,31 @@ class SurveyHandler {
             this.fillPrefillQuestion(
               question.id,
               "Width:" +
-              window.innerWidth +
-              "px / Height:" +
-              window.innerHeight +
-              "px",
+                window.innerWidth +
+                "px / Height:" +
+                window.innerHeight +
+                "px",
               "text"
             );
             return true;
           // Token prefill
-          case 'cc_token':
-            this.fillPrefillQuestion(
-              question.id,
-              this.surveyToken,
-              'text'
-            );
+          case "cc_token":
+            this.fillPrefillQuestion(question.id, this.surveyToken, "text");
             return true;
           // Channel prefill
-          case 'cc_channel':
-            this.fillPrefillQuestion(
-              question.id,
-              'MicroSurvey',
-              'text'
-            );
+          case "cc_channel":
+            this.fillPrefillQuestion(question.id, "MicroSurvey", "text");
             return true;
           // currentURL
-          case 'cc_currenturl':
-            this.fillPrefillQuestion(
-              question.id,
-              window.location.href,
-              'text'
-            );
+          case "cc_currenturl":
+            this.fillPrefillQuestion(question.id, window.location.href, "text");
             return true;
           // partial response
-          case 'cc_partialresponseid':
+          case "cc_partialresponseid":
             this.fillPrefillQuestion(
               question.id,
               this.surveyData.partialResponseId,
-              'text'
+              "text"
             );
             return true;
           default:
@@ -2094,11 +2123,11 @@ class SurveyHandler {
         if (typeof this.prefillWithTags[tag.toLowerCase()] !== "undefined") {
           (window as any).ccsdkDebug
             ? console.log(
-              "prefil ",
-              tag.toLowerCase(),
-              this.prefillWithTags[tag.toLowerCase()],
-              this.prefillWithTags
-            )
+                "prefil ",
+                tag.toLowerCase(),
+                this.prefillWithTags[tag.toLowerCase()],
+                this.prefillWithTags
+              )
             : "";
 
           let type = this.getAnswerTypeFromDisplayType(question.displayType);
