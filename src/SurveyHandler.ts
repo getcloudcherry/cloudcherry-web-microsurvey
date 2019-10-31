@@ -648,7 +648,7 @@ class SurveyHandler {
   }
 
   postPrefillPartialAnswer(fullSubmission = false, successcb, errorcb) {
-    if (!fullSubmission && this._prefillsPartiallyPosted) {
+    if (this._prefillsPartiallyPosted) {
       return;
     }
     this._prefillsPartiallyPosted = true;
@@ -673,10 +673,15 @@ class SurveyHandler {
       }
       return;
     }
+
     if (
-      typeof this.prefillResponses !== "undefined" &&
-      this.prefillResponses.length > 0
+      typeof this.prefillResponses === "undefined" ||
+      this.prefillResponses.length <= 0
     ) {
+      this.filterQuestions();
+    } 
+
+    if(this.prefillResponses.length !== 0){
       RequestHelper.postWithHeaders(
         surveyPartialUrl,
         this.prefillResponses,
@@ -684,9 +689,6 @@ class SurveyHandler {
         successcb,
         errorcb
       );
-    } else {
-      // console.log('No Prefill data');
-      return;
     }
   }
 
