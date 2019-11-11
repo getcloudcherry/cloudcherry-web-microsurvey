@@ -732,7 +732,7 @@ class SurveyHandler {
     successcb,
     errorcb
   ) {
-    this.postPrefillPartialAnswerWithRetry(complete);
+    // this.postPrefillPartialAnswerWithRetry(complete);
 
     let question: any = this.questionsToDisplay[index];
     if (!question) {
@@ -776,27 +776,33 @@ class SurveyHandler {
       }
       return;
     }
-    console.log(data);
+    // console.log(data);
+    if(this._prefillsPartiallyPosted) {
+      RequestHelper.postWithHeaders(
+        surveyPartialUrl,
+        data,
+        {},
+        successcb,
+        errorcb
+      );
+    } else {      
     if (
-      question.id ==
-      this.questionsToDisplay[this.questionsToDisplay.length - 1].id
+      typeof this.prefillResponses === "undefined" ||
+      this.prefillResponses.length <= 0
     ) {
-      //last question post moved to separate function
+      this.filterQuestions();
+    } 
+    let responses = [...this.prefillResponses, ...data];
+    this._prefillsPartiallyPosted = true;
+    if(this.prefillResponses.length !== 0){
       RequestHelper.postWithHeaders(
         surveyPartialUrl,
-        data,
+        responses,
         {},
         successcb,
         errorcb
       );
-    } else {
-      RequestHelper.postWithHeaders(
-        surveyPartialUrl,
-        data,
-        {},
-        successcb,
-        errorcb
-      );
+    }
     }
   }
 
