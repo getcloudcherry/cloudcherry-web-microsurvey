@@ -679,9 +679,9 @@ class SurveyHandler {
       this.prefillResponses.length <= 0
     ) {
       this.filterQuestions();
-    } 
+    }
 
-    if(this.prefillResponses.length !== 0){
+    if (this.prefillResponses.length !== 0) {
       RequestHelper.postWithHeaders(
         surveyPartialUrl,
         this.prefillResponses,
@@ -777,7 +777,7 @@ class SurveyHandler {
       return;
     }
     // console.log(data);
-    if(this._prefillsPartiallyPosted) {
+    if (this._prefillsPartiallyPosted) {
       RequestHelper.postWithHeaders(
         surveyPartialUrl,
         data,
@@ -785,24 +785,24 @@ class SurveyHandler {
         successcb,
         errorcb
       );
-    } else {      
-    if (
-      typeof this.prefillResponses === "undefined" ||
-      this.prefillResponses.length <= 0
-    ) {
-      this.filterQuestions();
-    } 
-    let responses = [...this.prefillResponses, ...data];
-    this._prefillsPartiallyPosted = true;
-    if(this.prefillResponses.length !== 0){
-      RequestHelper.postWithHeaders(
-        surveyPartialUrl,
-        responses,
-        {},
-        successcb,
-        errorcb
-      );
-    }
+    } else {
+      if (
+        typeof this.prefillResponses === "undefined" ||
+        this.prefillResponses.length <= 0
+      ) {
+        this.filterQuestions();
+      }
+      let responses = [...this.prefillResponses, ...data];
+      this._prefillsPartiallyPosted = true;
+      if (this.prefillResponses.length !== 0) {
+        RequestHelper.postWithHeaders(
+          surveyPartialUrl,
+          responses,
+          {},
+          successcb,
+          errorcb
+        );
+      }
     }
   }
 
@@ -1385,7 +1385,7 @@ class SurveyHandler {
             );
             questionTemplate = questionTemplate.replace(
               /{{mobileImageUrl}}/g,
-              '"' + mobileImageUrl + '"'
+              mobileImageUrl
             );
             questionTemplate = questionTemplate.replace(
               "{{imageVisibility010}}",

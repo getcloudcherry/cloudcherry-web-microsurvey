@@ -59,3 +59,4 @@ typings/
 
 dist/*.bundle.js
 dist/
+.vscode/settings.json
