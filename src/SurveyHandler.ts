@@ -13,6 +13,7 @@ import { Cookie } from "./helpers/Cookie";
 import { ConditionalFlowFilter } from "./helpers/filters/ConditionalFlowFilter";
 import { PrefillDictionary } from "./types";
 import { start } from "repl";
+import { LanguagesConfig } from "./helpers/languagesConfig";
 
 class SurveyHandler {
   surveyToken: string;
@@ -31,6 +32,7 @@ class SurveyHandler {
   answers: any = {};
   surveyAnswers: any = {};
   util: DomUtilities;
+  languageConfig: LanguagesConfig;
   dom: DomSurvey;
   displayThankYouCb: any;
   destroySurveyCb: any;
@@ -54,7 +56,7 @@ class SurveyHandler {
       position: "",
       surveyPosition: "",
       welcomePopupAnimation: "",
-      surveyPopupAnimation: ""
+      surveyPopupAnimation: "",
     };
     this.ccsdk = ccsdk;
     this.domListeners = [];
@@ -68,6 +70,7 @@ class SurveyHandler {
     this.prefillDirect = {};
     this.answers = {};
     this.util = new DomUtilities();
+    this.languageConfig = new LanguagesConfig();
     this.dom = ccsdk.dom;
     this.displayThankYouCb = (e: any) => {
       //perform final post
@@ -79,8 +82,8 @@ class SurveyHandler {
             token: this.ccsdk.tracking.token,
             data: {
               name: null,
-              action: null
-            }
+              action: null,
+            },
           },
           null,
           null
@@ -284,7 +287,7 @@ class SurveyHandler {
       this.surveyData.preFill &&
       this.surveyData.preFill.length > 0
     ) {
-      this.surveyData.preFill.map(response => {
+      this.surveyData.preFill.map((response) => {
         this.fillPrefillQuestionObject(response.questionId, response);
       });
     }
@@ -408,10 +411,16 @@ class SurveyHandler {
     let options1: string;
     let qId = "languageSelector";
     let cTemplate1 = templates.language_selector;
-    options1 = this.util.generateLanguageSelectOptions(["default"]);
+    options1 = this.util.generateLanguageSelectOptions(
+      ["default"],
+      ["default"]
+    );
     if (this.surveyData.translated) {
+      let languageKeys = Object.keys(this.surveyData.translated);
+      let languageTexts = this.languageConfig.getLanguageText(languageKeys);
       options1 = this.util.generateLanguageSelectOptions(
-        ["default"].concat(Object.keys(this.surveyData.translated))
+        ["default"].concat(languageKeys),
+        ["default"].concat(languageTexts)
       );
     }
     cTemplate1 = cTemplate1.replace(/{{questionId}}/g, qId);
@@ -450,11 +459,12 @@ class SurveyHandler {
     let ref = this.util.initListener(
       "click",
       "#" + qId + " .cc-select-options .cc-select-option",
-      function() {
+      function () {
         self.ccsdk.debug ? console.log("languageSelectOption") : "";
-        selectRes = document.querySelectorAll(
-          "#" + qId + " .cc-select-trigger"
-        )[0].innerHTML;
+        let selectOpt = document.querySelectorAll(
+          "#" + qId + " #sources"
+        )[0] as HTMLSelectElement;
+        selectRes = selectOpt.value;
       }
     );
     this.domListeners.push(ref);
@@ -463,14 +473,14 @@ class SurveyHandler {
     let languageSelect2 = this.util.initListener(
       "click",
       ".act-cc-button-lang-next",
-      function() {
+      function () {
         self.ccsdk.debug ? console.log("languageNext") : "";
         self.ccsdk.config.language = "default";
         self.ccsdk.config.language = selectRes; //language selection from menu then show first question
         //set config rtl or ltr
 
         var languageQuestion = self.surveyData.questions.find(
-          x => x.questionTags && x.questionTags.indexOf("cc_language") !== -1
+          (x) => x.questionTags && x.questionTags.indexOf("cc_language") !== -1
         );
 
         if (languageQuestion) {
@@ -571,7 +581,7 @@ class SurveyHandler {
   }
 
   fillPrefill(prefillObj: PrefillDictionary) {
-    Object.keys(prefillObj).map(x => {
+    Object.keys(prefillObj).map((x) => {
       this.prefillWithTags[x.toLowerCase()] = prefillObj[x];
     });
     (window as any).ccsdkDebug
@@ -584,7 +594,7 @@ class SurveyHandler {
   }
 
   fillPrefillByNote(prefillObj: PrefillDictionary) {
-    Object.keys(prefillObj).map(x => {
+    Object.keys(prefillObj).map((x) => {
       this.prefillWithNote[x.toLowerCase()] = prefillObj[x];
     });
     (window as any).ccsdkDebug
@@ -597,7 +607,7 @@ class SurveyHandler {
   }
 
   fillPrefillDirect(prefillObj: PrefillDictionary) {
-    Object.keys(prefillObj).forEach(x => {
+    Object.keys(prefillObj).forEach((x) => {
       this.prefillDirect[x] = prefillObj[x];
     });
 
@@ -629,7 +639,7 @@ class SurveyHandler {
         questionId: question.id,
         questionText: question.text,
         textInput: null,
-        numberInput: null
+        numberInput: null,
       };
     }
     valueType = this.getAnswerTypeFromDisplayType(question.displayType);
@@ -703,12 +713,12 @@ class SurveyHandler {
 
   getPrefillResponseById(id: any) {
     return (
-      this.prefillResponses && this.prefillResponses.find(x => x.id === id)
+      this.prefillResponses && this.prefillResponses.find((x) => x.id === id)
     );
   }
 
   getQuestionById(id: any) {
-    return this.questions.find(x => x.id === id);
+    return this.questions.find((x) => x.id === id);
   }
 
   postPrefillPartialAnswerWithRetry(complete = false) {
@@ -742,7 +752,7 @@ class SurveyHandler {
       questionId: question.id,
       questionText: question.text,
       textInput: response.text,
-      numberInput: response.number
+      numberInput: response.number,
     };
 
     let surveyPartialUrl = Config.SURVEY_PARTIAL_RESPONSE.replace(
@@ -834,7 +844,7 @@ class SurveyHandler {
       answersAll.push(this.prefillResponses[answer]);
     }
 
-    answersAll = answersAll.filter(x => x && typeof x === "object");
+    answersAll = answersAll.filter((x) => x && typeof x === "object");
 
     let timeAtPost = new Date().getTime();
     let finalData = {
@@ -847,12 +857,12 @@ class SurveyHandler {
       responseDuration: Math.floor(
         (timeAtPost - this.ccsdk.surveyStartTime.getTime()) / 1000
       ),
-      responseDateTime: new Date()
+      responseDateTime: new Date(),
     };
     if (lastAnswer) {
       let _lastAnswer = {
         text: lastAnswer.textInput,
-        number: lastAnswer.numberInput
+        number: lastAnswer.numberInput,
       };
       this.postPartialAnswer(
         this.questionsToDisplay.length - 1,
@@ -1181,9 +1191,9 @@ class SurveyHandler {
                   100;
                 dimension = dimension > 48 ? 48 : dimension;
                 legendDimension = (endRange - startRange + 1) * (dimension + 1);
-                optionStyle = `width:${dimension}px;height:${dimension}px;padding:${(dimension -
-                  15) /
-                  2}px;`;
+                optionStyle = `width:${dimension}px;height:${dimension}px;padding:${
+                  (dimension - 15) / 2
+                }px;`;
               }
             } else {
               imageVisibility010 = "hide";
