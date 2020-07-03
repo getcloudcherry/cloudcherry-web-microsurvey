@@ -233,6 +233,9 @@ class LanguagesConfig {
   constructor() {}
   getLanguageText(languages: string[]) {
     return languages.map((language) => {
+      if (language === "default") {
+        return "default";
+      }
       let languageObj = allLanguages.filter(
         (allLanguage) =>
           allLanguage.text === language || allLanguage.locale === language
@@ -240,7 +243,6 @@ class LanguagesConfig {
       if (languageObj && languageObj.length > 0) {
         return languageObj[0].text;
       }
-      return;
     });
   }
 }

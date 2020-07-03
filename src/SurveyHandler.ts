@@ -410,17 +410,21 @@ class SurveyHandler {
     let self = this;
     let options1: string;
     let qId = "languageSelector";
+    let languageKeys = ["default"];
+    let languageTexts = ["default"];
     let cTemplate1 = templates.language_selector;
     options1 = this.util.generateLanguageSelectOptions(
-      ["default"],
-      ["default"]
+      languageKeys,
+      languageTexts
     );
     if (this.surveyData.translated) {
-      let languageKeys = Object.keys(this.surveyData.translated);
-      let languageTexts = this.languageConfig.getLanguageText(languageKeys);
+      languageKeys = ["default"].concat(
+        Object.keys(this.surveyData.translated)
+      );
+      languageTexts = this.languageConfig.getLanguageText(languageKeys);
       options1 = this.util.generateLanguageSelectOptions(
-        ["default"].concat(languageKeys),
-        ["default"].concat(languageTexts)
+        languageKeys,
+        languageTexts
       );
     }
     cTemplate1 = cTemplate1.replace(/{{questionId}}/g, qId);
@@ -484,7 +488,11 @@ class SurveyHandler {
         );
 
         if (languageQuestion) {
-          self.fillPrefillQuestion(languageQuestion.id, selectRes, "text");
+          let selectLang = languageTexts[languageKeys.indexOf(selectRes)];
+          if (!selectLang || selectLang === "default") {
+            selectLang = "English";
+          }
+          self.fillPrefillQuestion(languageQuestion.id, selectLang, "text");
         }
         let isRTL = /[\u0600-\u06FF]/.test(selectRes);
         self.ccsdk.config.textDirection = isRTL ? "rtl" : "ltr";
