@@ -231,13 +231,18 @@ class Survey {
         break;
     }
     this.survey.surveyDisplay.welcomePopupAnimation = welcomePopupAnimation;
-    // this.tracking.trackEvent('Welcome Pop up Position', {
-    //   token: this.tracking.token,
-    //   data: {
-    //     name: this.survey.surveyDisplay.position,
-    //     action: null
-    //   }
-    // }, null, null);
+    this.tracking.trackEvent(
+      "Welcome Pop up Position",
+      {
+        token: this.tracking.token,
+        data: {
+          name: this.survey.surveyDisplay.position,
+          action: null,
+        },
+      },
+      null,
+      null
+    );
 
     this.survey.surveyDisplay.surveyPosition =
       this.config.position.search(/bottom/gi) == -1 ? "top" : "bottom";
@@ -264,20 +269,32 @@ class Survey {
 
       self.tracking.token = self.surveyToken;
       if (self.surveyData) {
-        // self.tracking.trackEvent('Login Success', {
-        //   token: self.tracking.token,
-        //   data: {
-        //     name: 'Token',
-        //     action: self.surveyToken
-        //   }
-        // }, console.log, (err) => console.error(err));
-        // self.tracking.trackEvent('Survey Length', {
-        //   token: self.tracking.token,
-        //   data: {
-        //     name: `${surveyData.questions.length} Questions`,
-        //     action: `${surveyData.preFill ? surveyData.preFill.length : 0} Prefills`
-        //   }
-        // }, null, null);
+        self.tracking.trackEvent(
+          "Login Success",
+          {
+            token: self.tracking.token,
+            data: {
+              name: "Token",
+              action: self.surveyToken,
+            },
+          },
+          console.log,
+          (err) => console.error(err)
+        );
+        self.tracking.trackEvent(
+          "Survey Length",
+          {
+            token: self.tracking.token,
+            data: {
+              name: `${surveyData.questions.length} Questions`,
+              action: `${
+                surveyData.preFill ? surveyData.preFill.length : 0
+              } Prefills`,
+            },
+          },
+          null,
+          null
+        );
 
         let event = new CustomEvent(
           Constants.SURVEY_DATA_EVENT + "-" + self.surveyToken,
@@ -292,13 +309,18 @@ class Survey {
           self.initSurveyQuestions();
         }
       } else {
-        // self.tracking.trackEvent('Expired Survey', {
-        //   token: self.tracking.token,
-        //   data: {
-        //     name: null,
-        //     action: null
-        //   }
-        // }, null, null);
+        self.tracking.trackEvent(
+          "Expired Survey",
+          {
+            token: self.tracking.token,
+            data: {
+              name: null,
+              action: null,
+            },
+          },
+          null,
+          null
+        );
         self.survey.displayWelcomeQuestion("The Survey has been expired");
       }
     };
@@ -365,13 +387,18 @@ class Survey {
   public hide() {
     SurveyManager.unsetSurveyRunning();
     this.survey.destroy();
-    // this.tracking.trackEvent('Survey Destroyed', {
-    //   token: this.tracking.token,
-    //   data: {
-    //     name: (<any>new Date() - (<any>window).globalSurveyStartTime) + 's',
-    //     action: null
-    //   }
-    // }, null, null);
+    this.tracking.trackEvent(
+      "Survey Destroyed",
+      {
+        token: this.tracking.token,
+        data: {
+          name: <any>new Date() - (<any>window).globalSurveyStartTime + "s",
+          action: null,
+        },
+      },
+      null,
+      null
+    );
   }
 
   public destroy() {
