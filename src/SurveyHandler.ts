@@ -572,6 +572,12 @@ class SurveyHandler {
     return this.surveyAnswers[questionId];
   }
 
+  getAllAnswers() {
+    return Object.keys(this.surveyAnswers).map(function (e) {
+      return this.surveyAnswers[e];
+    });
+  }
+
   acceptAnswers() {
     let self: SurveyHandler = this;
     // (window as any).ccsdkDebug?console.log('add question answered listener':'')
