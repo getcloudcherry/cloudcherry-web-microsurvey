@@ -244,21 +244,21 @@ export class WebSurveyContainer {
             };
 
             if (message.data.eventType === "END") {
-              setTimeout(() => {
-                that.close();
-                // websurvey sets the cookie in the iframe and not in the parent page
-                //set done cookie for 30 days.
-                Cookie.set(that.config.token + "-finish", "true", 30, "/");
-                dispatchEvent(
-                  `${Constants.SURVEY_CLOSE_EVENT}-${that.config.token}`,
-                  that.config.token
-                );
-              }, 3000);
-
               if (
                 message.data.response !== null &&
                 message.data.response.token === that.config.token
               ) {
+                setTimeout(() => {
+                  that.close();
+                  // websurvey sets the cookie in the iframe and not in the parent page
+                  //set done cookie for 30 days.
+                  Cookie.set(that.config.token + "-finish", "true", 30, "/");
+                  dispatchEvent(
+                    `${Constants.SURVEY_CLOSE_EVENT}-${that.config.token}`,
+                    that.config.token
+                  );
+                }, 3000);
+
                 // redirect url will be opened in new window
                 window.open(message.data.response.url, "_blank");
               }
