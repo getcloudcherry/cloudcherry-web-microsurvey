@@ -5,10 +5,13 @@
     "noImplicitAny": false,
     "module": "commonjs",
     "target": "es5",
-    "lib" : ["es5", "dom"],
-    "allowJs": true
+    "lib": ["es2018", "es2017", "es2015.promise", "dom", "es2015.symbol"],
+    "allowJs": true,
+    "types": ["jasmine"]
   },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"],
   "awesomeTypescriptLoaderOptions": {
-    "transpileOnly" : false
+    "transpileOnly": false
   }
 }

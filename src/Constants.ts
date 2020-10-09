@@ -19,4 +19,10 @@ class Constants {
   static SURVEY_CLIENT = "JS-MicroWeb";
 }
 
+export const DEFAULT_PREFILL_QUEUE = {
+  DIRECT: [],
+  BY_TAG: [],
+  BY_NOTE: []
+};
+
 export { Constants };

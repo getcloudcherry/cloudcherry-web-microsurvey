@@ -1,172 +1,239 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <!-- <script src="../polyfills/ccsdk.polyfill.js"></script> -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700"
+      rel="stylesheet"
+    />
+    <meta
+      name="viewport"
+      charset="utf-8"
+      content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height"
+    />
+    <title>Survey</title>
+    <style type="text/css">
+      body {
+        margin: 0 auto;
+        height: 100vh;
+        width: 100vw;
+      }
 
-<head>
-  <!-- <script src="../polyfills/ccsdk.polyfill.js"></script> -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600,700" rel="stylesheet">
-  <meta name="viewport" charset="utf-8" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
-  <title>Survey</title>
-  <style type="text/css">
-    body {
-      margin: 0 auto;
-    }
+      button.cta {
+        background: rgb(238, 64, 54);
+        padding: 20px 50px;
+        color: #fff;
+        border: solid 0px;
+        font-size: 20px;
+        box-shadow: 3px 4px 7px 2px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
 
-    button {
-      background: rgb(238, 64, 54);
-      padding: 20px 50px;
-      color: #fff;
-      border: solid 0px;
-      font-size: 20px;
-      box-shadow: 3px 4px 7px 2px rgba(0, 0, 0, 0.2);
-      cursor: pointer;
-      transition: all .2s;
-    }
+      button.cta:hover {
+        box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.2);
+      }
 
-    button:hover {
-      box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.2);
-    }
+      #brand {
+        /* background: url(https://cx.getcloudcherry.com/microsurvey-assets/cloudcherry-login-logo.png); */
+        margin: 80px auto;
+        width: 164px;
+        text-indent: -10000px;
+        height: 91px;
+      }
 
-    #brand {
-      /* background: url(https://cx.getcloudcherry.com/microsurvey-assets/cloudcherry-login-logo.png); */
-      margin: 80px auto;
-      width: 164px;
-      text-indent: -10000px;
-      height: 91px;
-    }
+      .container {
+        text-align: center;
+      }
+    </style>
+    <script>
+      //colors can be either hex or rgb
+      // themeColor = '#fdaf19';
+      // themeColor = '#4db47c';
+      // themeColor = '#db3c39';
 
-    .container {
-      text-align: center;
-    }
-  </style>
-  <script>
-    //colors can be either hex or rgb
-    // themeColor = '#fdaf19';
-    // themeColor = '#4db47c';
-    // themeColor = '#db3c39';
+      // themeColor = 'rgb(210, 42, 53)';
+      //check for hex and if false - take for granted that it is rgb
+      // var isHex  = /^#[0-9A-F]{6}$/i.test(themeColor)
+    </script>
+  </head>
 
-    // themeColor = 'rgb(210, 42, 53)';
-    //check for hex and if false - take for granted that it is rgb
-    // var isHex  = /^#[0-9A-F]{6}$/i.test(themeColor)
-  </script>
-</head>
-
-<body class="">
-  <div class="container">
-    <div id="brand">CloudCherry</div>
-    <div class="button">
-      <button type="button" id="anywhere">Launch Demo Survey</button>
+  <body class="">
+    <div id="host-as-iframe"></div>
+    <div class="container" id="no-host">
+      <div id="brand">CloudCherry</div>
+      <div class="button">
+        <button type="button" class="cta" id="anywhere">
+          Launch Demo Survey
+        </button>
+      </div>
     </div>
-  </div>
-  <script>
-    var token = getQueryString("t");
-    var color = decodeURIComponent(getQueryString("c"));
-    // console.log(token, color);
-    document.getElementsByTagName('button')[0].style.background = color;;
-    (function () {
-      // add a queue event here
-      window.CCSDK = window.CCSDK || function () {
-        (window.CCSDK.q = window.CCSDK.q || []).push(arguments);
-      };
-      var s = document.createElement('script');
-      s.type = 'text/javascript';
-      s.async = true;
-      // s.src = 'https://cx.getcloudcherry.com/preview/microsurvey/script/cc.en.bundle.js';
-      s.src = "../cc.en.bundle.js"
-      var x = document.getElementsByTagName('head')[0];
-      x.appendChild(s);
-      // execute your script immediately here
-      //WW-02872
-      //CH-88360
-      var ins = window.CCSDK("init", token, {
-        // themeColor : "rgb(235, 28, 35)",
-        // themeColor : color,
-        // textDirection : 'ltr',
-        isActive: true, //boolean,    // Whether a microsurvey is enabled or disabled, true for enabled
-        welcomeText: 'Hey There! Help us improve :)', // Welcome message
-        thankyouText: 'Thank you for taking the survey', // Thank you message
-        brandColor: color, // Theme color
-        // top right or right top
-        // left top or top left 
-        // bottom right or right bottom
-        // bottom left or left bottom
-        position: 'bottom right', // Position of the microsurvey, Top Left, Top Right, Bottom Left, Bottom Right
-        // keepAlive: 5, //number, // Hide the microsurvey after the specified seconds, 0 for no timer
-        cssSelector: "#anywhere", // Show the microsurvey when the user click's on the specified HTML element(s)
-        // scrollPercent: 0, // number, // Show the microsurvey when the user scrolls the page more than the specified percentage
-        // click: 0,  //number, // Show the microsurvey when the user clicks the specified number of times in the page
-        // waitSeconds: 5, //number, // Show the microsurvey when the user spends the specified number of seconds in the page
-        // grepURL: 'hello', // Show the microsurvey if the URL matches the given regular expression
-        // grepInvertURL: string, // Show the microsurvey if the URL doesn't match the given regular expression
-        onExitDetect: true, // Show the microsurvey when the user tries to leave the page or close the tab
-        // startButtonText: 'Start Survey', // Use this text in the start button
-        resumeButtonText: 'Resume', // Use this text in the resume button
-        // coolDownPeriod: 172800
+    <script>
+      var token = getQueryString("t");
+      var page = getQueryString("p");
+      if (page) {
+        var noHost = document.getElementById("no-host");
+        noHost.style.display = "none";
+
+        var iframe = document.createElement("iframe");
+        iframe.src = page;
+        iframe.style.pointerEvents = "none";
+        iframe.style.height = "100vh";
+        iframe.style.width = "100vw";
+
+        var host = document.getElementById("host-as-iframe");
+        host.appendChild(iframe);
+      }
+      var color = decodeURIComponent(getQueryString("c"));
+      // console.log(token, color);
+      document.getElementsByTagName("button")[0].style.background = color;
+      (function () {
+        // add a queue event here
+        window.CCSDK =
+          window.CCSDK ||
+          function () {
+            (window.CCSDK.q = window.CCSDK.q || []).push(arguments);
+          };
+
+        // window.CCSDK("prefill", "mr-14122", {
+        //   "5f03570ff543492facb87ed8": "M"
+        // });
+
+        // window.CCSDK("prefill", "mr-14122", "5f03570ff543492facb87ed8", "M");
+
+        var s = document.createElement("script");
+        s.type = "text/javascript";
+        s.async = true;
+        // s.src = 'https://cx.getcloudcherry.com/preview/microsurvey/script/cc.en.bundle.js';
+        s.src = "../cc.en.bundle.js";
+        var x = document.getElementsByTagName("head")[0];
+        x.appendChild(s);
+        // execute your script immediately here
+        //WW-02872
+        //CH-88360
+        var ins = window.CCSDK("init", token, {
+          isActive: true,
+          brandColor: "blue",
+          waitSeconds: 0
+        });
+        // {
+        //   // themeColor : "rgb(235, 28, 35)",
+        //   // themeColor : color,
+        //   // textDirection : 'ltr',
+        //   isActive: true, //boolean,    // Whether a microsurvey is enabled or disabled, true for enabled
+        //   welcomeText: "Hey There! Help us improve :)", // Welcome message
+        //   thankyouText: "Thank you for taking the survey", // Thank you message
+        //   brandColor: color, // Theme color
+        //   // top right or right top
+        //   // left top or top left
+        //   // bottom right or right bottom
+        //   // bottom left or left bottom
+        //   position: "bottom right", // Position of the microsurvey, Top Left, Top Right, Bottom Left, Bottom Right
+        //   // keepAlive: 5, //number, // Hide the microsurvey after the specified seconds, 0 for no timer
+        //   cssSelector: "#anywhere", // Show the microsurvey when the user click's on the specified HTML element(s)
+        //   // scrollPercent: 0, // number, // Show the microsurvey when the user scrolls the page more than the specified percentage
+        //   click: 5, //number, // Show the microsurvey when the user clicks the specified number of times in the page
+        //   waitSeconds: 10, //number, // Show the microsurvey when the user spends the specified number of seconds in the page
+        //   // grepURL: 'hello', // Show the microsurvey if the URL matches the given regular expression
+        //   // grepInvertURL: string, // Show the microsurvey if the URL doesn't match the given regular expression
+        //   onExitDetect: true, // Show the microsurvey when the user tries to leave the page or close the tab
+        //   // startButtonText: 'Start Survey', // Use this text in the start button
+        //   resumeButtonText: "Resume", // Use this text in the resume button
+        //   coolDownPeriod: 15
+        // });
+
+        // var ins = window.CCSDK("init", "WW-35080" ,{
+        //   // themeColor : "rgb(235, 28, 35)",
+        //   themeColor : color,
+        //   textDirection : 'ltr',
+        //   display : {
+        //     //write it accordring to screen corners
+        //     // top right or right top
+        //     // left top or top left
+        //     // bottom right or right bottom
+        //     // bottom left or left bottom
+        //     'position' : 'bottom right',
+        //     // write it in fashion of from-to
+        //     // right-left
+        //     // left-right
+        //     // top-bottom
+        //     // bottom-top
+        //     'welcomePopupAnimation' : 'right-left',
+        //     'surveyPopupAnimation' : 'right-left'
+        //   }
+        // });
+
+        // window.CCSDK("trigger", "WW-35080", "page-time", "15");
+        // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
+        // window.CCSDK("on", "WW-35080", "onSurveyData", function(e) {
+        //   console.log("Inside OLD ON");
+        // });
+        // window.CCSDK("prefillByTag", "WW-85232", "Email", "abhishek.yagnik@wowlabz.com");
+        // window.CCSDK("prefillByTag", "WW-85232", "Gender", "Male");
+        // 5f03570ff543492facb87ed8
+        // window.CCSDK("prefill", "mr-14122", "5f03570ff543492facb87ed8", "M");
+
+        // window.CCSDK("prefill", "mr-100550", "5f03570ff543492facb87ed8", "M");
+        // window.CCSDK("prefill", "WW-85232", "5a42459d79d497140cfd8fc1", "M");
+        // window.CCSDK("prefillByTag", "kv-42094", "Name", "Abhishek Yagnik");
+        // window.CCSDK("prefillByNote", "kv-42094", "hhiii", 5);
+        // window.CCSDK("prefill", "kv-42094", "5a1bb721693ad816282d332b", 3);
+
+        //click trigger
+        //pass id or class...currently works on first element of class
+      })();
+
+      document.addEventListener(token + "-ready", function (e) {
+        e.detail.survey.on("onImpression", function (ev) {
+          console.log(ev, "onImpression");
+        });
+        e.detail.survey.on("onAnswer", function (ev) {
+          console.log(ev, "onAnswer");
+        });
+        e.detail.survey.on("onClose", function (ev) {
+          console.log(ev, "onClose");
+        });
+        e.detail.survey.on("onStart", function (ev) {
+          console.log(ev, "onStart");
+        });
+        e.detail.survey.on("onEnd", function (ev) {
+          console.log(ev, "onEnd");
+        });
       });
 
-      // var ins = window.CCSDK("init", "WW-35080" ,{
-      //   // themeColor : "rgb(235, 28, 35)",
-      //   themeColor : color,
-      //   textDirection : 'ltr',
-      //   display : {
-      //     //write it accordring to screen corners
-      //     // top right or right top
-      //     // left top or top left 
-      //     // bottom right or right bottom
-      //     // bottom left or left bottom
-      //     'position' : 'bottom right',
-      //     // write it in fashion of from-to
-      //     // right-left
-      //     // left-right
-      //     // top-bottom
-      //     // bottom-top
-      //     'welcomePopupAnimation' : 'right-left',
-      //     'surveyPopupAnimation' : 'right-left'
-      //   }
+      document.addEventListener("onImpression-" + token, function (ev) {
+        console.log(ev, "onImpression");
+      });
+      document.addEventListener("onAnswer-" + token, function (ev) {
+        console.log(ev, "onAnswer");
+      });
+      document.addEventListener("onClose-" + token, function (ev) {
+        console.log(ev, "onClose");
+      });
+      document.addEventListener("onStart-" + token, function (ev) {
+        console.log(ev, "onStart");
+      });
+      document.addEventListener("onEnd-" + token, function (ev) {
+        console.log(ev, "onEnd");
+      });
+      // document.addEventListener(token+'-ready', function(e){
+      //   // console.log(e);
+      // 	// console.log(ins);
+      //   // e.detail.survey.trigger('launch');
+      //   console.log("ready");
+      //   e.detail.survey.trigger('click', '#anywhere');
+      //   // e.detail.survey.trigger('page-count', 3);
+      //   // e.detail.survey.trigger('page-time', 10);
+      //   // e.detail.survey.trigger('site-time', 20);
+      //   //  e.detail.survey.trigger('launch');
       // });
 
-      // window.CCSDK("trigger", "WW-35080", "page-time", "15");
-      // window.CCSDK("trigger", "WW-02872", "click","#anywhere");
-      // window.CCSDK("on", "WW-35080", "onSurveyData", function(e) {
-      //   console.log("Inside OLD ON");
-      // });
-      // window.CCSDK("prefillByTag", "WW-85232", "Email", "abhishek.yagnik@wowlabz.com");
-      // window.CCSDK("prefillByTag", "WW-85232", "Gender", "Male");
-      window.CCSDK("prefill", "WW-85232", "5a42459d79d497140cfd8fc1", "M");
-      // window.CCSDK("prefillByTag", "kv-42094", "Name", "Abhishek Yagnik");
-      // window.CCSDK("prefillByNote", "kv-42094", "hhiii", 5);
-      // window.CCSDK("prefill", "kv-42094", "5a1bb721693ad816282d332b", 3);
-
-      //click trigger
-      //pass id or class...currently works on first element of class
-
-    })();
-
-
-    document.addEventListener(token + '-ready', function (e) {
-      setTimeout(function () {
-        // e.detail.survey.show(token);
-      }, 5000);
-    });
-
-    // document.addEventListener(token+'-ready', function(e){
-    //   // console.log(e);
-    // 	// console.log(ins);
-    //   // e.detail.survey.trigger('launch');
-    //   console.log("ready");
-    //   e.detail.survey.trigger('click', '#anywhere');
-    //   // e.detail.survey.trigger('page-count', 3);
-    //   // e.detail.survey.trigger('page-time', 10);
-    //   // e.detail.survey.trigger('site-time', 20);
-    //   //  e.detail.survey.trigger('launch');
-    // });
-
-    function getQueryString(field, url) {
-      var href = url ? url : window.location.href;
-      var reg = new RegExp('[?&]' + field + '=([^&#]*)', 'i');
-      var string = reg.exec(href);
-      return string ? string[1] : null;
-    };
-  </script>
-</body>
-
+      function getQueryString(field, url) {
+        var href = url ? url : window.location.href;
+        var reg = new RegExp("[?&]" + field + "=([^&#]*)", "i");
+        var string = reg.exec(href);
+        return string ? string[1] : null;
+      }
+    </script>
+  </body>
 </html>

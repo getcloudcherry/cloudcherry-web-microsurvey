@@ -1,0 +1,62 @@
+.ccsdk {
+  &.ifr-cntr {
+    z-index: 1000;
+    transition: transform 350ms ease-in-out;
+    width: 376px;
+    min-height: 250px;
+    max-height: 644px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 5px 40px;
+    opacity: 1;
+    height: calc(100% - 120px);
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+  }
+  .ifr {
+    height: 100%;
+    width: 100%;
+    transform-origin: 100% 100%;
+    border: 1px solid;
+  }
+  .close-btn {
+    right: 32px;
+    position: fixed;
+    border-radius: 100%;
+    width: 24px;
+    height: 24px;
+    padding: 2px;
+    border: none;
+    visibility: visible;
+    cursor: pointer;
+    // background-image: url('https://cxnext.blob.core.windows.net/venki/times.png');
+    .close-icon {
+      width: 100%;
+      height: 100%;
+    }
+    &.hidden {
+      visibility: hidden;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .ccsdk {
+    .ifr {
+      height: 100%;
+      width: 100%;
+    }
+    &.ifr-cntr {
+      min-height: 100%;
+      max-height: 100%;
+      height: 100%;
+      width: 100%;
+      right: 0;
+      bottom: 0;
+    }
+    .close-btn {
+      right: 8px;
+      height: 40px;
+      width: 40px;
+    }
+  }
+}

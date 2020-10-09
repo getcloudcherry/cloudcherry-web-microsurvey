@@ -1,7 +1,8 @@
 //Manages trigger.
 import { Cookie } from "./helpers/Cookie";
 import { Constants } from "./Constants";
-import { Triggers } from "./Triggers";
+import { WebSurveyTriggers } from "./WebSurveyTriggers";
+
 //collect initial data
 //if on site time is null, add on site time
 if (Cookie.get(Constants.CCTriggerSiteStartTime) == null) {
@@ -49,31 +50,29 @@ document.onclick = function (e) {
 class TriggerManager {
 
   static triggerInterval: any = null;
-  static triggerInstances: any = {};
+  static triggerInstances: {
+    [key: string]: WebSurveyTriggers
+  } = {};
+
+  static enqueueSurvey: Function;
 
   constructor() {
-    //initialize triggers
-    //add those triggers which aren't completed yet.
+
   }
 
-  static addSurvey(surveyId: any, trigger: Triggers) {
+  static addSurvey(surveyId: any, trigger: WebSurveyTriggers) {
     TriggerManager.triggerInstances[surveyId] = trigger;
+
+    trigger.evaluateCallBack = () => {
+      TriggerManager.enqueueSurvey && TriggerManager.enqueueSurvey(surveyId);
+    }
+
     if (Object.keys(TriggerManager.triggerInstances).length >= 1) {
       (window as any).ccsdkDebug ? console.log(TriggerManager.triggerInterval) : '';
       if (TriggerManager.triggerInterval == null) {
         (window as any).ccsdkDebug ? console.log("TriggerHandler : Setting up Interval Trigger Handlers.") : '';
         TriggerManager.triggerInterval = setInterval(TriggerManager.processIntervalTriggers, 1000);
       }
-      //processing sequential triggers if any.
-      // console.log("TriggerHandler : Processing sequential triggers for  " + surveyId);
-      // TriggerManager.processTriggersBySurveyId(surveyId);
-    }
-  }
-
-  static removeSurvey(surveyId: string) {
-    delete TriggerManager.triggerInstances[surveyId];
-    if (Object.keys(TriggerManager.triggerInstances).length == 0) {
-      clearInterval(TriggerManager.triggerInterval);
     }
   }
 
@@ -87,22 +86,18 @@ class TriggerManager {
     Cookie.set(Constants.CCTriggerSiteElapsedTime, new Date(), undefined, undefined);
 
     for (let trigger in TriggerManager.triggerInstances) {
-      TriggerManager.triggerInstances[trigger].processIntervalTriggers();
-      TriggerManager.triggerInstances[trigger].processConditionalTriggers();
+      TriggerManager.triggerInstances[trigger].evaluateTriggers();
+      // TriggerManager.triggerInstances[trigger].processConditionalTriggers();
     }
   }
 
-  static processScrollTriggers(scrollNow) {
+
+  static processScrollTriggers(scrollY) {
     for (let trigger in TriggerManager.triggerInstances) {
       //process all scroll triggers.
-      TriggerManager.triggerInstances[trigger].processScrollTriggers(scrollNow);
+      TriggerManager.triggerInstances[trigger].evaluateTriggers();
     }
   }
-
-  static disableTriggers(surveyId: string) {
-    TriggerManager.triggerInstances[surveyId].disableTriggers();
-  }
-
 };
 
 
