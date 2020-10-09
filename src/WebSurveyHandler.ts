@@ -5,8 +5,7 @@ import { Constants } from "./Constants";
 
 export class WebSurveyHandler {
   // url = "https://cx.getcloudcherry.com/perf-s1/#/login?token=";
-  url =
-    "https://cxnext.blob.core.windows.net/venki/tf/index.html#/login?token=";
+  url = "https://cx.cloudcherry.com/ns/#/login?token=";
   // url = "http://localhost:8100/#/login?token=";
   token = "mr-100550";
   container: WebSurveyContainer;
