@@ -259,8 +259,10 @@ export class WebSurveyContainer {
                   );
                 }, 3000);
 
-                // redirect url will be opened in new window
-                window.open(message.data.response.url, "_blank");
+                if (message.data.response.url) {
+                  // redirect url will be opened in new window
+                  window.open(message.data.response.url, "_blank");
+                }
               }
             }
             dispatchEvent(
