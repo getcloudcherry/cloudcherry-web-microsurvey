@@ -1,6 +1,6 @@
 .ccsdk {
   &.ifr-cntr {
-    z-index: 1000;
+    z-index: 9999;
     transition: transform 350ms ease-in-out;
     width: 376px;
     min-height: 250px;
@@ -27,6 +27,9 @@
     padding: 2px;
     border: none;
     visibility: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     // background-image: url('https://cxnext.blob.core.windows.net/venki/times.png');
     .close-icon {
