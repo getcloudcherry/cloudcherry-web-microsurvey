@@ -41,10 +41,13 @@ export function isNumberCheck(filterQuestion: any): boolean {
  * @param question
  * @return
  */
-export function doesSatisfy(surveyHandler: any, question: any): boolean {
+export function doesSatisfy(
+  surveyHandler: any,
+  question: any,
+  filter: any
+): boolean {
   const answers = surveyHandler.getAllAnswers();
   const list = surveyHandler.questions;
-  const filter = question.conditionalFilter;
 
   return isConditionsSatisfied(
     list,

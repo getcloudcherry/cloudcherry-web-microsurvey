@@ -56,7 +56,7 @@ class ConditionalTextFilter {
           //     }
           //   }
           // }
-          if (doesSatisfy(surveyHandler, question)) {
+          if (doesSatisfy(surveyHandler, question, fOption.filter)) {
             if (
               checkLanguage(surveyHandler, fOption) ||
               (surveyHandler.ccsdk.config &&

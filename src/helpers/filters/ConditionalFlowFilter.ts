@@ -29,7 +29,9 @@ class ConditionalFlowFilter {
           //   }
           // }
           const surveyQuestions = surveyHandler.getSurveyQuestions();
-          if (doesSatisfy(surveyHandler, question)) {
+          if (
+            doesSatisfy(surveyHandler, aQuestion, aQuestion.conditionalFilter)
+          ) {
             if (surveyQuestions.indexOf(aQuestion) === -1) {
               surveyQuestions.push(aQuestion);
               aAddedCount++;

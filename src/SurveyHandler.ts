@@ -573,7 +573,7 @@ class SurveyHandler {
   }
 
   getAllAnswers() {
-    return Object.keys(this.surveyAnswers).map(function (e) {
+    return Object.keys(this.surveyAnswers).map((e) => {
       return this.surveyAnswers[e];
     });
   }
