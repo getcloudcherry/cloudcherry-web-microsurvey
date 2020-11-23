@@ -9,6 +9,8 @@ export class WebSurveyContainer {
   public hideCloseButton = false;
   public closeCallback: Function | null = null;
   urlSource;
+  bringSurveyIntoView = false;
+
   _iframeOpened: boolean | null = null;
   restrictedOrigin = "*";
   config;
@@ -39,9 +41,12 @@ export class WebSurveyContainer {
     };
 
     window.onresize = (ev) => {
+      this.resizeSurvey();
+
       if (!this.closeButton) {
         return;
       }
+
       if (window.innerWidth > 768) {
         this.closeButton.style.bottom = `${
           this.iframeContainer.clientHeight - 14
@@ -100,6 +105,8 @@ export class WebSurveyContainer {
     }
 
     (<any>window).globalSurveyRunning = false;
+    this.bringSurveyIntoView = false;
+    this.resizeSurvey();
     this._iframeOpened = false;
     this.iframeContainer.style.transform = "translateY(100vh)";
     setTimeout(() => {
@@ -190,8 +197,8 @@ export class WebSurveyContainer {
     let that = this;
     function pollForPageLoad() {
       if (that.pageLoad) {
-        that.iframeContainer.style.transform = "none";
-        that.iframeContainer.style.transform = "unset";
+        that.bringSurveyIntoView = true;
+        that.resizeSurvey();
       } else {
         setTimeout(() => {
           pollForPageLoad();
@@ -205,11 +212,47 @@ export class WebSurveyContainer {
     this._iframeOpened = true;
     if (!this.hideCloseButton) {
       let scaleFactor = 1; // 0.66;
+      this.resizeSurvey();
       this.closeButton = this.getCloseButton(
         this.iframe.clientHeight * scaleFactor
       );
       this.closeButton.classList.add("close-btn");
       this.iframeContainer.appendChild(this.closeButton);
+    }
+  }
+
+  resizeSurvey() {
+    let scaleFactor = this.getScaleFactor();
+
+    let transform = !this.bringSurveyIntoView
+      ? "translateY(100vh)"
+      : "translateY(0)";
+
+    this.iframeContainer.style.transform = `${transform} scale(${scaleFactor})`;
+  }
+
+  getScaleFactor() {
+    let height = window.innerHeight;
+    let width = window.innerWidth;
+
+    if (width <= 768) {
+      return 1;
+      // mobile
+    }
+
+    // large screens
+    if (height > 768) {
+      return 1;
+    }
+
+    // medium screens
+    if (height <= 768 && height > 701) {
+      return 0.9;
+    }
+
+    // small screens
+    if (height <= 700) {
+      return 0.8;
     }
   }
 

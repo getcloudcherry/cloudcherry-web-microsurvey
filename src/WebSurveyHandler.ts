@@ -40,7 +40,6 @@ export class WebSurveyHandler {
 
     this.container.open();
     this.container.setSource(this.getUrl(token || this.token));
-    // this.container.setConfig(this.config);
   }
 
   hide() {
