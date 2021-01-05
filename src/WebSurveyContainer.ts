@@ -51,13 +51,24 @@ export class WebSurveyContainer {
         this.closeButton.style.bottom = `${
           this.iframeContainer.clientHeight - 14
         }px`;
+        this.postIfMicrosurveyOnMobile(false);
       } else {
         this.closeButton.style.bottom = `${
           this.iframeContainer.clientHeight - 48
         }px`;
+        this.postIfMicrosurveyOnMobile(true);
       }
     };
     return [iframe, iframeContainer];
+  }
+
+  postIfMicrosurveyOnMobile(isMobile) {
+    let message = JSON.stringify({
+      type: "IS_MS_MOBILE",
+      data: isMobile,
+    });
+
+    this.iframe.contentWindow.postMessage(message, this.restrictedOrigin);
   }
 
   getIframeContainer(): HTMLDivElement {
@@ -167,9 +178,9 @@ export class WebSurveyContainer {
       config,
       options: {
         screenWidth: window.innerWidth,
-        screenHeight: window.innerHeight
+        screenHeight: window.innerHeight,
       },
-      mode: "MICROSURVEY"
+      mode: "MICROSURVEY",
     });
 
     this.iframe.contentWindow.postMessage(message, this.restrictedOrigin);
@@ -283,7 +294,7 @@ export class WebSurveyContainer {
               ANSWERED: "onAnswer",
               DATA: "onData",
               END: "onEnd",
-              QUESTION: "onQuestion"
+              QUESTION: "onQuestion",
             };
 
             if (message.data.eventType === "END") {
@@ -312,6 +323,12 @@ export class WebSurveyContainer {
               `${eventTypeMap[message.data.eventType]}-${that.config.token}`,
               message.data.response
             );
+          } else if (message.type === "CURRENT_PAGE") {
+            if (message.data === "login") {
+              that.iframeContainer.classList.add("at-login");
+            } else {
+              that.iframeContainer.classList.remove("at-login");
+            }
           }
         } catch (err) {}
       }
@@ -330,7 +347,7 @@ export class WebSurveyContainer {
     let message = JSON.stringify({
       prefills: prefills,
       prefillType: type,
-      type: "PREFILLS_FROM_HOST"
+      type: "PREFILLS_FROM_HOST",
     });
 
     this.iframe.contentWindow.postMessage(message, this.restrictedOrigin);

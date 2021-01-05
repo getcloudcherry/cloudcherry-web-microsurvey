@@ -5,8 +5,8 @@ import { Constants } from "./Constants";
 
 export class WebSurveyHandler {
   // url = "https://cx.getcloudcherry.com/perf-s1/#/login?token=";
-  url = "https://cx.cloudcherry.com/ns/#/login?token=";
-  // url = "http://localhost:8100/#/login?token=";
+  // url = "https://cx.cloudcherry.com/ns/#/login?token=";
+  url = "http://localhost:8100/#/login?token=";
   token = "mr-100550";
   container: WebSurveyContainer;
   _hideCloseButton: boolean | null = null;
@@ -47,7 +47,8 @@ export class WebSurveyHandler {
   }
 
   getUrl(token: string): string {
-    return `${this.url}${token}&mode=microsurvey`;
+    const isMicroSurveyForMobile = window.innerWidth <= 768;
+    return `${this.url}${token}&mode=microsurvey&ismicrosurveyformobile=${isMicroSurveyForMobile}`;
   }
 
   setCoolDownPeriod(campaign, surveyToken) {
