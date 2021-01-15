@@ -65,8 +65,12 @@
     }
     .close-btn {
       right: 8px;
-      height: 24px;
-      width: 24px;
+      height: 23px;
+      width: 23px;
+      .close-icon {
+        width: 22px;
+        height: 22px;
+      }
     }
   }
 }
