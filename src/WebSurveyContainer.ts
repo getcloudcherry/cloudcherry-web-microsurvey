@@ -227,6 +227,7 @@ export class WebSurveyContainer {
       this.closeButton = this.getCloseButton(
         this.iframe.clientHeight * scaleFactor
       );
+      this.closeButton.setAttribute("id", "close-btn");
       this.closeButton.classList.add("close-btn");
       this.iframeContainer.appendChild(this.closeButton);
     }
@@ -328,6 +329,13 @@ export class WebSurveyContainer {
               that.iframeContainer.classList.add("at-login");
             } else {
               that.iframeContainer.classList.remove("at-login");
+            }
+          } else if (message.type === "SELECT_LANGUAGE" && this._iframeOpened) {
+            let closeButton = document.getElementById("close-btn");
+            if (message.data === "open") {
+              closeButton.style.visibility = "hidden";
+            } else {
+              closeButton.style.visibility = "visible";
             }
           }
         } catch (err) {}
